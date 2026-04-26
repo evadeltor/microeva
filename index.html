@@ -414,6 +414,139 @@
             opacity: 0.7;
         }
 
+        /* ── Infografías Section ── */
+        .infografias-section {
+            padding: 100px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .infografias-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .infografias-section .section-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 60px;
+        }
+
+        .accordion {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 28px;
+            background: white;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            user-select: none;
+        }
+
+        .accordion-header:hover {
+            background: #FDFBF8;
+        }
+
+        .accordion-header-text h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .accordion-header-text .accordion-meta {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        .accordion-icon {
+            font-size: 1rem;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 20px;
+        }
+
+        .accordion-item.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: #FDFBF8;
+            border-top: 0px solid var(--border);
+        }
+
+        .accordion-item.open .accordion-body {
+            max-height: 300px;
+            border-top: 1px solid var(--border);
+        }
+
+        .accordion-body-inner {
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .accordion-body-inner p {
+            font-size: 0.92rem;
+            color: #666;
+            line-height: 1.7;
+            flex: 1;
+        }
+
+        .accordion-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            border: 1px solid var(--primary);
+            border-radius: 2px;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .accordion-link:hover {
+            background: transparent;
+            color: var(--primary);
+        }
+
+        @media (max-width: 600px) {
+            .accordion-body-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -502,6 +635,7 @@
             <nav>
                 <ul>
                     <li><a href="#redes">Redes Sociales</a></li>
+                    <li><a href="#infografias">Infografías</a></li>
                     <li><a href="#sobre">Sobre Mí</a></li>
                 </ul>
             </nav>
@@ -558,6 +692,34 @@
                     <p>Reflexiones profesionales y desarrollo</p>
                     <div class="username">Eva Deltor</div>
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Infografías Section -->
+    <section id="infografias" class="infografias-section">
+        <div class="container">
+            <h2>Infografías de Microelectrónica</h2>
+            <p class="section-subtitle">Contenido educativo interactivo sobre los procesos de fabricación de semiconductores</p>
+
+            <div class="accordion">
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-header-text">
+                            <h3>¿Qué es el Wire Bonding?</h3>
+                            <div class="accordion-meta">Microelectrónica · Infografía interactiva</div>
+                        </div>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">
+                            <p>Una herramienta educativa interactiva sobre el proceso de Wire Bonding en semiconductores: animaciones del proceso, simulación de parámetros, análisis de fallos y comparativas de materiales.</p>
+                            <a href="infografias/bonding-wire.html" class="accordion-link">Ver Infografía →</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -621,5 +783,15 @@
             </div>
         </div>
     </footer>
+    <script>
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const isOpen = item.classList.contains('open');
+            // Cerrar todos
+            document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+            // Abrir el clickeado si estaba cerrado
+            if (!isOpen) item.classList.add('open');
+        }
+    </script>
 </body>
 </html>
