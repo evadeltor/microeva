@@ -554,67 +554,6 @@
             }
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 20px;
-            }
-
-            header .container {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            nav ul {
-                gap: 20px;
-            }
-
-            nav a {
-                font-size: 0.85rem;
-            }
-
-            .hero {
-                grid-template-columns: 1fr;
-                padding: 60px 0;
-                gap: 40px;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-image-wrapper {
-                width: 250px;
-                height: 250px;
-            }
-
-            .social-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
-
-            .about-section {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .about-image {
-                height: 300px;
-            }
-
-            footer .container {
-                flex-direction: column;
-                gap: 30px;
-                align-items: flex-start;
-            }
-
-            .social-section h2,
-            .about-content h2,
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-        }
-
         /* ── Contacto Section ── */
         .contacto-section {
             padding: 100px 0;
@@ -807,38 +746,26 @@
             letter-spacing: 0.3px;
         }
 
-        @media (max-width: 768px) {
-            .contacto-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .social-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            nav ul {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
         /* ── Language Popup ── */
         .lang-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.5);
             z-index: 9999;
-            display: flex;
+            display: none; /* hidden by default, shown via JS */
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(4px);
+        }
+
+        .lang-overlay.visible {
+            display: flex;
             animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
 
         .lang-popup {
@@ -926,11 +853,34 @@
             font-size: 0.75rem;
             color: #aaa;
         }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            header .container { flex-direction: column; gap: 20px; }
+            nav ul { gap: 20px; }
+            nav a { font-size: 0.85rem; }
+            .hero { grid-template-columns: 1fr; padding: 60px 0; gap: 40px; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-image-wrapper { width: 250px; height: 250px; }
+            .social-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .about-section { grid-template-columns: 1fr; gap: 40px; }
+            .about-image { height: 300px; }
+            footer .container { flex-direction: column; gap: 30px; align-items: flex-start; }
+            .social-section h2, .about-content h2, .hero-content h1 { font-size: 2rem; }
+            .contacto-grid { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        @media (max-width: 480px) {
+            .social-grid { grid-template-columns: 1fr; }
+            .cta-buttons { flex-direction: column; }
+            nav ul { flex-direction: column; gap: 15px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Language Popup -->
+    <!-- Language Popup — hidden by default, shown by JS -->
     <div class="lang-overlay" id="langOverlay">
         <div class="lang-popup">
             <img src="logo.jpg" alt="Eva Deltor" class="lang-popup-logo">
@@ -955,6 +905,7 @@
             </div>
         </div>
     </div>
+
     <!-- Header -->
     <header>
         <div class="container">
@@ -994,7 +945,6 @@
     <section id="redes" class="social-section">
         <div class="container">
             <h2 id="social_title">Mi Presencia Digital</h2>
-            
             <div class="social-grid">
                 <a href="https://instagram.com/microeva" target="_blank" class="social-card">
                     <div class="social-icon"><img src="img/Instagram.png" alt="Instagram"></div>
@@ -1002,21 +952,18 @@
                     <p id="ig_desc"></p>
                     <div class="username">@microeva</div>
                 </a>
-
                 <a href="https://tiktok.com/@microeva" target="_blank" class="social-card">
                     <div class="social-icon"><img src="img/Tiktok.png" alt="TikTok"></div>
                     <h3>TikTok</h3>
                     <p id="tt_desc"></p>
                     <div class="username">@microeva</div>
                 </a>
-
                 <a href="https://youtube.com/@microeva" target="_blank" class="social-card">
                     <div class="social-icon"><img src="img/Youtube.png" alt="YouTube"></div>
                     <h3>YouTube</h3>
                     <p id="yt_desc"></p>
                     <div class="username">@microeva</div>
                 </a>
-
                 <a href="https://linkedin.com/in/eva-deltor" target="_blank" class="social-card">
                     <div class="social-icon"><img src="img/LinkedIn.png" alt="LinkedIn"></div>
                     <h3>LinkedIn</h3>
@@ -1032,9 +979,7 @@
         <div class="container">
             <h2 id="infografias_title">Infografías de Microelectrónica</h2>
             <p class="section-subtitle" id="infografias_sub">Contenido educativo interactivo sobre los procesos de fabricación de semiconductores</p>
-
             <div class="accordion">
-
                 <div class="accordion-item">
                     <div class="accordion-header" onclick="toggleAccordion(this)">
                         <div class="accordion-header-text">
@@ -1050,7 +995,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -1059,9 +1003,8 @@
     <section id="sobre" class="about-section container">
         <div class="about-content">
             <h2 id="sobre_title">Sobre Mí</h2>
-            <p id="sobre_p1">Soy Eva Deltor, una creadora de contenido dedicada a generar conexiones genuinas a través de diferentes plataformas digitales. Mi trabajo se enfoca en crear contenido auténtico que resuene con mis seguidores.</p>
-            <p id="sobre_p2">Creo que la transparencia y la autenticidad son la base de cualquier comunidad digital sólida. Cada contenido que comparto está pensado para aportar valor, inspiración o entretenimiento de calidad.</p>
-            
+            <p id="sobre_p1">Como estudiante de doctorado en el Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualmente trabajo en el diseño de un circuito integrado de lectura digital (ROIC) de bajo consumo, bajo ruido y alta densidad para un sensor de imagen MWIR PbSe-CMOS de alta velocidad.</p>
+            <p id="sobre_p2">Además de mi trabajo de investigación, imparto diversos cursos de electrónica e inteligencia artificial en la Universitat Politècnica de Catalunya (UPC) desde septiembre de 2023.</p>
             <div class="about-highlights">
                 <div class="highlight">
                     <div class="highlight-icon">✓</div>
@@ -1070,7 +1013,6 @@
                         <p id="hl1_text">Creo contenido sobre microelectrónica para dar a conocer este mundo maravilloso</p>
                     </div>
                 </div>
-
                 <div class="highlight">
                     <div class="highlight-icon">✓</div>
                     <div class="highlight-text">
@@ -1078,7 +1020,6 @@
                         <p id="hl2_text">He trabajado tanto en desarrollo de inteligencia artificial para una startup como en el ámbito de la microelectrónica</p>
                     </div>
                 </div>
-
                 <div class="highlight">
                     <div class="highlight-icon">✓</div>
                     <div class="highlight-text">
@@ -1088,7 +1029,6 @@
                 </div>
             </div>
         </div>
-
         <div class="about-image">
             <img src="profile.png" alt="Eva Deltor">
         </div>
@@ -1099,14 +1039,10 @@
         <div class="container">
             <h2 id="contacto_title">Conectemos</h2>
             <p class="section-subtitle" id="contacto_sub">¿Tienes una propuesta, colaboración o simplemente quieres saludar?</p>
-
             <div class="contacto-grid">
-
-                <!-- Contacto directo -->
                 <div class="contacto-info">
                     <h3 id="contacto_h3">Escríbeme directamente</h3>
                     <p id="contacto_p">Estoy abierta a colaboraciones, proyectos educativos, apariciones en podcasts y cualquier propuesta interesante.</p>
-
                     <div class="contacto-form">
                         <div class="contacto-form-inner" id="contactoForm">
                             <div class="form-field">
@@ -1127,24 +1063,17 @@
                             <p id="contacto_ok" style="color:var(--primary);font-weight:600;">✓ Mensaje enviado — te responderé pronto.</p>
                         </div>
                     </div>
-
                     <div class="contacto-links" style="margin-top:25px;">
                         <a href="https://linkedin.com/in/eva-deltor" target="_blank" class="contacto-link">
-                            <div class="contacto-link-icon">
-                                <img src="img/LinkedIn.png" alt="LinkedIn">
-                            </div>
+                            <div class="contacto-link-icon"><img src="img/LinkedIn.png" alt="LinkedIn"></div>
                             LinkedIn — Eva Deltor
                         </a>
                         <a href="https://instagram.com/microeva" target="_blank" class="contacto-link">
-                            <div class="contacto-link-icon">
-                                <img src="img/Instagram.png" alt="Instagram">
-                            </div>
+                            <div class="contacto-link-icon"><img src="img/Instagram.png" alt="Instagram"></div>
                             Instagram @microeva
                         </a>
                     </div>
                 </div>
-
-                <!-- Newsletter -->
                 <div class="newsletter-box">
                     <h3 id="newsletter_h3">Nuevo contenido, antes que nadie</h3>
                     <p id="newsletter_p">Apúntate y te aviso cuando publique nuevas infografías interactivas, herramientas educativas o contenido especial.</p>
@@ -1158,7 +1087,6 @@
                         <p id="newsletter_ok">¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -1168,7 +1096,7 @@
         <div class="container">
             <div class="footer-info">
                 <h3>Eva Deltor</h3>
-                <p id="footer_sub">Creadora de Contenido Digital</p>
+                <p id="footer_sub">Doctoranda en Microelectrónica</p>
             </div>
             <div class="footer-social">
                 <a href="https://instagram.com/microeva" target="_blank" title="Instagram"><img src="img/instagram.svg" alt="Instagram" style="width:18px;height:18px;filter:brightness(0) invert(1);"></a>
@@ -1179,10 +1107,11 @@
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p id="footer_copy">&copy; 2024 Eva Deltor. Todos los derechos reservados.</p>
+                <p id="footer_copy">© 2024 Eva Deltor. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
+
     <script>
         function toggleAccordion(header) {
             const item = header.parentElement;
@@ -1191,186 +1120,120 @@
             if (!isOpen) item.classList.add('open');
         }
 
-        // ── Language system ──
         const translations = {
             es: {
-                nav_redes: 'Redes Sociales',
-                nav_infografias: 'Infografías',
-                nav_sobre: 'Sobre Mí',
-                nav_contacto: 'Contacto',
+                nav_redes: 'Redes Sociales', nav_infografias: 'Infografías', nav_sobre: 'Sobre Mí', nav_contacto: 'Contacto',
                 hero_title: 'Doctoranda en Microelectrónica',
                 hero_text: 'Estudiante de doctorado en el Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualmente trabajo en el diseño de un circuito integrado de lectura digital (ROIC) de bajo consumo, bajo ruido y alta densidad para un sensor de imagen MWIR PbSe-CMOS de alta velocidad.',
-                hero_btn1: 'Explorar Contenido',
-                hero_btn2: 'Más Sobre Mí',
+                hero_btn1: 'Explorar Contenido', hero_btn2: 'Más Sobre Mí',
                 social_title: 'Mi Presencia Digital',
-                ig_desc: '',
-                tt_desc: '',
-                yt_desc: '',
-                li_desc: '',
+                ig_desc: '', tt_desc: '', yt_desc: '', li_desc: '',
                 infografias_title: 'Infografías de Microelectrónica',
                 infografias_sub: 'Contenido educativo interactivo sobre los procesos de fabricación de semiconductores',
-                wire_title: '¿Qué es el Wire Bonding?',
-                wire_meta: 'Microelectrónica · Infografía interactiva',
+                wire_title: '¿Qué es el Wire Bonding?', wire_meta: 'Microelectrónica · Infografía interactiva',
                 wire_desc: 'Una herramienta educativa interactiva sobre el proceso de Wire Bonding en semiconductores: animaciones del proceso, simulación de parámetros, análisis de fallos y comparativas de materiales.',
                 wire_btn: 'Ver Infografía →',
                 sobre_title: 'Sobre Mí',
                 sobre_p1: 'Como estudiante de doctorado en el Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualmente trabajo en el diseño de un circuito integrado de lectura digital (ROIC) de bajo consumo, bajo ruido y alta densidad para un sensor de imagen MWIR PbSe-CMOS de alta velocidad. Mi proyecto tiene como objetivo desarrollar la tercera generación de ROIC para cuadruplicar el número de píxeles en el array de plano focal manteniendo el mismo nodo tecnológico CMOS, debido a los requisitos de post-procesado a nivel de oblea del PbSe. Este reto implica reducir el área y el consumo del sensor de píxel digital PbSe-CMOS actual en un factor de 2, además de mejorar la resolución espacial y la sensibilidad.',
                 sobre_p2: 'Además de mi trabajo de investigación, imparto diversos cursos de electrónica e inteligencia artificial en la Universitat Politècnica de Catalunya (UPC) desde septiembre de 2023. También soy instructora en Saturdays.AI y EPITECH desde diciembre de 2020, donde he impartido temas como PLN, aprendizaje por refuerzo, visión por computador, ciencia de datos y aprendizaje profundo a más de 300 estudiantes. Tengo un Máster en Ingeniería Electrónica por la UPC y un Grado en Electrónica Industrial y Automática por la misma institución. Me apasiona el avance en el campo de la electrónica y la inteligencia artificial, y disfruto compartiendo mis conocimientos con los demás.',
-                hl1_title: 'Contenido Auténtico',
-                hl1_text: 'Creo contenido sobre microelectrónica para dar a conocer este mundo maravilloso',
-                hl2_title: 'Múltiples Disciplinas',
-                hl2_text: 'He trabajado tanto en desarrollo de inteligencia artificial para una startup como en el ámbito de la microelectrónica',
-                hl3_title: 'Docencia',
-                hl3_text: 'He impartido clases a más de 300 estudiantes en áreas de IA y electrónica en UPC, Saturdays.AI y EPITECH',
-                contacto_title: 'Conectemos',
-                contacto_sub: '¿Tienes una propuesta, colaboración o simplemente quieres saludar?',
-                contacto_h3: 'Escríbeme directamente',
-                contacto_p: 'Estoy abierta a colaboraciones, proyectos educativos, apariciones en podcasts y cualquier propuesta interesante.',
-                label_nombre: 'Nombre',
-                label_email: 'Email',
-                label_mensaje: 'Mensaje',
-                ph_nombre: 'Tu nombre',
-                ph_email: 'tu@email.com',
-                ph_mensaje: 'Cuéntame en qué puedo ayudarte...',
-                contacto_btn: 'Enviar mensaje →',
-                contacto_ok: '✓ Mensaje enviado — te responderé pronto.',
+                hl1_title: 'Contenido Auténtico', hl1_text: 'Creo contenido sobre microelectrónica para dar a conocer este mundo maravilloso',
+                hl2_title: 'Múltiples Disciplinas', hl2_text: 'He trabajado tanto en desarrollo de inteligencia artificial para una startup como en el ámbito de la microelectrónica',
+                hl3_title: 'Docencia', hl3_text: 'He impartido clases a más de 300 estudiantes en áreas de IA y electrónica en UPC, Saturdays.AI y EPITECH',
+                contacto_title: 'Conectemos', contacto_sub: '¿Tienes una propuesta, colaboración o simplemente quieres saludar?',
+                contacto_h3: 'Escríbeme directamente', contacto_p: 'Estoy abierta a colaboraciones, proyectos educativos, apariciones en podcasts y cualquier propuesta interesante.',
+                label_nombre: 'Nombre', label_email: 'Email', label_mensaje: 'Mensaje',
+                ph_nombre: 'Tu nombre', ph_email: 'tu@email.com', ph_mensaje: 'Cuéntame en qué puedo ayudarte...',
+                contacto_btn: 'Enviar mensaje →', contacto_ok: '✓ Mensaje enviado — te responderé pronto.',
                 newsletter_h3: 'Nuevo contenido, antes que nadie',
                 newsletter_p: 'Apúntate y te aviso cuando publique nuevas infografías interactivas, herramientas educativas o contenido especial.',
-                newsletter_btn: 'Quiero estar al tanto →',
-                newsletter_note: 'Sin spam. Solo contenido que vale la pena.',
+                newsletter_btn: 'Quiero estar al tanto →', newsletter_note: 'Sin spam. Solo contenido que vale la pena.',
                 newsletter_ok: '¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.',
-                footer_sub: 'Doctoranda en Microelectrónica',
-                footer_copy: '© 2024 Eva Deltor. Todos los derechos reservados.'
+                footer_sub: 'Doctoranda en Microelectrónica', footer_copy: '© 2024 Eva Deltor. Todos los derechos reservados.'
             },
             ca: {
-                nav_redes: 'Xarxes Socials',
-                nav_infografias: 'Infografies',
-                nav_sobre: 'Sobre Mi',
-                nav_contacto: 'Contacte',
+                nav_redes: 'Xarxes Socials', nav_infografias: 'Infografies', nav_sobre: 'Sobre Mi', nav_contacto: 'Contacte',
                 hero_title: 'Doctoranda en Microelectrònica',
                 hero_text: 'Estudiant de doctorat a l\'Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualment treballo en el disseny d\'un circuit integrat de lectura digital (ROIC) de baix consum, baix soroll i alta densitat per a un sensor d\'imatge MWIR PbSe-CMOS d\'alta velocitat.',
-                hero_btn1: 'Explorar Contingut',
-                hero_btn2: 'Més Sobre Mi',
+                hero_btn1: 'Explorar Contingut', hero_btn2: 'Més Sobre Mi',
                 social_title: 'La Meva Presència Digital',
-                ig_desc: '',
-                tt_desc: '',
-                yt_desc: '',
-                li_desc: '',
+                ig_desc: '', tt_desc: '', yt_desc: '', li_desc: '',
                 infografias_title: 'Infografies de Microelectrònica',
                 infografias_sub: 'Contingut educatiu interactiu sobre els processos de fabricació de semiconductors',
-                wire_title: 'Què és el Wire Bonding?',
-                wire_meta: 'Microelectrònica · Infografia interactiva',
+                wire_title: 'Què és el Wire Bonding?', wire_meta: 'Microelectrònica · Infografia interactiva',
                 wire_desc: 'Una eina educativa interactiva sobre el procés de Wire Bonding en semiconductors: animacions del procés, simulació de paràmetres, anàlisi de fallades i comparatives de materials.',
                 wire_btn: 'Veure Infografia →',
                 sobre_title: 'Sobre Mi',
                 sobre_p1: 'Com a estudiant de doctorat a l\'Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualment treballo en el disseny d\'un circuit integrat de lectura digital (ROIC) de baix consum, baix soroll i alta densitat per a un sensor d\'imatge MWIR PbSe-CMOS d\'alta velocitat. El meu projecte té com a objectiu desenvolupar la tercera generació de ROIC per quadruplicar el nombre de píxels en l\'array de pla focal mantenint el mateix node tecnològic CMOS, a causa dels requisits de post-processat a nivell de oblea del PbSe. Aquest repte implica reduir l\'àrea i el consum del sensor de píxel digital PbSe-CMOS actual en un factor de 2, a més de millorar la resolució espacial i la sensibilitat.',
                 sobre_p2: 'A més de la meva feina de recerca, imparteixo diversos cursos d\'electrònica i intel·ligència artificial a la Universitat Politècnica de Catalunya (UPC) des del setembre de 2023. També soc instructora a Saturdays.AI i EPITECH des del desembre de 2020, on he impartit temes com PLN, aprenentatge per reforç, visió per computador, ciència de dades i aprenentatge profund a més de 300 estudiants. Tinc un Màster en Enginyeria Electrònica per la UPC i un Grau en Electrònica Industrial i Automàtica per la mateixa institució. M\'apassiona l\'avenç en el camp de l\'electrònica i la intel·ligència artificial, i gaudeixo compartint els meus coneixements amb els altres.',
-                hl1_title: 'Contingut Autèntic',
-                hl1_text: 'Creo contingut sobre microelectrònica per donar a conèixer aquest món meravellós',
-                hl2_title: 'Múltiples Disciplines',
-                hl2_text: 'He treballat tant en el desenvolupament d\'intel·ligència artificial per a una startup com en l\'àmbit de la microelectrònica',
-                hl3_title: 'Docència',
-                hl3_text: 'He impartit classes a més de 300 estudiants en àrees d\'IA i electrònica a la UPC, Saturdays.AI i EPITECH',
-                contacto_title: 'Connectem',
-                contacto_sub: 'Tens una proposta, col·laboració o simplement vols saludar?',
-                contacto_h3: 'Escriu-me directament',
-                contacto_p: 'Estic oberta a col·laboracions, projectes educatius, aparicions en podcasts i qualsevol proposta interessant.',
-                label_nombre: 'Nom',
-                label_email: 'Correu electrònic',
-                label_mensaje: 'Missatge',
-                ph_nombre: 'El teu nom',
-                ph_email: 'tu@correu.cat',
-                ph_mensaje: 'Explica\'m en què et puc ajudar...',
-                contacto_btn: 'Enviar missatge →',
-                contacto_ok: '✓ Missatge enviat — et respondré aviat.',
+                hl1_title: 'Contingut Autèntic', hl1_text: 'Creo contingut sobre microelectrònica per donar a conèixer aquest món meravellós',
+                hl2_title: 'Múltiples Disciplines', hl2_text: 'He treballat tant en el desenvolupament d\'intel·ligència artificial per a una startup com en l\'àmbit de la microelectrònica',
+                hl3_title: 'Docència', hl3_text: 'He impartit classes a més de 300 estudiants en àrees d\'IA i electrònica a la UPC, Saturdays.AI i EPITECH',
+                contacto_title: 'Connectem', contacto_sub: 'Tens una proposta, col·laboració o simplement vols saludar?',
+                contacto_h3: 'Escriu-me directament', contacto_p: 'Estic oberta a col·laboracions, projectes educatius, aparicions en podcasts i qualsevol proposta interessant.',
+                label_nombre: 'Nom', label_email: 'Correu electrònic', label_mensaje: 'Missatge',
+                ph_nombre: 'El teu nom', ph_email: 'tu@correu.cat', ph_mensaje: 'Explica\'m en què et puc ajudar...',
+                contacto_btn: 'Enviar missatge →', contacto_ok: '✓ Missatge enviat — et respondré aviat.',
                 newsletter_h3: 'Nou contingut, abans que ningú',
                 newsletter_p: 'Apunta\'t i t\'aviso quan publiqui noves infografies interactives, eines educatives o contingut especial.',
-                newsletter_btn: 'Vull estar al dia →',
-                newsletter_note: 'Sense spam. Només contingut que val la pena.',
+                newsletter_btn: 'Vull estar al dia →', newsletter_note: 'Sense spam. Només contingut que val la pena.',
                 newsletter_ok: 'Perfecte! ✓<br>T\'avisaré quan hi hagi alguna cosa nova.',
-                footer_sub: 'Doctoranda en Microelectrònica',
-                footer_copy: '© 2024 Eva Deltor. Tots els drets reservats.'
+                footer_sub: 'Doctoranda en Microelectrònica', footer_copy: '© 2024 Eva Deltor. Tots els drets reservats.'
             },
             en: {
-                nav_redes: 'Social Media',
-                nav_infografias: 'Infographics',
-                nav_sobre: 'About Me',
-                nav_contacto: 'Contact',
+                nav_redes: 'Social Media', nav_infografias: 'Infographics', nav_sobre: 'About Me', nav_contacto: 'Contact',
                 hero_title: 'PhD Student in Microelectronics',
                 hero_text: 'PhD student at the Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), I am currently working on the design of a low-power, low-noise, and high-density digital readout integrated circuit (ROIC) for a high-speed MWIR PbSe-CMOS imager.',
-                hero_btn1: 'Explore Content',
-                hero_btn2: 'More About Me',
+                hero_btn1: 'Explore Content', hero_btn2: 'More About Me',
                 social_title: 'My Digital Presence',
-                ig_desc: '',
-                tt_desc: '',
-                yt_desc: '',
-                li_desc: '',
+                ig_desc: '', tt_desc: '', yt_desc: '', li_desc: '',
                 infografias_title: 'Microelectronics Infographics',
                 infografias_sub: 'Interactive educational content about semiconductor manufacturing processes',
-                wire_title: 'What is Wire Bonding?',
-                wire_meta: 'Microelectronics · Interactive Infographic',
+                wire_title: 'What is Wire Bonding?', wire_meta: 'Microelectronics · Interactive Infographic',
                 wire_desc: 'An interactive educational tool about the Wire Bonding process in semiconductors: process animations, parameter simulation, failure analysis and material comparisons.',
                 wire_btn: 'View Infographic →',
                 sobre_title: 'About Me',
                 sobre_p1: 'As a PhD student at the Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), I am currently working on the design of a low-power, low-noise, and high-density digital readout integrated circuit (ROIC) for a high-speed MWIR PbSe-CMOS imager. My project aims to develop the third generation of ROIC to quadruple the number of pixels in the focal plane array while maintaining the same CMOS technology node due to the wafer-level post-processing requirements of PbSe. This challenge involves reducing the area and power of the current PbSe-CMOS digital pixel sensor by a factor of 2, as well as improving the spatial resolution and sensitivity.',
                 sobre_p2: 'In addition to my research work, I have been teaching various courses in electronics and artificial intelligence at the Universitat Politècnica de Catalunya (UPC) since September 2023. I have also been a course instructor at Saturdays.AI and EPITECH since December 2020, where I have taught topics such as NLP, reinforcement learning, computer vision, data science, and deep learning to over 300 students. I hold a Master of Engineering degree in Electronics from UPC and a Bachelor of Engineering degree in Industrial Electronics and Automation from the same institution. I am passionate about advancing the field of electronics and artificial intelligence, and I enjoy sharing my knowledge and skills with others.',
-                hl1_title: 'Authentic Content',
-                hl1_text: 'I create content about microelectronics to introduce this wonderful world to everyone',
-                hl2_title: 'Multiple Disciplines',
-                hl2_text: 'I have worked in both AI development for a startup and in the field of microelectronics',
-                hl3_title: 'Teaching',
-                hl3_text: 'I have taught over 300 students in AI and electronics at UPC, Saturdays.AI and EPITECH',
-                contacto_title: "Let's Connect",
-                contacto_sub: 'Do you have a proposal, collaboration or just want to say hello?',
-                contacto_h3: 'Write to me directly',
-                contacto_p: 'I am open to collaborations, educational projects, podcast appearances and any interesting proposals.',
-                label_nombre: 'Name',
-                label_email: 'Email',
-                label_mensaje: 'Message',
-                ph_nombre: 'Your name',
-                ph_email: 'you@email.com',
-                ph_mensaje: 'Tell me how I can help you...',
-                contacto_btn: 'Send message →',
-                contacto_ok: '✓ Message sent — I will reply soon.',
+                hl1_title: 'Authentic Content', hl1_text: 'I create content about microelectronics to introduce this wonderful world to everyone',
+                hl2_title: 'Multiple Disciplines', hl2_text: 'I have worked in both AI development for a startup and in the field of microelectronics',
+                hl3_title: 'Teaching', hl3_text: 'I have taught over 300 students in AI and electronics at UPC, Saturdays.AI and EPITECH',
+                contacto_title: "Let's Connect", contacto_sub: 'Do you have a proposal, collaboration or just want to say hello?',
+                contacto_h3: 'Write to me directly', contacto_p: 'I am open to collaborations, educational projects, podcast appearances and any interesting proposals.',
+                label_nombre: 'Name', label_email: 'Email', label_mensaje: 'Message',
+                ph_nombre: 'Your name', ph_email: 'you@email.com', ph_mensaje: 'Tell me how I can help you...',
+                contacto_btn: 'Send message →', contacto_ok: '✓ Message sent — I will reply soon.',
                 newsletter_h3: 'New content, before anyone else',
                 newsletter_p: 'Sign up and I will notify you when I publish new interactive infographics, educational tools or special content.',
-                newsletter_btn: 'Keep me posted →',
-                newsletter_note: 'No spam. Only content worth reading.',
+                newsletter_btn: 'Keep me posted →', newsletter_note: 'No spam. Only content worth reading.',
                 newsletter_ok: 'Perfect! ✓<br>I will let you know when there is something new.',
-                footer_sub: 'PhD Student in Microelectronics',
-                footer_copy: '© 2024 Eva Deltor. All rights reserved.'
+                footer_sub: 'PhD Student in Microelectronics', footer_copy: '© 2024 Eva Deltor. All rights reserved.'
             }
         };
 
         function setLang(lang) {
             const t = translations[lang];
-            document.getElementById('langOverlay').style.display = 'none';
-            localStorage.setItem('eva_lang', lang);
+            document.getElementById('langOverlay').classList.remove('visible');
+            sessionStorage.setItem('eva_lang', lang);
 
-            // Nav
-            document.getElementById('nav_redes').textContent       = t.nav_redes;
+            document.getElementById('nav_redes').textContent        = t.nav_redes;
             document.getElementById('nav_infografias').textContent  = t.nav_infografias;
             document.getElementById('nav_sobre').textContent        = t.nav_sobre;
             document.getElementById('nav_contacto').textContent     = t.nav_contacto;
-            // Hero
             document.getElementById('hero_title').textContent       = t.hero_title;
             document.getElementById('hero_text').textContent        = t.hero_text;
             document.getElementById('hero_btn1').textContent        = t.hero_btn1;
             document.getElementById('hero_btn2').textContent        = t.hero_btn2;
-            // Social
             document.getElementById('social_title').textContent     = t.social_title;
             document.getElementById('ig_desc').textContent          = t.ig_desc;
             document.getElementById('tt_desc').textContent          = t.tt_desc;
             document.getElementById('yt_desc').textContent          = t.yt_desc;
             document.getElementById('li_desc').textContent          = t.li_desc;
-            // Infografías
             document.getElementById('infografias_title').textContent = t.infografias_title;
-            document.getElementById('infografias_sub').textContent   = t.infografias_sub;
-            document.getElementById('wire_title').textContent        = t.wire_title;
-            document.getElementById('wire_meta').textContent         = t.wire_meta;
-            document.getElementById('wire_desc').textContent         = t.wire_desc;
-            document.getElementById('wire_btn').textContent          = t.wire_btn;
-            // Sobre mí
+            document.getElementById('infografias_sub').textContent  = t.infografias_sub;
+            document.getElementById('wire_title').textContent       = t.wire_title;
+            document.getElementById('wire_meta').textContent        = t.wire_meta;
+            document.getElementById('wire_desc').textContent        = t.wire_desc;
+            document.getElementById('wire_btn').textContent         = t.wire_btn;
             document.getElementById('sobre_title').textContent      = t.sobre_title;
             document.getElementById('sobre_p1').textContent         = t.sobre_p1;
             document.getElementById('sobre_p2').textContent         = t.sobre_p2;
@@ -1380,7 +1243,6 @@
             document.getElementById('hl2_text').textContent         = t.hl2_text;
             document.getElementById('hl3_title').textContent        = t.hl3_title;
             document.getElementById('hl3_text').textContent         = t.hl3_text;
-            // Contacto
             document.getElementById('contacto_title').textContent   = t.contacto_title;
             document.getElementById('contacto_sub').textContent     = t.contacto_sub;
             document.getElementById('contacto_h3').textContent      = t.contacto_h3;
@@ -1393,22 +1255,22 @@
             document.getElementById('contactoMensaje').placeholder  = t.ph_mensaje;
             document.getElementById('contactoBtn').textContent      = t.contacto_btn;
             document.getElementById('contacto_ok').textContent      = t.contacto_ok;
-            // Newsletter
             document.getElementById('newsletter_h3').textContent    = t.newsletter_h3;
             document.getElementById('newsletter_p').textContent     = t.newsletter_p;
             document.getElementById('newsletter_btn').textContent   = t.newsletter_btn;
             document.getElementById('newsletter_note').textContent  = t.newsletter_note;
             document.getElementById('newsletter_ok').innerHTML      = t.newsletter_ok;
-            // Footer
             document.getElementById('footer_sub').textContent       = t.footer_sub;
             document.getElementById('footer_copy').textContent      = t.footer_copy;
         }
 
-        // Mostrar popup al cargar (si no ha elegido antes)
+        // Show popup on every new session, skip if already chosen this session
         window.addEventListener('load', () => {
-            const saved = localStorage.getItem('eva_lang');
+            const saved = sessionStorage.getItem('eva_lang');
             if (saved) {
                 setLang(saved);
+            } else {
+                document.getElementById('langOverlay').classList.add('visible');
             }
         });
 
@@ -1416,73 +1278,34 @@
             const nombre  = document.getElementById('contactoNombre').value.trim();
             const email   = document.getElementById('contactoEmail').value.trim();
             const mensaje = document.getElementById('contactoMensaje').value.trim();
-
-            if (!nombre || !email || !mensaje) {
-                alert('Por favor rellena todos los campos.');
-                return;
-            }
-            if (!email.includes('@')) {
-                alert('Por favor introduce un email válido.');
-                return;
-            }
-
+            if (!nombre || !email || !mensaje) { alert('Por favor rellena todos los campos.'); return; }
+            if (!email.includes('@')) { alert('Por favor introduce un email válido.'); return; }
             const btn = document.getElementById('contactoBtn');
             btn.textContent = 'Enviando...';
             btn.disabled = true;
-
             const formData = new FormData();
             formData.append('nombre', nombre);
             formData.append('email', email);
             formData.append('mensaje', mensaje);
-
-            fetch('https://script.google.com/macros/s/AKfycbzPM_MfFm82iDLg8XDlEwmnzXKd-2Qbtg4lLtOhS6wZdzlB1I7VNfYKqmQ90MEmHjdT/exec', {
-                method: 'POST',
-                body: formData
-            })
-            .then(() => {
-                document.getElementById('contactoForm').style.display = 'none';
-                document.getElementById('contactoSuccess').style.display = 'block';
-            })
-            .catch(() => {
-                document.getElementById('contactoForm').style.display = 'none';
-                document.getElementById('contactoSuccess').style.display = 'block';
-            });
+            fetch('https://script.google.com/macros/s/AKfycbzPM_MfFm82iDLg8XDlEwmnzXKd-2Qbtg4lLtOhS6wZdzlB1I7VNfYKqmQ90MEmHjdT/exec', { method: 'POST', body: formData })
+            .then(() => { document.getElementById('contactoForm').style.display = 'none'; document.getElementById('contactoSuccess').style.display = 'block'; })
+            .catch(() => { document.getElementById('contactoForm').style.display = 'none'; document.getElementById('contactoSuccess').style.display = 'block'; });
         }
 
-
         function submitNewsletter() {
-            const name = document.getElementById('newsletterName').value.trim();
+            const name  = document.getElementById('newsletterName').value.trim();
             const email = document.getElementById('newsletterEmail').value.trim();
-            if (!name || !email) {
-                alert('Por favor rellena tu nombre y email.');
-                return;
-            }
-            if (!email.includes('@')) {
-                alert('Por favor introduce un email válido.');
-                return;
-            }
-
+            if (!name || !email) { alert('Por favor rellena tu nombre y email.'); return; }
+            if (!email.includes('@')) { alert('Por favor introduce un email válido.'); return; }
             const btn = document.querySelector('.newsletter-btn');
             btn.textContent = 'Enviando...';
             btn.disabled = true;
-
             const formData = new FormData();
             formData.append('nombre', name);
             formData.append('email', email);
-
-            fetch('https://script.google.com/macros/s/AKfycbzzBI12f_LID0PJ-fdPba6PODkwy3oSvN2fynqZ31q3PhSbSzWtGx6pw_Kkgpc3RGcl/exec', {
-                method: 'POST',
-                body: formData
-            })
-            .then(() => {
-                document.getElementById('newsletterForm').style.display = 'none';
-                document.getElementById('newsletterSuccess').style.display = 'block';
-            })
-            .catch(() => {
-                // Aunque haya error de CORS, Google igual guarda el dato
-                document.getElementById('newsletterForm').style.display = 'none';
-                document.getElementById('newsletterSuccess').style.display = 'block';
-            });
+            fetch('https://script.google.com/macros/s/AKfycbzzBI12f_LID0PJ-fdPba6PODkwy3oSvN2fynqZ31q3PhSbSzWtGx6pw_Kkgpc3RGcl/exec', { method: 'POST', body: formData })
+            .then(() => { document.getElementById('newsletterForm').style.display = 'none'; document.getElementById('newsletterSuccess').style.display = 'block'; })
+            .catch(() => { document.getElementById('newsletterForm').style.display = 'none'; document.getElementById('newsletterSuccess').style.display = 'block'; });
         }
     </script>
 </body>
