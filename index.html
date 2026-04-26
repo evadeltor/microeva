@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eva Deltor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #D4A574;
+            --dark: #1a1a1a;
+            --light: #F5F3F0;
+            --text: #3a3a3a;
+            --border: #E8E4DF;
+            --accent: #8B7355;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Header/Navigation */
+        header {
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--light);
+            z-index: 1000;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo-img {
+            width: 50px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            letter-spacing: 0.5px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 80px;
+            padding: 120px 0 80px;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 25px;
+            color: var(--dark);
+            letter-spacing: -1px;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 35px;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 2px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--primary);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--text);
+            color: white;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-image-wrapper {
+            width: 320px;
+            height: 320px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .hero-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Social Section */
+        .social-section {
+            padding: 100px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .social-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            text-align: center;
+            color: var(--dark);
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .social-card {
+            background: white;
+            padding: 40px 30px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+        }
+
+        .social-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .social-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .social-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .social-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .social-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .social-card p {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .social-card .username {
+            font-weight: 500;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 100px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .about-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        .about-content p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .about-highlights {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .highlight {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .highlight-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .highlight-text h4 {
+            font-size: 1.05rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .highlight-text p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #888;
+        }
+
+        .about-image {
+            position: relative;
+            height: 420px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 50px 0 30px;
+            margin-top: 80px;
+        }
+
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .footer-social a:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            header .container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                gap: 20px;
+            }
+
+            nav a {
+                font-size: 0.85rem;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 60px 0;
+                gap: 40px;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-image-wrapper {
+                width: 250px;
+                height: 250px;
+            }
+
+            .social-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .about-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .about-image {
+                height: 300px;
+            }
+
+            footer .container {
+                flex-direction: column;
+                gap: 30px;
+                align-items: flex-start;
+            }
+
+            .social-section h2,
+            .about-content h2,
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .social-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="logo.png" alt="Eva Deltor" class="logo-img">
+                <span class="logo-text">Eva Deltor</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#redes">Redes Sociales</a></li>
+                    <li><a href="#sobre">Sobre Mí</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero container">
+        <div class="hero-content">
+            <h1>Creadora de Contenido Digital</h1>
+            <p>Conozco el poder de conectar con las personas a través de contenido auténtico y significativo. Estoy presente en múltiples plataformas, generando historias que inspiran y generan valor.</p>
+            <div class="cta-buttons">
+                <a href="#redes" class="btn btn-primary">Explorar Contenido</a>
+                <a href="#sobre" class="btn btn-secondary">Más Sobre Mí</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-image-wrapper">
+                <img src="profile.jpg" alt="Eva Deltor">
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Section -->
+    <section id="redes" class="social-section">
+        <div class="container">
+            <h2>Mi Presencia Digital</h2>
+            
+            <div class="social-grid">
+                <a href="https://instagram.com/microeva" target="_blank" class="social-card">
+                    <div class="social-icon">📷</div>
+                    <h3>Instagram</h3>
+                    <p>Contenido visual curado y momentos del día a día</p>
+                    <div class="username">@microeva</div>
+                </a>
+
+                <a href="https://tiktok.com/@microeva" target="_blank" class="social-card">
+                    <div class="social-icon">🎬</div>
+                    <h3>TikTok</h3>
+                    <p>Videos cortos con formato y entretenimiento</p>
+                    <div class="username">@microeva</div>
+                </a>
+
+                <a href="https://youtube.com/@microeva" target="_blank" class="social-card">
+                    <div class="social-icon">▶️</div>
+                    <h3>YouTube</h3>
+                    <p>Contenido en profundidad y documentados</p>
+                    <div class="username">@microeva</div>
+                </a>
+
+                <a href="https://linkedin.com/in/eva-deltor" target="_blank" class="social-card">
+                    <div class="social-icon">💼</div>
+                    <h3>LinkedIn</h3>
+                    <p>Reflexiones profesionales y desarrollo</p>
+                    <div class="username">Eva Deltor</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre" class="about-section container">
+        <div class="about-content">
+            <h2>Sobre Mí</h2>
+            <p>Soy Eva Deltor, una creadora de contenido dedicada a generar conexiones genuinas a través de diferentes plataformas digitales. Mi trabajo se enfoca en crear contenido auténtico que resuene con mis seguidores.</p>
+            <p>Creo que la transparencia y la autenticidad son la base de cualquier comunidad digital sólida. Cada contenido que comparto está pensado para aportar valor, inspiración o entretenimiento de calidad.</p>
+            
+            <div class="about-highlights">
+                <div class="highlight">
+                    <div class="highlight-icon">✓</div>
+                    <div class="highlight-text">
+                        <h4>Contenido Auténtico</h4>
+                        <p>Cada pieza refleja mi visión y valores</p>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <div class="highlight-icon">✓</div>
+                    <div class="highlight-text">
+                        <h4>Múltiples Disciplinas</h4>
+                        <p>Presente en Instagram, TikTok, YouTube y LinkedIn</p>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <div class="highlight-icon">✓</div>
+                    <div class="highlight-text">
+                        <h4>Conexión Real</h4>
+                        <p>Comunidad activa y relaciones significativas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-image">
+            <img src="profile.jpg" alt="Eva Deltor">
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-info">
+                <h3>Eva Deltor</h3>
+                <p>Creadora de Contenido Digital</p>
+            </div>
+            <div class="footer-social">
+                <a href="https://instagram.com/microeva" target="_blank" title="Instagram">📷</a>
+                <a href="https://tiktok.com/@microeva" target="_blank" title="TikTok">🎬</a>
+                <a href="https://youtube.com/@microeva" target="_blank" title="YouTube">▶️</a>
+                <a href="https://linkedin.com/in/eva-deltor" target="_blank" title="LinkedIn">💼</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2024 Eva Deltor. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
