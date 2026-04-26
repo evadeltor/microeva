@@ -287,7 +287,20 @@
 
         .accordion-link:hover { background: transparent; color: var(--primary); }
 
-        /* ── Contacto ── */
+        .accordion-soon {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 22px; background: transparent; color: #bbb;
+            font-size: 0.82rem; font-weight: 500;
+            border: 1px dashed #ddd; border-radius: 2px;
+            white-space: nowrap; flex-shrink: 0; cursor: default;
+            font-style: italic;
+        }
+
+        .accordion-more {
+            text-align: center; padding: 20px 0 0;
+            font-size: 0.88rem; color: #bbb;
+            font-style: italic; letter-spacing: 0.03em;
+        }
         .contacto-section { padding: 100px 0; border-top: 1px solid var(--border); }
 
         .contacto-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; color: var(--dark); text-align: center; }
@@ -506,10 +519,16 @@
         <div class="container">
             <h2 id="social_title">Mi Presencia Digital</h2>
             <div class="social-grid">
-                <a href="https://instagram.com/microeva" target="_blank" class="social-card">
-                    <div class="social-icon"><img src="img/Instagram.png" alt="Instagram"></div>
-                    <h3>Instagram</h3>
-                    <p id="ig_desc"></p>
+                <a href="https://linkedin.com/in/eva-deltor" target="_blank" class="social-card">
+                    <div class="social-icon"><img src="img/LinkedIn.png" alt="LinkedIn"></div>
+                    <h3>LinkedIn</h3>
+                    <p id="li_desc"></p>
+                    <div class="username">Eva Deltor</div>
+                </a>
+                <a href="https://youtube.com/@microeva" target="_blank" class="social-card">
+                    <div class="social-icon"><img src="img/Youtube.png" alt="YouTube"></div>
+                    <h3>YouTube</h3>
+                    <p id="yt_desc"></p>
                     <div class="username">@microeva</div>
                 </a>
                 <a href="https://tiktok.com/@microeva" target="_blank" class="social-card">
@@ -518,17 +537,11 @@
                     <p id="tt_desc"></p>
                     <div class="username">@microeva</div>
                 </a>
-                <a href="https://youtube.com/@microeva" target="_blank" class="social-card">
-                    <div class="social-icon"><img src="img/Youtube.png" alt="YouTube"></div>
-                    <h3>YouTube</h3>
-                    <p id="yt_desc"></p>
+                <a href="https://instagram.com/microeva" target="_blank" class="social-card">
+                    <div class="social-icon"><img src="img/Instagram.png" alt="Instagram"></div>
+                    <h3>Instagram</h3>
+                    <p id="ig_desc"></p>
                     <div class="username">@microeva</div>
-                </a>
-                <a href="https://linkedin.com/in/eva-deltor" target="_blank" class="social-card">
-                    <div class="social-icon"><img src="img/LinkedIn.png" alt="LinkedIn"></div>
-                    <h3>LinkedIn</h3>
-                    <p id="li_desc"></p>
-                    <div class="username">Eva Deltor</div>
                 </a>
             </div>
         </div>
@@ -551,11 +564,44 @@
                     <div class="accordion-body">
                         <div class="accordion-body-inner">
                             <p id="wire_desc">Una herramienta educativa interactiva sobre el proceso de Wire Bonding en semiconductores: animaciones del proceso, simulación de parámetros, análisis de fallos y comparativas de materiales.</p>
-                            <a href="infografias/bonding-wire.html" class="accordion-link" id="wire_btn">Ver Infografía →</a>
+                            <a href="infografias/bonding-wire.html" class="accordion-link" id="wire_btn" onclick="passLang(event, this)">Ver Infografía →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-header-text">
+                            <h3 id="eda_title">¿Cómo es un programa para diseño de chips?</h3>
+                            <div class="accordion-meta" id="eda_meta">Microelectrónica · Infografía interactiva</div>
+                        </div>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">
+                            <p id="eda_desc">Una exploración interactiva de las herramientas EDA (Electronic Design Automation) utilizadas para diseñar circuitos integrados modernos.</p>
+                            <span class="accordion-soon" id="eda_btn">🔜 Próximamente</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-header-text">
+                            <h3 id="yield_title">¿Qué es el yield de un wafer?</h3>
+                            <div class="accordion-meta" id="yield_meta">Microelectrónica · Infografía interactiva</div>
+                        </div>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">
+                            <p id="yield_desc">Una visualización interactiva sobre el rendimiento de fabricación de obleas de silicio: defectos, modelos de yield y su impacto en la producción de chips.</p>
+                            <span class="accordion-soon" id="yield_btn">🔜 Próximamente</span>
                         </div>
                     </div>
                 </div>
             </div>
+            <p class="accordion-more" id="infografias_more">... y muchos más contenidos en camino 🔬</p>
         </div>
     </section>
 
@@ -693,6 +739,13 @@
                 wire_title: '¿Qué es el Wire Bonding?', wire_meta: 'Microelectrónica · Infografía interactiva',
                 wire_desc: 'Una herramienta educativa interactiva sobre el proceso de Wire Bonding en semiconductores: animaciones del proceso, simulación de parámetros, análisis de fallos y comparativas de materiales.',
                 wire_btn: 'Ver Infografía →',
+                eda_title: '¿Cómo es un programa para diseño de chips?', eda_meta: 'Microelectrónica · Infografía interactiva',
+                eda_desc: 'Una exploración interactiva de las herramientas EDA (Electronic Design Automation) utilizadas para diseñar circuitos integrados modernos.',
+                eda_btn: '🔜 Próximamente',
+                yield_title: '¿Qué es el yield de un wafer?', yield_meta: 'Microelectrónica · Infografía interactiva',
+                yield_desc: 'Una visualización interactiva sobre el rendimiento de fabricación de obleas de silicio: defectos, modelos de yield y su impacto en la producción de chips.',
+                yield_btn: '🔜 Próximamente',
+                infografias_more: '... y muchos más contenidos en camino 🔬',
                 sobre_title: 'Sobre Mí',
                 sobre_p1: 'Como estudiante de doctorado en el Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualmente trabajo en el diseño de un circuito integrado de lectura digital (ROIC) de bajo consumo, bajo ruido y alta densidad para un sensor de imagen MWIR PbSe-CMOS de alta velocidad. Mi proyecto tiene como objetivo desarrollar la tercera generación de ROIC para cuadruplicar el número de píxeles en el array de plano focal manteniendo el mismo nodo tecnológico CMOS, debido a los requisitos de post-procesado a nivel de oblea del PbSe. Este reto implica reducir el área y el consumo del sensor de píxel digital PbSe-CMOS actual en un factor de 2, además de mejorar la resolución espacial y la sensibilidad.',
                 sobre_p2: 'Además de mi trabajo de investigación, imparto diversos cursos de electrónica e inteligencia artificial en la Universitat Politècnica de Catalunya (UPC) desde septiembre de 2023. También soy instructora en Saturdays.AI y EPITECH desde diciembre de 2020, donde he impartido temas como PLN, aprendizaje por refuerzo, visión por computador, ciencia de datos y aprendizaje profundo a más de 300 estudiantes. Tengo un Máster en Ingeniería Electrónica por la UPC y un Grado en Electrónica Industrial y Automática por la misma institución. Me apasiona el avance en el campo de la electrónica y la inteligencia artificial, y disfruto compartiendo mis conocimientos con los demás.',
@@ -722,6 +775,13 @@
                 wire_title: 'Què és el Wire Bonding?', wire_meta: 'Microelectrònica · Infografia interactiva',
                 wire_desc: 'Una eina educativa interactiva sobre el procés de Wire Bonding en semiconductors: animacions del procés, simulació de paràmetres, anàlisi de fallades i comparatives de materials.',
                 wire_btn: 'Veure Infografia →',
+                eda_title: 'Com és un programa per al disseny de xips?', eda_meta: 'Microelectrònica · Infografia interactiva',
+                eda_desc: 'Una exploració interactiva de les eines EDA (Electronic Design Automation) utilitzades per dissenyar circuits integrats moderns.',
+                eda_btn: '🔜 Pròximament',
+                yield_title: 'Què és el yield d\'un wafer?', yield_meta: 'Microelectrònica · Infografia interactiva',
+                yield_desc: 'Una visualització interactiva sobre el rendiment de fabricació d\'oblies de silici: defectes, models de yield i el seu impacte en la producció de xips.',
+                yield_btn: '🔜 Pròximament',
+                infografias_more: '... i molt més contingut en camí 🔬',
                 sobre_title: 'Sobre Mi',
                 sobre_p1: 'Com a estudiant de doctorat a l\'Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualment treballo en el disseny d\'un circuit integrat de lectura digital (ROIC) de baix consum, baix soroll i alta densitat per a un sensor d\'imatge MWIR PbSe-CMOS d\'alta velocitat. El meu projecte té com a objectiu desenvolupar la tercera generació de ROIC per quadruplicar el nombre de píxels en l\'array de pla focal mantenint el mateix node tecnològic CMOS, a causa dels requisits de post-processat a nivell de oblea del PbSe. Aquest repte implica reduir l\'àrea i el consum del sensor de píxel digital PbSe-CMOS actual en un factor de 2, a més de millorar la resolució espacial i la sensibilitat.',
                 sobre_p2: 'A més de la meva feina de recerca, imparteixo diversos cursos d\'electrònica i intel·ligència artificial a la Universitat Politècnica de Catalunya (UPC) des del setembre de 2023. També soc instructora a Saturdays.AI i EPITECH des del desembre de 2020, on he impartit temes com PLN, aprenentatge per reforç, visió per computador, ciència de dades i aprenentatge profund a més de 300 estudiants. Tinc un Màster en Enginyeria Electrònica per la UPC i un Grau en Electrònica Industrial i Automàtica per la mateixa institució. M\'apassiona l\'avenç en el camp de l\'electrònica i la intel·ligència artificial, i gaudeixo compartint els meus coneixements amb els altres.',
@@ -751,6 +811,13 @@
                 wire_title: 'What is Wire Bonding?', wire_meta: 'Microelectronics · Interactive Infographic',
                 wire_desc: 'An interactive educational tool about the Wire Bonding process in semiconductors: process animations, parameter simulation, failure analysis and material comparisons.',
                 wire_btn: 'View Infographic →',
+                eda_title: 'What does a chip design program look like?', eda_meta: 'Microelectronics · Interactive Infographic',
+                eda_desc: 'An interactive exploration of EDA (Electronic Design Automation) tools used to design modern integrated circuits.',
+                eda_btn: '🔜 Coming Soon',
+                yield_title: 'What is wafer yield?', yield_meta: 'Microelectronics · Interactive Infographic',
+                yield_desc: 'An interactive visualization about silicon wafer manufacturing yield: defects, yield models and their impact on chip production.',
+                yield_btn: '🔜 Coming Soon',
+                infografias_more: '... and much more content on the way 🔬',
                 sobre_title: 'About Me',
                 sobre_p1: 'As a PhD student at the Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), I am currently working on the design of a low-power, low-noise, and high-density digital readout integrated circuit (ROIC) for a high-speed MWIR PbSe-CMOS imager. My project aims to develop the third generation of ROIC to quadruple the number of pixels in the focal plane array while maintaining the same CMOS technology node due to the wafer-level post-processing requirements of PbSe. This challenge involves reducing the area and power of the current PbSe-CMOS digital pixel sensor by a factor of 2, as well as improving the spatial resolution and sensitivity.',
                 sobre_p2: 'In addition to my research work, I have been teaching various courses in electronics and artificial intelligence at the Universitat Politècnica de Catalunya (UPC) since September 2023. I have also been a course instructor at Saturdays.AI and EPITECH since December 2020, where I have taught topics such as NLP, reinforcement learning, computer vision, data science, and deep learning to over 300 students. I hold a Master of Engineering degree in Electronics from UPC and a Bachelor of Engineering degree in Industrial Electronics and Automation from the same institution. I am passionate about advancing the field of electronics and artificial intelligence, and I enjoy sharing my knowledge and skills with others.',
@@ -799,6 +866,15 @@
             document.getElementById('wire_meta').textContent        = t.wire_meta;
             document.getElementById('wire_desc').textContent        = t.wire_desc;
             document.getElementById('wire_btn').textContent         = t.wire_btn;
+            document.getElementById('eda_title').textContent        = t.eda_title;
+            document.getElementById('eda_meta').textContent         = t.eda_meta;
+            document.getElementById('eda_desc').textContent         = t.eda_desc;
+            document.getElementById('eda_btn').textContent          = t.eda_btn;
+            document.getElementById('yield_title').textContent      = t.yield_title;
+            document.getElementById('yield_meta').textContent       = t.yield_meta;
+            document.getElementById('yield_desc').textContent       = t.yield_desc;
+            document.getElementById('yield_btn').textContent        = t.yield_btn;
+            document.getElementById('infografias_more').textContent = t.infografias_more;
             document.getElementById('sobre_title').textContent      = t.sobre_title;
             document.getElementById('sobre_p1').textContent         = t.sobre_p1;
             document.getElementById('sobre_p2').textContent         = t.sobre_p2;
@@ -837,6 +913,14 @@
                 document.getElementById('langOverlay').classList.add('visible');
             }
         });
+
+        // Pass language to infographic pages via URL param
+        function passLang(e, el) {
+            e.preventDefault();
+            const lang = sessionStorage.getItem('eva_lang') || 'es';
+            const base = el.getAttribute('href');
+            window.location.href = base + '?lang=' + lang;
+        }
 
         function submitContacto() {
             const nombre  = document.getElementById('contactoNombre').value.trim();
