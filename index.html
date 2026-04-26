@@ -788,6 +788,25 @@
             margin: 0;
         }
 
+        .contacto-form-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--dark);
+            letter-spacing: 0.3px;
+        }
+
         @media (max-width: 768px) {
             .contacto-grid {
                 grid-template-columns: 1fr;
@@ -809,9 +828,133 @@
                 gap: 15px;
             }
         }
+        /* ── Language Popup ── */
+        .lang-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lang-popup {
+            background: white;
+            border-radius: 8px;
+            padding: 50px 60px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+            max-width: 560px;
+            width: 90%;
+            animation: popupIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes popupIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .lang-popup-logo {
+            width: 60px;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .lang-popup h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .lang-popup p {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 35px;
+        }
+
+        .lang-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .lang-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 18px 30px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--primary);
+            background: #FDF5EC;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 165, 116, 0.2);
+        }
+
+        .lang-btn-flag {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
+            min-height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lang-btn-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .lang-btn-sub {
+            font-size: 0.75rem;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Language Popup -->
+    <div class="lang-overlay" id="langOverlay">
+        <div class="lang-popup">
+            <img src="logo.jpg" alt="Eva Deltor" class="lang-popup-logo">
+            <h2>Bienvenida / Welcome / Benvinguda</h2>
+            <p>¿En qué idioma prefieres continuar?<br>Which language do you prefer? / Quin idioma prefereixes?</p>
+            <div class="lang-buttons">
+                <button class="lang-btn" onclick="setLang('ca')">
+                    <span class="lang-btn-flag">CAT</span>
+                    <span class="lang-btn-name">Català</span>
+                    <span class="lang-btn-sub">Catalan</span>
+                </button>
+                <button class="lang-btn" onclick="setLang('es')">
+                    <span class="lang-btn-flag">ES</span>
+                    <span class="lang-btn-name">Español</span>
+                    <span class="lang-btn-sub">Spanish</span>
+                </button>
+                <button class="lang-btn" onclick="setLang('en')">
+                    <span class="lang-btn-flag">ING</span>
+                    <span class="lang-btn-name">English</span>
+                    <span class="lang-btn-sub">Inglés</span>
+                </button>
+            </div>
+        </div>
+    </div>
     <!-- Header -->
     <header>
         <div class="container">
@@ -821,10 +964,10 @@
             </a>
             <nav>
                 <ul>
-                    <li><a href="#redes">Redes Sociales</a></li>
-                    <li><a href="#infografias">Infografías</a></li>
-                    <li><a href="#sobre">Sobre Mí</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
+                    <li><a href="#redes" id="nav_redes">Redes Sociales</a></li>
+                    <li><a href="#infografias" id="nav_infografias">Infografías</a></li>
+                    <li><a href="#sobre" id="nav_sobre">Sobre Mí</a></li>
+                    <li><a href="#contacto" id="nav_contacto">Contacto</a></li>
                 </ul>
             </nav>
         </div>
@@ -833,11 +976,11 @@
     <!-- Hero Section -->
     <section class="hero container">
         <div class="hero-content">
-            <h1>Creadora de Contenido Digital</h1>
-            <p>Conozco el poder de conectar con las personas a través de contenido auténtico y significativo. Estoy presente en múltiples plataformas, generando historias que inspiran y generan valor.</p>
+            <h1 id="hero_title">Creadora de Contenido Digital</h1>
+            <p id="hero_text">Conozco el poder de conectar con las personas a través de contenido auténtico y significativo. Estoy presente en múltiples plataformas, generando historias que inspiran y generan valor.</p>
             <div class="cta-buttons">
-                <a href="#redes" class="btn btn-primary">Explorar Contenido</a>
-                <a href="#sobre" class="btn btn-secondary">Más Sobre Mí</a>
+                <a href="#redes" class="btn btn-primary" id="hero_btn1">Explorar Contenido</a>
+                <a href="#sobre" class="btn btn-secondary" id="hero_btn2">Más Sobre Mí</a>
             </div>
         </div>
         <div class="hero-image">
@@ -850,34 +993,34 @@
     <!-- Social Section -->
     <section id="redes" class="social-section">
         <div class="container">
-            <h2>Mi Presencia Digital</h2>
+            <h2 id="social_title">Mi Presencia Digital</h2>
             
             <div class="social-grid">
                 <a href="https://instagram.com/microeva" target="_blank" class="social-card">
                     <div class="social-icon"><img src="img/Instagram.png" alt="Instagram"></div>
                     <h3>Instagram</h3>
-                    <p>Contenido visual curado y momentos del día a día</p>
+                    <p id="ig_desc">Contenido visual curado y momentos del día a día</p>
                     <div class="username">@microeva</div>
                 </a>
 
                 <a href="https://tiktok.com/@microeva" target="_blank" class="social-card">
                     <div class="social-icon"><img src="img/Tiktok.png" alt="TikTok"></div>
                     <h3>TikTok</h3>
-                    <p>Videos cortos con formato y entretenimiento</p>
+                    <p id="tt_desc">Videos cortos con formato y entretenimiento</p>
                     <div class="username">@microeva</div>
                 </a>
 
                 <a href="https://youtube.com/@microeva" target="_blank" class="social-card">
                     <div class="social-icon"><img src="img/Youtube.png" alt="YouTube"></div>
                     <h3>YouTube</h3>
-                    <p>Contenido en profundidad y documentados</p>
+                    <p id="yt_desc">Contenido en profundidad y documentados</p>
                     <div class="username">@microeva</div>
                 </a>
 
                 <a href="https://linkedin.com/in/eva-deltor" target="_blank" class="social-card">
                     <div class="social-icon"><img src="img/LinkedIn.png" alt="LinkedIn"></div>
                     <h3>LinkedIn</h3>
-                    <p>Reflexiones profesionales y desarrollo</p>
+                    <p id="li_desc">Reflexiones profesionales y desarrollo</p>
                     <div class="username">Eva Deltor</div>
                 </a>
             </div>
@@ -887,23 +1030,23 @@
     <!-- Infografías Section -->
     <section id="infografias" class="infografias-section">
         <div class="container">
-            <h2>Infografías de Microelectrónica</h2>
-            <p class="section-subtitle">Contenido educativo interactivo sobre los procesos de fabricación de semiconductores</p>
+            <h2 id="infografias_title">Infografías de Microelectrónica</h2>
+            <p class="section-subtitle" id="infografias_sub">Contenido educativo interactivo sobre los procesos de fabricación de semiconductores</p>
 
             <div class="accordion">
 
                 <div class="accordion-item">
                     <div class="accordion-header" onclick="toggleAccordion(this)">
                         <div class="accordion-header-text">
-                            <h3>¿Qué es el Wire Bonding?</h3>
-                            <div class="accordion-meta">Microelectrónica · Infografía interactiva</div>
+                            <h3 id="wire_title">¿Qué es el Wire Bonding?</h3>
+                            <div class="accordion-meta" id="wire_meta">Microelectrónica · Infografía interactiva</div>
                         </div>
                         <span class="accordion-icon">▼</span>
                     </div>
                     <div class="accordion-body">
                         <div class="accordion-body-inner">
-                            <p>Una herramienta educativa interactiva sobre el proceso de Wire Bonding en semiconductores: animaciones del proceso, simulación de parámetros, análisis de fallos y comparativas de materiales.</p>
-                            <a href="infografias/bonding-wire.html" class="accordion-link">Ver Infografía →</a>
+                            <p id="wire_desc">Una herramienta educativa interactiva sobre el proceso de Wire Bonding en semiconductores: animaciones del proceso, simulación de parámetros, análisis de fallos y comparativas de materiales.</p>
+                            <a href="infografias/bonding-wire.html" class="accordion-link" id="wire_btn">Ver Infografía →</a>
                         </div>
                     </div>
                 </div>
@@ -915,9 +1058,9 @@
     <!-- About Section -->
     <section id="sobre" class="about-section container">
         <div class="about-content">
-            <h2>Sobre Mí</h2>
-            <p>Soy Eva Deltor, una creadora de contenido dedicada a generar conexiones genuinas a través de diferentes plataformas digitales. Mi trabajo se enfoca en crear contenido auténtico que resuene con mis seguidores.</p>
-            <p>Creo que la transparencia y la autenticidad son la base de cualquier comunidad digital sólida. Cada contenido que comparto está pensado para aportar valor, inspiración o entretenimiento de calidad.</p>
+            <h2 id="sobre_title">Sobre Mí</h2>
+            <p id="sobre_p1">Soy Eva Deltor, una creadora de contenido dedicada a generar conexiones genuinas a través de diferentes plataformas digitales. Mi trabajo se enfoca en crear contenido auténtico que resuene con mis seguidores.</p>
+            <p id="sobre_p2">Creo que la transparencia y la autenticidad son la base de cualquier comunidad digital sólida. Cada contenido que comparto está pensado para aportar valor, inspiración o entretenimiento de calidad.</p>
             
             <div class="about-highlights">
                 <div class="highlight">
@@ -947,56 +1090,72 @@
         </div>
 
         <div class="about-image">
-            <img src="profile.png" alt="Eva Deltor">
+            <img src="profile.jpg" alt="Eva Deltor">
         </div>
     </section>
 
     <!-- Contacto & Newsletter -->
     <section id="contacto" class="contacto-section">
         <div class="container">
-            <h2>Conectemos</h2>
-            <p class="section-subtitle">¿Tienes una propuesta, colaboración o simplemente quieres saludar?</p>
+            <h2 id="contacto_title">Conectemos</h2>
+            <p class="section-subtitle" id="contacto_sub">¿Tienes una propuesta, colaboración o simplemente quieres saludar?</p>
 
             <div class="contacto-grid">
 
                 <!-- Contacto directo -->
                 <div class="contacto-info">
-                    <h3>Escríbeme directamente</h3>
-                    <p>Estoy abierta a colaboraciones, proyectos educativos, apariciones en podcasts y cualquier propuesta interesante. La mejor forma de contactarme es por LinkedIn o Instagram.</p>
-                    <div class="contacto-links">
+                    <h3 id="contacto_h3">Escríbeme directamente</h3>
+                    <p id="contacto_p">Estoy abierta a colaboraciones, proyectos educativos, apariciones en podcasts y cualquier propuesta interesante.</p>
+
+                    <div class="contacto-form">
+                        <div class="contacto-form-inner" id="contactoForm">
+                            <div class="form-field">
+                                <label class="form-label" id="label_nombre">Nombre</label>
+                                <input type="text" class="newsletter-input" id="contactoNombre" placeholder="Tu nombre" style="background:white;color:var(--text);border-color:var(--border);">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label" id="label_email">Email</label>
+                                <input type="email" class="newsletter-input" id="contactoEmail" placeholder="tu@email.com" style="background:white;color:var(--text);border-color:var(--border);">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label" id="label_mensaje">Mensaje</label>
+                                <textarea class="newsletter-input" id="contactoMensaje" placeholder="Cuéntame en qué puedo ayudarte..." rows="4" style="background:white;color:var(--text);border-color:var(--border);resize:vertical;font-family:'Poppins',sans-serif;font-size:0.9rem;"></textarea>
+                            </div>
+                            <button class="btn btn-primary" id="contactoBtn" onclick="submitContacto()" style="border-radius:2px;">Enviar mensaje →</button>
+                        </div>
+                        <div style="display:none;padding:20px 0;" id="contactoSuccess">
+                            <p id="contacto_ok" style="color:var(--primary);font-weight:600;">✓ Mensaje enviado — te responderé pronto.</p>
+                        </div>
+                    </div>
+
+                    <div class="contacto-links" style="margin-top:25px;">
                         <a href="https://linkedin.com/in/eva-deltor" target="_blank" class="contacto-link">
                             <div class="contacto-link-icon">
                                 <img src="img/LinkedIn.png" alt="LinkedIn">
                             </div>
-                            Enviar mensaje por LinkedIn
+                            LinkedIn — Eva Deltor
                         </a>
                         <a href="https://instagram.com/microeva" target="_blank" class="contacto-link">
                             <div class="contacto-link-icon">
                                 <img src="img/Instagram.png" alt="Instagram">
                             </div>
-                            DM en Instagram @microeva
-                        </a>
-                        <a href="https://tiktok.com/@microeva" target="_blank" class="contacto-link">
-                            <div class="contacto-link-icon">
-                                <img src="img/Tiktok.png" alt="TikTok">
-                            </div>
-                            TikTok @microeva
+                            Instagram @microeva
                         </a>
                     </div>
                 </div>
 
                 <!-- Newsletter -->
                 <div class="newsletter-box">
-                    <h3>Nuevo contenido, antes que nadie</h3>
-                    <p>Apúntate y te aviso cuando publique nuevas infografías interactivas, herramientas educativas o contenido especial.</p>
+                    <h3 id="newsletter_h3">Nuevo contenido, antes que nadie</h3>
+                    <p id="newsletter_p">Apúntate y te aviso cuando publique nuevas infografías interactivas, herramientas educativas o contenido especial.</p>
                     <div class="newsletter-form" id="newsletterForm">
                         <input type="text" class="newsletter-input" id="newsletterName" placeholder="Tu nombre">
                         <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="Tu email">
-                        <button class="newsletter-btn" onclick="submitNewsletter()">Quiero estar al tanto →</button>
-                        <span class="newsletter-note">Sin spam. Solo contenido que vale la pena.</span>
+                        <button class="newsletter-btn" id="newsletter_btn" onclick="submitNewsletter()">Quiero estar al tanto →</button>
+                        <span class="newsletter-note" id="newsletter_note">Sin spam. Solo contenido que vale la pena.</span>
                     </div>
                     <div class="newsletter-success" id="newsletterSuccess">
-                        <p>¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.</p>
+                        <p id="newsletter_ok">¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.</p>
                     </div>
                 </div>
 
@@ -1009,7 +1168,7 @@
         <div class="container">
             <div class="footer-info">
                 <h3>Eva Deltor</h3>
-                <p>Creadora de Contenido Digital</p>
+                <p id="footer_sub">Creadora de Contenido Digital</p>
             </div>
             <div class="footer-social">
                 <a href="https://instagram.com/microeva" target="_blank" title="Instagram"><img src="img/instagram.svg" alt="Instagram" style="width:18px;height:18px;filter:brightness(0) invert(1);"></a>
@@ -1020,7 +1179,7 @@
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p>&copy; 2024 Eva Deltor. Todos los derechos reservados.</p>
+                <p id="footer_copy">&copy; 2024 Eva Deltor. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
@@ -1031,6 +1190,241 @@
             document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
             if (!isOpen) item.classList.add('open');
         }
+
+        // ── Language system ──
+        const translations = {
+            es: {
+                nav_redes: 'Redes Sociales',
+                nav_infografias: 'Infografías',
+                nav_sobre: 'Sobre Mí',
+                nav_contacto: 'Contacto',
+                hero_title: 'Creadora de Contenido Digital',
+                hero_text: 'Conozco el poder de conectar con las personas a través de contenido auténtico y significativo. Estoy presente en múltiples plataformas, generando historias que inspiran y generan valor.',
+                hero_btn1: 'Explorar Contenido',
+                hero_btn2: 'Más Sobre Mí',
+                social_title: 'Mi Presencia Digital',
+                ig_desc: 'Contenido visual curado y momentos del día a día',
+                tt_desc: 'Videos cortos con formato y entretenimiento',
+                yt_desc: 'Contenido en profundidad y documentados',
+                li_desc: 'Reflexiones profesionales y desarrollo',
+                infografias_title: 'Infografías de Microelectrónica',
+                infografias_sub: 'Contenido educativo interactivo sobre los procesos de fabricación de semiconductores',
+                wire_title: '¿Qué es el Wire Bonding?',
+                wire_meta: 'Microelectrónica · Infografía interactiva',
+                wire_desc: 'Una herramienta educativa interactiva sobre el proceso de Wire Bonding en semiconductores: animaciones del proceso, simulación de parámetros, análisis de fallos y comparativas de materiales.',
+                wire_btn: 'Ver Infografía →',
+                sobre_title: 'Sobre Mí',
+                sobre_p1: 'Soy Eva Deltor, una creadora de contenido dedicada a generar conexiones genuinas a través de diferentes plataformas digitales. Mi trabajo se enfoca en crear contenido auténtico que resuene con mis seguidores.',
+                sobre_p2: 'Creo que la transparencia y la autenticidad son la base de cualquier comunidad digital sólida. Cada contenido que comparto está pensado para aportar valor, inspiración o entretenimiento de calidad.',
+                contacto_title: 'Conectemos',
+                contacto_sub: '¿Tienes una propuesta, colaboración o simplemente quieres saludar?',
+                contacto_h3: 'Escríbeme directamente',
+                contacto_p: 'Estoy abierta a colaboraciones, proyectos educativos, apariciones en podcasts y cualquier propuesta interesante.',
+                label_nombre: 'Nombre',
+                label_email: 'Email',
+                label_mensaje: 'Mensaje',
+                ph_nombre: 'Tu nombre',
+                ph_email: 'tu@email.com',
+                ph_mensaje: 'Cuéntame en qué puedo ayudarte...',
+                contacto_btn: 'Enviar mensaje →',
+                contacto_ok: '✓ Mensaje enviado — te responderé pronto.',
+                newsletter_h3: 'Nuevo contenido, antes que nadie',
+                newsletter_p: 'Apúntate y te aviso cuando publique nuevas infografías interactivas, herramientas educativas o contenido especial.',
+                newsletter_btn: 'Quiero estar al tanto →',
+                newsletter_note: 'Sin spam. Solo contenido que vale la pena.',
+                newsletter_ok: '¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.',
+                footer_sub: 'Creadora de Contenido Digital',
+                footer_copy: '© 2024 Eva Deltor. Todos los derechos reservados.'
+            },
+            ca: {
+                nav_redes: 'Xarxes Socials',
+                nav_infografias: 'Infografies',
+                nav_sobre: 'Sobre Mi',
+                nav_contacto: 'Contacte',
+                hero_title: 'Creadora de Contingut Digital',
+                hero_text: 'Conec el poder de connectar amb les persones a través de contingut autèntic i significatiu. Estic present a múltiples plataformes, generant històries que inspiren i generen valor.',
+                hero_btn1: 'Explorar Contingut',
+                hero_btn2: 'Més Sobre Mi',
+                social_title: 'La Meva Presència Digital',
+                ig_desc: 'Contingut visual curat i moments del dia a dia',
+                tt_desc: 'Vídeos curts amb format i entreteniment',
+                yt_desc: 'Contingut en profunditat i documentat',
+                li_desc: 'Reflexions professionals i desenvolupament',
+                infografias_title: 'Infografies de Microelectrònica',
+                infografias_sub: 'Contingut educatiu interactiu sobre els processos de fabricació de semiconductors',
+                wire_title: 'Què és el Wire Bonding?',
+                wire_meta: 'Microelectrònica · Infografia interactiva',
+                wire_desc: 'Una eina educativa interactiva sobre el procés de Wire Bonding en semiconductors: animacions del procés, simulació de paràmetres, anàlisi de fallades i comparatives de materials.',
+                wire_btn: 'Veure Infografia →',
+                sobre_title: 'Sobre Mi',
+                sobre_p1: 'Soc Eva Deltor, una creadora de contingut dedicada a generar connexions genuïnes a través de diferents plataformes digitals. El meu treball se centra a crear contingut autèntic que ressoni amb els meus seguidors.',
+                sobre_p2: 'Crec que la transparència i l\'autenticitat són la base de qualsevol comunitat digital sòlida. Cada contingut que comparteixo està pensat per aportar valor, inspiració o entreteniment de qualitat.',
+                contacto_title: 'Connectem',
+                contacto_sub: 'Tens una proposta, col·laboració o simplement vols saludar?',
+                contacto_h3: 'Escriu-me directament',
+                contacto_p: 'Estic oberta a col·laboracions, projectes educatius, aparicions en podcasts i qualsevol proposta interessant.',
+                label_nombre: 'Nom',
+                label_email: 'Correu electrònic',
+                label_mensaje: 'Missatge',
+                ph_nombre: 'El teu nom',
+                ph_email: 'tu@correu.cat',
+                ph_mensaje: 'Explica\'m en què et puc ajudar...',
+                contacto_btn: 'Enviar missatge →',
+                contacto_ok: '✓ Missatge enviat — et respondré aviat.',
+                newsletter_h3: 'Nou contingut, abans que ningú',
+                newsletter_p: 'Apunta\'t i t\'aviso quan publiqui noves infografies interactives, eines educatives o contingut especial.',
+                newsletter_btn: 'Vull estar al dia →',
+                newsletter_note: 'Sense spam. Només contingut que val la pena.',
+                newsletter_ok: 'Perfecte! ✓<br>T\'avisaré quan hi hagi alguna cosa nova.',
+                footer_sub: 'Creadora de Contingut Digital',
+                footer_copy: '© 2024 Eva Deltor. Tots els drets reservats.'
+            },
+            en: {
+                nav_redes: 'Social Media',
+                nav_infografias: 'Infographics',
+                nav_sobre: 'About Me',
+                nav_contacto: 'Contact',
+                hero_title: 'Digital Content Creator',
+                hero_text: 'I know the power of connecting with people through authentic and meaningful content. I am present on multiple platforms, creating stories that inspire and generate value.',
+                hero_btn1: 'Explore Content',
+                hero_btn2: 'More About Me',
+                social_title: 'My Digital Presence',
+                ig_desc: 'Curated visual content and day-to-day moments',
+                tt_desc: 'Short videos with format and entertainment',
+                yt_desc: 'In-depth and documented content',
+                li_desc: 'Professional reflections and development',
+                infografias_title: 'Microelectronics Infographics',
+                infografias_sub: 'Interactive educational content about semiconductor manufacturing processes',
+                wire_title: 'What is Wire Bonding?',
+                wire_meta: 'Microelectronics · Interactive Infographic',
+                wire_desc: 'An interactive educational tool about the Wire Bonding process in semiconductors: process animations, parameter simulation, failure analysis and material comparisons.',
+                wire_btn: 'View Infographic →',
+                sobre_title: 'About Me',
+                sobre_p1: 'I am Eva Deltor, a content creator dedicated to building genuine connections across different digital platforms. My work focuses on creating authentic content that resonates with my followers.',
+                sobre_p2: 'I believe transparency and authenticity are the foundation of any solid digital community. Every piece of content I share is designed to provide value, inspiration or quality entertainment.',
+                contacto_title: "Let's Connect",
+                contacto_sub: 'Do you have a proposal, collaboration or just want to say hello?',
+                contacto_h3: 'Write to me directly',
+                contacto_p: 'I am open to collaborations, educational projects, podcast appearances and any interesting proposals.',
+                label_nombre: 'Name',
+                label_email: 'Email',
+                label_mensaje: 'Message',
+                ph_nombre: 'Your name',
+                ph_email: 'you@email.com',
+                ph_mensaje: 'Tell me how I can help you...',
+                contacto_btn: 'Send message →',
+                contacto_ok: '✓ Message sent — I will reply soon.',
+                newsletter_h3: 'New content, before anyone else',
+                newsletter_p: 'Sign up and I will notify you when I publish new interactive infographics, educational tools or special content.',
+                newsletter_btn: 'Keep me posted →',
+                newsletter_note: 'No spam. Only content worth reading.',
+                newsletter_ok: 'Perfect! ✓<br>I will let you know when there is something new.',
+                footer_sub: 'Digital Content Creator',
+                footer_copy: '© 2024 Eva Deltor. All rights reserved.'
+            }
+        };
+
+        function setLang(lang) {
+            const t = translations[lang];
+            document.getElementById('langOverlay').style.display = 'none';
+            localStorage.setItem('eva_lang', lang);
+
+            // Nav
+            document.getElementById('nav_redes').textContent       = t.nav_redes;
+            document.getElementById('nav_infografias').textContent  = t.nav_infografias;
+            document.getElementById('nav_sobre').textContent        = t.nav_sobre;
+            document.getElementById('nav_contacto').textContent     = t.nav_contacto;
+            // Hero
+            document.getElementById('hero_title').textContent       = t.hero_title;
+            document.getElementById('hero_text').textContent        = t.hero_text;
+            document.getElementById('hero_btn1').textContent        = t.hero_btn1;
+            document.getElementById('hero_btn2').textContent        = t.hero_btn2;
+            // Social
+            document.getElementById('social_title').textContent     = t.social_title;
+            document.getElementById('ig_desc').textContent          = t.ig_desc;
+            document.getElementById('tt_desc').textContent          = t.tt_desc;
+            document.getElementById('yt_desc').textContent          = t.yt_desc;
+            document.getElementById('li_desc').textContent          = t.li_desc;
+            // Infografías
+            document.getElementById('infografias_title').textContent = t.infografias_title;
+            document.getElementById('infografias_sub').textContent   = t.infografias_sub;
+            document.getElementById('wire_title').textContent        = t.wire_title;
+            document.getElementById('wire_meta').textContent         = t.wire_meta;
+            document.getElementById('wire_desc').textContent         = t.wire_desc;
+            document.getElementById('wire_btn').textContent          = t.wire_btn;
+            // Sobre mí
+            document.getElementById('sobre_title').textContent      = t.sobre_title;
+            document.getElementById('sobre_p1').textContent         = t.sobre_p1;
+            document.getElementById('sobre_p2').textContent         = t.sobre_p2;
+            // Contacto
+            document.getElementById('contacto_title').textContent   = t.contacto_title;
+            document.getElementById('contacto_sub').textContent     = t.contacto_sub;
+            document.getElementById('contacto_h3').textContent      = t.contacto_h3;
+            document.getElementById('contacto_p').textContent       = t.contacto_p;
+            document.getElementById('label_nombre').textContent     = t.label_nombre;
+            document.getElementById('label_email').textContent      = t.label_email;
+            document.getElementById('label_mensaje').textContent    = t.label_mensaje;
+            document.getElementById('contactoNombre').placeholder   = t.ph_nombre;
+            document.getElementById('contactoEmail').placeholder    = t.ph_email;
+            document.getElementById('contactoMensaje').placeholder  = t.ph_mensaje;
+            document.getElementById('contactoBtn').textContent      = t.contacto_btn;
+            document.getElementById('contacto_ok').textContent      = t.contacto_ok;
+            // Newsletter
+            document.getElementById('newsletter_h3').textContent    = t.newsletter_h3;
+            document.getElementById('newsletter_p').textContent     = t.newsletter_p;
+            document.getElementById('newsletter_btn').textContent   = t.newsletter_btn;
+            document.getElementById('newsletter_note').textContent  = t.newsletter_note;
+            document.getElementById('newsletter_ok').innerHTML      = t.newsletter_ok;
+            // Footer
+            document.getElementById('footer_sub').textContent       = t.footer_sub;
+            document.getElementById('footer_copy').textContent      = t.footer_copy;
+        }
+
+        // Mostrar popup al cargar (si no ha elegido antes)
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('eva_lang');
+            if (saved) {
+                setLang(saved);
+            }
+        });
+
+        function submitContacto() {
+            const nombre  = document.getElementById('contactoNombre').value.trim();
+            const email   = document.getElementById('contactoEmail').value.trim();
+            const mensaje = document.getElementById('contactoMensaje').value.trim();
+
+            if (!nombre || !email || !mensaje) {
+                alert('Por favor rellena todos los campos.');
+                return;
+            }
+            if (!email.includes('@')) {
+                alert('Por favor introduce un email válido.');
+                return;
+            }
+
+            const btn = document.getElementById('contactoBtn');
+            btn.textContent = 'Enviando...';
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('nombre', nombre);
+            formData.append('email', email);
+            formData.append('mensaje', mensaje);
+
+            fetch('https://script.google.com/macros/s/AKfycbzPM_MfFm82iDLg8XDlEwmnzXKd-2Qbtg4lLtOhS6wZdzlB1I7VNfYKqmQ90MEmHjdT/exec', {
+                method: 'POST',
+                body: formData
+            })
+            .then(() => {
+                document.getElementById('contactoForm').style.display = 'none';
+                document.getElementById('contactoSuccess').style.display = 'block';
+            })
+            .catch(() => {
+                document.getElementById('contactoForm').style.display = 'none';
+                document.getElementById('contactoSuccess').style.display = 'block';
+            });
+        }
+
 
         function submitNewsletter() {
             const name = document.getElementById('newsletterName').value.trim();
@@ -1052,7 +1446,7 @@
             formData.append('nombre', name);
             formData.append('email', email);
 
-            fetch('https://script.google.com/macros/s/AKfycbzzBI12f_LID0PJ-fdPba6PODkwy3oSvN2fynqZ31q3PhSbSzWtGx6pw_Kkgpc3RGcl/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbysvCV6vhsGi1godfVx_SY-7fV2LtOR4rJKu8crmaEEg9v9JLbxP0A9UTFM5KxruAU3iQ/exec', {
                 method: 'POST',
                 body: formData
             })
