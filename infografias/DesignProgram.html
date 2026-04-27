@@ -906,6 +906,340 @@
     padding: 10px 14px;
     background: #0e0e1a;
   }
+
+  /* ── Info sidebar ── */
+  .info-tab {
+    position: fixed;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    z-index: 600;
+    display: flex;
+    align-items: stretch;
+    max-height: 90vh;
+  }
+  .info-tab-handle {
+    width: 28px;
+    background: linear-gradient(180deg, #2a1e50, #1e1a35);
+    border: 1px solid #3a3060;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 4px;
+    padding: 14px 0;
+    transition: background 0.2s;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.4);
+  }
+  .info-tab-handle:hover { background: linear-gradient(180deg, #3a2e60, #2e2a50); }
+  .info-tab-handle-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #a07cff;
+    text-transform: uppercase;
+    font-family: -apple-system, sans-serif;
+    user-select: none;
+  }
+  .info-tab-handle-icon {
+    font-size: 13px;
+    color: #a07cff;
+    transition: transform 0.3s;
+  }
+  .info-tab.open .info-tab-handle-icon { transform: rotate(180deg); }
+
+  .info-panel {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.35s cubic-bezier(0.22,1,0.36,1);
+    background: #13131f;
+    border: 1px solid #2a2a3e;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .info-tab.open .info-panel { width: 300px; }
+
+  .info-panel-inner {
+    width: 300px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 20px 18px;
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a3e transparent;
+  }
+  .info-panel-inner::-webkit-scrollbar { width: 4px; }
+  .info-panel-inner::-webkit-scrollbar-track { background: transparent; }
+  .info-panel-inner::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
+  .info-panel-inner::-webkit-scrollbar-thumb:hover { background: #3a3a55; }
+
+  .info-panel-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #c0c0e0;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .info-panel-subtitle {
+    font-size: 10px;
+    color: #444466;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .info-divider {
+    height: 1px;
+    background: #1e1e30;
+    margin: 14px 0;
+  }
+  .info-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7060aa;
+    margin-bottom: 10px;
+    border-left: 2px solid #a07cff;
+    padding-left: 7px;
+  }
+  .info-feature {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .info-feature-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .info-feature-text {
+    font-size: 11.5px;
+    color: #7070a0;
+    line-height: 1.5;
+  }
+  .info-feature-text strong { color: #a0a0c0; font-weight: 600; }
+  .info-badge {
+    display: inline-block;
+    font-size: 9.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin: 2px 2px 0 0;
+  }
+  .info-badge.purple { background: #2a1e50; color: #a07cff; border: 1px solid #3a2e60; }
+  .info-badge.blue   { background: #1a2a4a; color: #5a9cf5; border: 1px solid #2a3a5a; }
+  .info-badge.green  { background: #0e2a1a; color: #50d890; border: 1px solid #1a3a2a; }
+  .info-badge.orange { background: #2a1a0a; color: #e0a020; border: 1px solid #3a2a1a; }
+
+  .info-shortcut {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #141422;
+    font-size: 11px;
+  }
+  .info-shortcut:last-child { border-bottom: none; }
+  .info-shortcut-action { color: #6060a0; }
+  .info-shortcut-key {
+    background: #1e1e30;
+    border: 1px solid #2a2a40;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 10px;
+    color: #8080b0;
+    font-family: monospace;
+  }
+  .info-version {
+    margin-top: auto;
+    padding-top: 14px;
+    font-size: 9.5px;
+    color: #2a2a40;
+    text-align: center;
+    font-family: monospace;
+  }
+
+  /* ── Disclaimer bubble ── */
+  .disclaimer-bubble {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 270px;
+    background: #1a1a2c;
+    border: 1px solid #3a3060;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(160,124,255,0.1);
+    z-index: 700;
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    animation: winPop 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .disclaimer-bubble.minimized {
+    width: 160px;
+  }
+  .disclaimer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #2a1e50, #1e1a35);
+    border-bottom: 1px solid #2a2a40;
+    cursor: pointer;
+    user-select: none;
+  }
+  .disclaimer-header-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .disclaimer-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #e0a020;
+    box-shadow: 0 0 6px #e0a020;
+    flex-shrink: 0;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+  .disclaimer-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #c792ea;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .disclaimer-toggle {
+    font-size: 12px;
+    color: #555577;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .disclaimer-bubble.minimized .disclaimer-toggle {
+    transform: rotate(180deg);
+  }
+  .disclaimer-body {
+    padding: 12px 14px 14px;
+    overflow: hidden;
+    max-height: 300px;
+    transition: max-height 0.3s cubic-bezier(0.22,1,0.36,1), padding 0.3s;
+  }
+  .disclaimer-bubble.minimized .disclaimer-body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .disclaimer-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 9px;
+    align-items: flex-start;
+  }
+  .disclaimer-item:last-child { margin-bottom: 0; }
+  .disclaimer-item-icon {
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .disclaimer-item-text {
+    font-size: 11px;
+    color: #b0b0cc;
+    line-height: 1.55;
+  }
+  .disclaimer-item-text strong {
+    color: #e0e0f0;
+    font-weight: 600;
+  }
+  .disclaimer-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #1e1e30;
+    font-size: 10px;
+    color: #6060a0;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* ── Collapsible info features ── */
+  .info-feature-toggle {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 3px 0;
+  }
+  .info-feature-toggle:hover .info-feature-text strong { color: #c792ea; }
+  .info-feature-arrow {
+    margin-left: auto;
+    font-size: 9px;
+    color: #333355;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .info-feature.open .info-feature-arrow { transform: rotate(180deg); color: #a07cff; }
+  .info-feature-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.22,1,0.36,1);
+    padding-left: 28px;
+  }
+  .info-feature.open .info-feature-detail { max-height: 200px; }
+  .info-feature-detail-text {
+    font-size: 11px;
+    color: #8080aa;
+    line-height: 1.6;
+    padding: 6px 0 4px;
+    border-left: 2px solid #2a2a40;
+    padding-left: 10px;
+    margin-top: 2px;
+  }
+  .info-feature-detail-text em { color: #a07cff; font-style: normal; }
+  .info-feature-detail-text strong { color: #b0b0cc; }
+
+  /* ── Collapsible info sections ── */
+  .info-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+    padding: 5px 0;
+  }
+  .info-section-header:hover .info-section-title { color: #a07cff; }
+  .info-section-chevron {
+    font-size: 9px;
+    color: #333355;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .info-section-block.open .info-section-chevron { transform: rotate(180deg); color: #a07cff; }
+  .info-section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.22,1,0.36,1);
+  }
+  .info-section-block.open .info-section-content { max-height: 900px; }
+  .info-section-block { margin-bottom: 4px; }
   /* Selection indicator */
   .sel { background: #c2d9ff; border-radius: 2px; }
 
@@ -1872,6 +2206,340 @@
     padding: 10px 14px;
     background: #0e0e1a;
   }
+
+  /* ── Info sidebar ── */
+  .info-tab {
+    position: fixed;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    z-index: 600;
+    display: flex;
+    align-items: stretch;
+    max-height: 90vh;
+  }
+  .info-tab-handle {
+    width: 28px;
+    background: linear-gradient(180deg, #2a1e50, #1e1a35);
+    border: 1px solid #3a3060;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 4px;
+    padding: 14px 0;
+    transition: background 0.2s;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.4);
+  }
+  .info-tab-handle:hover { background: linear-gradient(180deg, #3a2e60, #2e2a50); }
+  .info-tab-handle-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #a07cff;
+    text-transform: uppercase;
+    font-family: -apple-system, sans-serif;
+    user-select: none;
+  }
+  .info-tab-handle-icon {
+    font-size: 13px;
+    color: #a07cff;
+    transition: transform 0.3s;
+  }
+  .info-tab.open .info-tab-handle-icon { transform: rotate(180deg); }
+
+  .info-panel {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.35s cubic-bezier(0.22,1,0.36,1);
+    background: #13131f;
+    border: 1px solid #2a2a3e;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .info-tab.open .info-panel { width: 300px; }
+
+  .info-panel-inner {
+    width: 300px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 20px 18px;
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a3e transparent;
+  }
+  .info-panel-inner::-webkit-scrollbar { width: 4px; }
+  .info-panel-inner::-webkit-scrollbar-track { background: transparent; }
+  .info-panel-inner::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
+  .info-panel-inner::-webkit-scrollbar-thumb:hover { background: #3a3a55; }
+
+  .info-panel-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #c0c0e0;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .info-panel-subtitle {
+    font-size: 10px;
+    color: #444466;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .info-divider {
+    height: 1px;
+    background: #1e1e30;
+    margin: 14px 0;
+  }
+  .info-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7060aa;
+    margin-bottom: 10px;
+    border-left: 2px solid #a07cff;
+    padding-left: 7px;
+  }
+  .info-feature {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .info-feature-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .info-feature-text {
+    font-size: 11.5px;
+    color: #7070a0;
+    line-height: 1.5;
+  }
+  .info-feature-text strong { color: #a0a0c0; font-weight: 600; }
+  .info-badge {
+    display: inline-block;
+    font-size: 9.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin: 2px 2px 0 0;
+  }
+  .info-badge.purple { background: #2a1e50; color: #a07cff; border: 1px solid #3a2e60; }
+  .info-badge.blue   { background: #1a2a4a; color: #5a9cf5; border: 1px solid #2a3a5a; }
+  .info-badge.green  { background: #0e2a1a; color: #50d890; border: 1px solid #1a3a2a; }
+  .info-badge.orange { background: #2a1a0a; color: #e0a020; border: 1px solid #3a2a1a; }
+
+  .info-shortcut {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #141422;
+    font-size: 11px;
+  }
+  .info-shortcut:last-child { border-bottom: none; }
+  .info-shortcut-action { color: #6060a0; }
+  .info-shortcut-key {
+    background: #1e1e30;
+    border: 1px solid #2a2a40;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 10px;
+    color: #8080b0;
+    font-family: monospace;
+  }
+  .info-version {
+    margin-top: auto;
+    padding-top: 14px;
+    font-size: 9.5px;
+    color: #2a2a40;
+    text-align: center;
+    font-family: monospace;
+  }
+
+  /* ── Disclaimer bubble ── */
+  .disclaimer-bubble {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 270px;
+    background: #1a1a2c;
+    border: 1px solid #3a3060;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(160,124,255,0.1);
+    z-index: 700;
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    animation: winPop 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .disclaimer-bubble.minimized {
+    width: 160px;
+  }
+  .disclaimer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #2a1e50, #1e1a35);
+    border-bottom: 1px solid #2a2a40;
+    cursor: pointer;
+    user-select: none;
+  }
+  .disclaimer-header-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .disclaimer-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #e0a020;
+    box-shadow: 0 0 6px #e0a020;
+    flex-shrink: 0;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+  .disclaimer-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #c792ea;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .disclaimer-toggle {
+    font-size: 12px;
+    color: #555577;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .disclaimer-bubble.minimized .disclaimer-toggle {
+    transform: rotate(180deg);
+  }
+  .disclaimer-body {
+    padding: 12px 14px 14px;
+    overflow: hidden;
+    max-height: 300px;
+    transition: max-height 0.3s cubic-bezier(0.22,1,0.36,1), padding 0.3s;
+  }
+  .disclaimer-bubble.minimized .disclaimer-body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .disclaimer-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 9px;
+    align-items: flex-start;
+  }
+  .disclaimer-item:last-child { margin-bottom: 0; }
+  .disclaimer-item-icon {
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .disclaimer-item-text {
+    font-size: 11px;
+    color: #b0b0cc;
+    line-height: 1.55;
+  }
+  .disclaimer-item-text strong {
+    color: #e0e0f0;
+    font-weight: 600;
+  }
+  .disclaimer-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #1e1e30;
+    font-size: 10px;
+    color: #6060a0;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* ── Collapsible info features ── */
+  .info-feature-toggle {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 3px 0;
+  }
+  .info-feature-toggle:hover .info-feature-text strong { color: #c792ea; }
+  .info-feature-arrow {
+    margin-left: auto;
+    font-size: 9px;
+    color: #333355;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .info-feature.open .info-feature-arrow { transform: rotate(180deg); color: #a07cff; }
+  .info-feature-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.22,1,0.36,1);
+    padding-left: 28px;
+  }
+  .info-feature.open .info-feature-detail { max-height: 200px; }
+  .info-feature-detail-text {
+    font-size: 11px;
+    color: #8080aa;
+    line-height: 1.6;
+    padding: 6px 0 4px;
+    border-left: 2px solid #2a2a40;
+    padding-left: 10px;
+    margin-top: 2px;
+  }
+  .info-feature-detail-text em { color: #a07cff; font-style: normal; }
+  .info-feature-detail-text strong { color: #b0b0cc; }
+
+  /* ── Collapsible info sections ── */
+  .info-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+    padding: 5px 0;
+  }
+  .info-section-header:hover .info-section-title { color: #a07cff; }
+  .info-section-chevron {
+    font-size: 9px;
+    color: #333355;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .info-section-block.open .info-section-chevron { transform: rotate(180deg); color: #a07cff; }
+  .info-section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.22,1,0.36,1);
+  }
+  .info-section-block.open .info-section-content { max-height: 900px; }
+  .info-section-block { margin-bottom: 4px; }
   /* Selection indicator */
   .sel { background: #c2d9ff; border-radius: 2px; }
 
@@ -2169,6 +2837,160 @@
 </style>
 </head>
 <body>
+  <!-- ── Disclaimer bubble ── -->
+  <div class="disclaimer-bubble" id="disclaimerBubble">
+    <div class="disclaimer-header" onclick="toggleDisclaimer()">
+      <div class="disclaimer-header-left">
+        <div class="disclaimer-dot"></div>
+        <span class="disclaimer-label">Nota informativa</span>
+      </div>
+      <span class="disclaimer-toggle">▲</span>
+    </div>
+    <div class="disclaimer-body">
+      <div class="disclaimer-item">
+        <span class="disclaimer-item-icon">✦</span>
+        <div class="disclaimer-item-text"><strong>Esto es un ejemplo educativo.</strong> El objetivo es descubrir cómo funciona una herramienta EDA real para diseño de chips.</div>
+      </div>
+      <div class="disclaimer-item">
+        <span class="disclaimer-item-icon">▲</span>
+        <div class="disclaimer-item-text"><strong>Los layouts no corresponden</strong> a los esquemáticos — son ilustrativos para mostrar las capas de fabricación.</div>
+      </div>
+      <div class="disclaimer-item">
+        <span class="disclaimer-item-icon">◈</span>
+        <div class="disclaimer-item-text"><strong>Las simulaciones no son reales</strong> — las formas de onda son representativas, no calculadas.</div>
+      </div>
+      <div class="disclaimer-item">
+        <span class="disclaimer-item-icon">⟷</span>
+        <div class="disclaimer-item-text"><strong>Explora la jerarquía:</strong> desde <em>chip_top_v3</em> puedes navegar hacia los sub-bloques que lo componen.</div>
+      </div>
+      <div class="disclaimer-footer">Haz clic en cualquier carpeta para empezar ✦</div>
+    </div>
+  </div>
+
+  <!-- ── Info sidebar ── -->
+  <div class="info-tab" id="infoTab">
+    <div class="info-panel" id="infoPanel">
+      <div class="info-panel-inner">
+
+        <div class="info-panel-title">⬡ Imager</div>
+        <div class="info-panel-subtitle">EDA Tool — Educational Demo</div>
+
+        <div class="info-section-block open">
+          <div class="info-section-header" onclick="toggleInfoSection(this)">
+            <div class="info-section-title">¿Qué es esto?</div>
+            <span class="info-section-chevron">▼</span>
+          </div>
+          <div class="info-section-content">
+            <div class="info-feature" style="margin-top:8px">
+              <div class="info-feature-icon">◈</div>
+              <div class="info-feature-text">Una simulación interactiva de una herramienta <strong>EDA (Electronic Design Automation)</strong> como las que usan los ingenieros para diseñar chips reales.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+        <div class="info-section-block">
+          <div class="info-section-header" onclick="toggleInfoSection(this)">
+            <div class="info-section-title">Carpetas disponibles</div>
+            <span class="info-section-chevron">▼</span>
+          </div>
+          <div class="info-section-content">
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 12px">
+              <span class="info-badge purple">chip_top_v3</span>
+              <span class="info-badge purple">pll_core</span>
+              <span class="info-badge blue">diff_pair</span>
+              <span class="info-badge blue">analog_blk</span>
+              <span class="info-badge green">sram_256k</span>
+              <span class="info-badge green">mem_block_a</span>
+              <span class="info-badge orange">test_bench</span>
+              <span class="info-badge orange">dsp_unit</span>
+              <span class="info-badge blue">io_ring</span>
+              <span class="info-badge purple">power_grid</span>
+              <span class="info-badge green">clock_tree</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+        <div class="info-section-block">
+          <div class="info-section-header" onclick="toggleInfoSection(this)">
+            <div class="info-section-title">Funcionalidades</div>
+            <span class="info-section-chevron">▼</span>
+          </div>
+          <div class="info-section-content">
+        <div style="margin-top:8px"></div>
+        <div class="info-feature">
+          <div class="info-feature-icon">⬡</div>
+          <div class="info-feature-text"><strong>Esquemático</strong> — El "plano eléctrico": muestra transistores, resistencias y conexiones. Los ingenieros lo usan para definir qué hace el chip antes de fabricarlo. Doble clic para abrir en ventana grande. Haz clic sobre un transistor para ver sus <strong>propiedades</strong> (W, L, Vth, gm…).</div>
+        </div>
+        <div class="info-feature">
+          <div class="info-feature-icon">⊞</div>
+          <div class="info-feature-text"><strong>Layout</strong> — Cómo se distribuyen los transistores en el silicio, capa a capa (difusión, poly, metal…). El <em>DRC</em> verifica las reglas de fabricación y el <em>LVS</em> comprueba que coincida con el esquemático.</div>
+        </div>
+        <div class="info-feature">
+          <div class="info-feature-icon">▶</div>
+          <div class="info-feature-text"><strong>Simulación</strong> — Fabricar un chip cuesta millones, así que primero se simula. Se pueden simular tanto bloques <strong>analógicos</strong> (amplificadores, PLLs…) como <strong>digitales</strong> (lógica, memorias…). Tipos: <em>TRAN</em>: señal en el tiempo. <em>AC</em>: frecuencia. <em>DC</em>: punto de operación. <em>Monte Carlo</em>: variaciones de fabricación. Pruébalo en <strong>test_bench</strong>.</div>
+        </div>
+        <div class="info-feature">
+          <div class="info-feature-icon">⊕</div>
+          <div class="info-feature-text"><strong>Importar elementos</strong> — Las librerías (ej. CMOS 0.18μm) contienen modelos de transistores con parámetros exactos: tamaño, umbral de tensión, velocidad… El ingeniero los selecciona y conecta en el esquemático.</div>
+        </div>
+        <div class="info-feature">
+          <div class="info-feature-icon">❮❯</div>
+          <div class="info-feature-text"><strong>Verilog / VHDL</strong> — Antes de dibujar un esquemático, a menudo se escribe código hardware para simular el comportamiento del bloque y extraer los requisitos del circuito. Para bloques <strong>digitales</strong> (contadores, FSMs, procesadores…) estas simulaciones se hacen directamente con Verilog o VHDL, sin necesidad de un esquemático transistor a transistor.</div>
+        </div>
+        <div class="info-feature">
+          <div class="info-feature-icon">⟷</div>
+          <div class="info-feature-text"><strong>Cross-highlight</strong> — Clic en un transistor del esquemático → se ilumina su región en el layout. Navega entre la visión eléctrica y la física. Pruébalo en <em>diff_pair</em>.</div>
+        </div>
+        <div class="info-feature">
+          <div class="info-feature-icon">⊟</div>
+          <div class="info-feature-text"><strong>Jerarquía</strong> — Los chips se dividen en bloques (PLL, CPU, memoria…) que contienen sub-bloques. Desde <em>chip_top_v3</em> haz clic en cualquier bloque para entrar — igual que en Cadence o Synopsys.</div>
+        </div>
+
+          </div><!-- end funcionalidades section-content -->
+        </div><!-- end funcionalidades section-block -->
+
+        <div class="info-divider"></div>
+        <div class="info-section-block">
+          <div class="info-section-header" onclick="toggleInfoSection(this)">
+            <div class="info-section-title">Atajos</div>
+            <span class="info-section-chevron">▼</span>
+          </div>
+          <div class="info-section-content">
+        <div class="info-shortcut">
+          <span class="info-shortcut-action">Cancelar colocación</span>
+          <span class="info-shortcut-key">ESC</span>
+        </div>
+        <div class="info-shortcut">
+          <span class="info-shortcut-action">Zoom in/out</span>
+          <span class="info-shortcut-key">scroll</span>
+        </div>
+        <div class="info-shortcut">
+          <span class="info-shortcut-action">Pan</span>
+          <span class="info-shortcut-key">drag</span>
+        </div>
+        <div class="info-shortcut">
+          <span class="info-shortcut-action">Borrar elemento</span>
+          <span class="info-shortcut-key">right-click</span>
+        </div>
+        <div class="info-shortcut">
+          <span class="info-shortcut-action">Abrir archivo</span>
+          <span class="info-shortcut-key">dbl-click</span>
+        </div>
+
+          </div><!-- end atajos section-content -->
+        </div><!-- end atajos section-block -->
+
+        <div class="info-version">Imager v1.0 · CMOS 0.18μm · © microeva</div>
+      </div>
+    </div>
+
+    <div class="info-tab-handle" onclick="toggleInfoPanel()">
+      <span class="info-tab-handle-icon">›</span>
+      <span class="info-tab-handle-text">Info</span>
+    </div>
+  </div>
 <div class="desktop">
   <div class="window">
 
@@ -4949,6 +5771,22 @@ ${clickArea}`;
     a.click();
   }
 
+
+  function toggleInfoSection(header) {
+    header.closest('.info-section-block').classList.toggle('open');
+  }
+
+  function toggleInfoFeature(el) {
+    el.classList.toggle('open');
+  }
+
+  function toggleDisclaimer() {
+    document.getElementById('disclaimerBubble').classList.toggle('minimized');
+  }
+
+  function toggleInfoPanel() {
+    document.getElementById('infoTab').classList.toggle('open');
+  }
 </script>
 
 <div class="overlay">
