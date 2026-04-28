@@ -14,6 +14,14 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);font-family:'Barlow',sans-serif;color:var(--ink);min-height:100vh;padding-bottom:3rem;}
 
+/* ── Top bar (back + author) ── */
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1.8rem;background:#EDEAE3;border-bottom:1px solid #D0CCC4;flex-wrap:wrap;gap:.5rem;}
+.back-btn{font-family:'DM Mono',monospace;font-size:.62rem;font-weight:600;letter-spacing:.08em;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:.4rem;padding:.25rem .6rem;border:1.5px solid var(--ink);border-radius:3px;transition:all .15s;background:transparent;cursor:pointer;}
+.back-btn:hover{background:var(--ink);color:#fff;}
+.back-btn::before{content:'←';font-size:.75rem;}
+.author-credit{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.06em;}
+.author-credit a{color:var(--accent);text-decoration:none;font-weight:600;}
+.author-credit a:hover{text-decoration:underline;}
 /* ── Header ── */
 header{display:flex;align-items:center;gap:1rem;padding:1.2rem 1.8rem 1rem;border-bottom:2.5px solid var(--ink);flex-wrap:wrap;}
 header h1{font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;}
@@ -154,6 +162,10 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
 </head>
 <body>
 
+<div class="top-bar">
+  <a class="back-btn" href="index.html">Volver al índice</a>
+  <span class="author-credit">Creado por <a href="https://instagram.com/microeva" target="_blank">Eva Deltor (@microeva)</a></span>
+</div>
 <header>
   <h1>Bonding Wire</h1>
   <span class="sub" data-i18n="sub">Wire Bonding · Herramienta Educativa Interactiva</span>
@@ -161,6 +173,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
   <div class="lang-toggle">
     <button class="lang-btn active" id="btnES" onclick="setLang('es')">ES</button>
     <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btnCA" onclick="setLang('ca')">CA</button>
   </div>
 </header>
 
@@ -812,6 +825,183 @@ const DICT = {
     cfd1: 'Excessive pressure or ultrasonic power during 1st bond. Mechanical force fractures the metal pad and can damage the die substrate layers.',
     cfd2: 'Insufficient temperature or pressure. The required Au-Al intermetallic bond does not form. Ball detaches from pad under arc tension.',
     cfd3: 'Excessive capillary speed or ultrasonic power. Wire deviates laterally during arc formation, potentially contacting adjacent wires.',
+  },
+  ca: {
+    sub:  'Wire Bonding · Eina Educativa Interactiva',
+    badge:'MICROELECTRÒNICA',
+    tab_why:      '● Per què?',
+    why_dip_title: 'ANATOMIA D\'UN XIP ENCAPSULAT (DIP)',
+    why_tag:      'EL PROBLEMA',
+    why_hero:     'El xip és minúscul. La placa de circuit és gran. Com es connecten?',
+    why_hero_sub: 'Un xip modern mesura 5–20 mm. Els seus circuits interns són nanomètrics. Però necessita comunicar-se amb el món exterior — amb la placa, la bateria, els sensors. Algú ha de fer aquest pont.',
+    why_c1_title: 'EL XIP',
+    why_c1:       'Són circuits de silici a escala nanomètrica. Els pads de connexió són quadrats de ~80 µm — més fins que un cabell humà. I són necessaris per poder usar aquest xip: necessitem transmetre informació, definir tensions, alimentar-lo amb corrent...',
+    why_c2_title: 'EL PROBLEMA',
+    why_c2:       'Entre el pad del xip i el lead frame hi ha un gap d\'1–3 mm. No es poden soldar directament — el xip es destruiria amb la calor d\'una soldadura normal.',
+    why_c3_title: 'LA SOLUCIÓ',
+    why_c3:       'Un fil d\'or o coure de 25 µm — més fi que un cabell — connecta el pad amb el lead. Termosònic: calor suau + vibració ultrasònica. Sense danyar el xip.',
+    why_h_no:     '✗ Per què no soldadura normal?',
+    why_no:       'La soldadura convencional arriba a 180–260 °C i aplica molta calor local. El silici del xip és fràgil — les capes d\'òxid i els transistors es danyen irreversiblement. A més els pads són massa petits per a una punta de soldador.',
+    why_h_yes:    '✓ Per què funciona el bonding wire?',
+    why_yes:      'El procés termosònic usa només 150–250 °C (el xip aguanta fins a ~300 °C sense danys), aplica la calor de forma uniforme des de la base, i usa ultrasons per crear l\'enllaç sense necessitar més temperatura. El fil és tan fi que l\'energia aplicada és mínima.',
+    why_h_scale:  'Escala — per fer-se una idea',
+    why_h_where:  'On és a la teva vida diària?',
+    why_use1:'Smartphone', why_use1d:'El SoC, la RAM i la càmera tenen centenars de bonding wires cadascun.',
+    why_use2:'LEDs',       why_use2d:'Els LEDs d\'alta potència (pantalles, il·luminació) usen bonding wire d\'alumini.',
+    why_use3:'Automòbil',  why_use3d:'Sensors, ECU i xips de potència en cotxes tenen milers de bonding wires.',
+    why_use4:'Medicina',   why_use4d:'Marcapassos, implants coclears i sensors mèdics usen bonding wire d\'or.',
+    tab_sim:      '▶ Simulació',
+    tab_params:   '⚙ Paràmetres',
+    tab_compare:  '◫ Comparativa',
+    tab_failures: '⚠ Modes de Fallada',
+    tab_stats:    '▦ Estadístiques',
+    h_process: 'Procés Ball Bond',
+    ph1:'Free Air Ball', ph2:'Aproximació', ph3:'1r Bond (pad)',
+    ph4:'Loop / Arc',    ph5:'2n Bond (lead)', ph6:'Tall & reset',
+    h_materials:    'Materials',
+    h_params_active:'Paràmetres actius',
+    h_param_adjust: 'Ajust de paràmetres de procés',
+    p_param_desc:   'Modifica els paràmetres per veure com afecten el risc de fallada. Els canvis es reflecteixen en la simulació i en el càlcul de yield.',
+    sl_temp:  'TEMPERATURA',
+    sl_force: 'PRESSIÓ BOND',
+    sl_us:    'POTÈNCIA ULTRASÒNICA',
+    sl_dist:  'DISTÀNCIA PAD→LEAD',
+    sl_speed: 'VELOCITAT CAP·LILAR',
+    sl_diam:  'DIÀMETRE FIL',
+    risk_label:    'RISC DE FALLADA ESTIMAT',
+    h_active_fails:'Modes de fallada actius segons paràmetres',
+    h_opt_ranges:  'Rangs òptims',
+    h_warning:     '⚠ ADVERTÈNCIA',
+    h_prod_effect: 'Efecte en producció',
+    p_compare_sub: 'Vista simultània — procés correcte vs fallada activa',
+    comp_ok:       '✓ PROCÉS CORRECTE',
+    h_select_fail: 'Seleccionar fallada a comparar',
+    h_fail_desc:   'Descripció de la fallada',
+    p_fail_sub: 'Selecciona un mode de fallada per visualitzar-lo en detall',
+    fbadge0:'CRÍTIC', ftitle0:'Trencament per tracció',
+    fdesc0: 'Distància pad→lead excessiva. El fil no té longitud suficient per completar l\'arc sense trencar-se.',
+    fbadge1:'CRÍTIC', ftitle1:'Cratering',
+    fdesc1: 'Pressió o potència ultrasònica excessiva en el 1r bond. La força danya el pad metàl·lic i el substrat del die.',
+    fbadge2:'MODERAT', ftitle2:'Lifted Ball',
+    fdesc2: 'Temperatura o pressió insuficient. La bola d\'or no forma un enllaç intermetàl·lic amb el pad i es desprèn.',
+    fbadge3:'MODERAT', ftitle3:'Loop Sweep',
+    fdesc3: 'Velocitat del cap·lilar excessiva. El fil es desplaça lateralment durant l\'arc, causant curtcircuits.',
+    fbadge4:'MODERAT', ftitle4:'Purple Plague',
+    fdesc4: 'Corrosió intermetàl·lica Au-Al₅. Visible com a zones porpra en la unió. Degrada la conductivitat amb el temps.',
+    h_tech_info: 'Informació tècnica',
+    h_prod_sim:  'Simulació producció',
+    p_prod_sim:  'Simula una línia de 50 bonds amb els paràmetres actuals del panell d\'ajust.',
+    btn_run_prod:'▶ EXECUTAR LÍNIA',
+    h_fail_dist: 'Distribució de fallades',
+    h_rec:       'Recomanació',
+    h_yield:     'Yield de producció',
+    h_log:       'Log de bonds',
+    st_total:    'BONDS TOTAL',
+    st_ok:       'CORRECTES',
+    st_fail:     'FALLATS',
+    st_yield_lbl:'YIELD',
+    btn_play:   '▶ PLAY',
+    btn_pause:  '⏸ PAUSA',
+    btn_reset:  '↺ RESET',
+    btn_fail_off:'⚠ MODE FALLADA',
+    btn_fail_on: '✓ MODE FALLADA',
+    s_idle:     'Cap·lilar en posició inicial',
+    s_fab:      'Free Air Ball — descàrrega elèctrica',
+    s_approach: 'Aproximació al pad del die',
+    s_weld1:    '1r Bond — soldadura termosònica',
+    s_arc:      'Formació de l\'arc (loop)',
+    s_weld2:    '2n Bond — soldadura en lead frame',
+    s_done:     'Tall i preparació del següent',
+    s_stretch:  'ADVERTÈNCIA: Tensió excessiva en fil...',
+    s_broken:   'ERROR: Trencament — distància crítica superada',
+    s_rwait:    'Inspeccionant fallada...',
+    s_complete: 'Completat',
+    s_bonds:    'bonds',
+    c_break:    '!! WIRE BREAK DETECTED',
+    c_crit:     'MODE: DISTÀNCIA CRÍTICA',
+    c_dist:     'DIST',
+    c_tension:  'TENSIÓ',
+    c_exceed:   'SUPERA LÍMIT',
+    c_ok_bonds: 'bonds completats correctament',
+    c_fail_lbl: 'FALLADA',
+    c_crater:   'CRATER DAMAGE',
+    c_lifted:   'BALL LIFTED — sense adhesió intermetàl·lica',
+    c_short:    '⚡ RISC CURTCIRCUIT — fils en contacte',
+    c_plague:   'AuAl₅ — "Purple Plague" — resistivitat ↑',
+    c_sweep:    '⚡ RISC CURTCIRCUIT — fils en contacte',
+    stat_run:   'Executa una línia de producció per obtenir recomanacions.',
+    stat_nofail:'✓ Sense fallades detectades. Paràmetres òptims.',
+    log_init:   'Inicia la simulació de producció...',
+    log_ok:     'OK',
+    log_fail:   'FALLADA',
+    risk_ok:    '✓ Paràmetres dins del rang òptim',
+    risk_warn:  '⚠ Alguns paràmetres en zona d\'advertència',
+    risk_bad:   '✗ Paràmetres fora de rang — alt risc de fallada',
+    w_temp_lo:  '⚠ TEMP baixa → risc Lifted Ball',
+    w_temp_hi:  '⚠ TEMP alta → risc Cratering',
+    w_force_lo: '⚠ PRESSIÓ baixa → adhesió deficient',
+    w_force_hi: '⚠ PRESSIÓ alta → risc Cratering',
+    w_us_lo:    '⚠ US baix → 1r Bond dèbil',
+    w_us_hi:    '⚠ US alt → vibració → Loop Sweep',
+    w_dist_crit:'⚠ DISTÀNCIA crítica → trencament de fil',
+    w_dist_hi:  '⚠ DISTÀNCIA elevada → tensió alta',
+    w_speed:    '⚠ VELOCITAT alta → Loop Sweep',
+    w_diam:     '⚠ FIL molt fi → fràgil sota tensió',
+    w_none:     '✓ Sense advertències actives',
+    tab_cap: '◎ Cap·lilar',
+    cap_h_what: 'Què és el cap·lilar?',
+    cap_what: 'És una agulla buida de ceràmica o acer per on passa el fil metàl·lic. Actua com a guia, soldador i tallador alhora.',
+    cap_h_ball: 'Què és la bola (FAB)?',
+    cap_ball: 'Abans de cada bond, una guspira elèctrica fon l\'extrem del fil i la tensió superficial el converteix en una esfera perfecta — el Free Air Ball. La bola és sempre més gran que el fil: el seu diàmetre és ~2,5× el del fil.',
+    cap_h_why: 'Per què cal la bola?',
+    cap_why: 'La bola té més superfície de contacte que l\'extrem recte del fil. En prémer-la contra el pad amb ultrasons i calor, s\'aplana i forma una unió intermetàl·lica sòlida.',
+    cap_h_step: 'Pas actiu',
+    cap_step_fab: 'Una guspira elèctrica (EFO — Electronic Flame Off) fon l\'extrem del fil. La tensió superficial forma l\'esfera en mil·lisegons.',
+    cap_step_approach: 'El cap·lilar baixa cap al pad. La bola ja formada penja de la punta, a punt per ser soldada.',
+    cap_step_bond: 'La bola s\'aplana contra el pad amb pressió + ultrasons + calor. Els àtoms del fil i el pad es barregen formant un enllaç permanent.',
+    cap_step_loop: 'El cap·lilar puja i es mou cap al lead frame traçant l\'arc. La forma de l\'arc depèn de la velocitat i trajectòria programada.',
+    cap_h_nobalt: 'Per què en el 2n bond no cal la bola?',
+    cap_nobalt: 'En el 1r bond l\'extrem del fil ve tallat en sec — petit i irregular, difícil de soldar. La bola ho soluciona: la guspira el fon i la tensió superficial forma una esfera amb molt més contacte. En el 2n bond el cap·lilar no usa l\'extrem del fil sinó el cos — el fil arriba tensat en arc i el cap·lilar recolza directament sobre ell. Aquella secció ja té prou àrea perquè ultrasons + calor + pressió formin l\'enllaç sense reformar-lo. És com enganxar un cable: l\'extrem tallat és difícil d\'adherir, però si recolzes la part del mig tens molt més contacte.',
+    cap_h_break2: 'Com es trenca el fil en el 2n bond?',
+    cap_break2: 'No hi ha tisores ni fulla. El cap·lilar simplement puja bruscament mentre el fil ja està soldat en la falca. La tensió trenca el fil pel punt més dèbil — just per sobre de la falca, on el metall està més estirat. El tros que queda dins del cap·lilar es converteix en l\'extrem per al següent FAB.',
+    cap_step_2ndbond: 'El fil arriba al lead frame. El cap·lilar prem el fil contra el pad amb força + ultrasons + calor del stage. La vibració trenca l\'òxid del lead i la fricció escalfa el contacte — igual que el 1r bond, però sense bola. El fil s\'aplana en falca i els seus àtoms es barregen amb el metall del lead formant l\'enllaç.',
+    cap_step_cut: 'El cap·lilar puja bruscament. La tensió trenca el fil just per sobre de la falca. L\'extrem trencat queda dins del cap·lilar a punt per al següent FAB.',
+    us_effect1_title: 'EFECTE 1: NETEJA',
+    us_effect1: 'La vibració sacsa l\'òxid i la brutícia del pad perquè el fil pugui enganxar-se bé. Sense això, el fil relliscaria.',
+    us_effect2_title: 'EFECTE 2: CALOR',
+    us_effect2: 'La fricció de la vibració escalfa el punt de contacte — com fregar les mans. Aquesta calor fon el fil al pad.',
+    sd_temp:  'Temperatura del stage (plataforma calefactada). Activa la difusió tèrmica necessària per a l\'enllaç intermetàl·lic Au-Al. <strong>Òptim: 150–250 °C.</strong>',
+    sd_force: 'Força que exerceix el cap·lilar sobre el pad. Massa trenca el pad (cratering); massa poca impedeix l\'adhesió. <strong>Òptim: 20–150 mN.</strong>',
+    sd_us:    'Vibració ultrasònica que neteja la superfície i genera calor friccional local. Excessiva desvia el fil (loop sweep). <strong>Òptim: 20–60 kHz.</strong>',
+    sd_dist:  'Distància horitzontal pad→lead. Superar el límit elàstic del fil provoca trencament per tracció. <strong>Límit: ~3500 µm (Au 25 µm).</strong>',
+    sd_speed: 'Velocitat del cap·lilar en traçar l\'arc. A alta velocitat la inèrcia desplaça el fil lateralment (loop sweep). <strong>Òptim: 8–15 wire/s.</strong>',
+    sd_diam:  'Secció del fil. Fi = major densitat / més fràgil. Gruixut = més corrent / ocupa més espai. <strong>Òptim: 18–50 µm.</strong>',
+    fd_idle:    'Esperant...',
+    fd_crater:  'Crater detectat — pad danyat',
+    fd_crater2: 'Aplicant 1r Bond amb força excessiva',
+    fd_lifted:  'Ball lifted — enllaç intermetàl·lic insuficient',
+    fd_lift_ok: 'Formant bonds — adhesió correcta',
+    fd_sweep_c: 'Loop sweep crític — possible curtcircuit',
+    fd_sweep_ok:'Formant arcs amb velocitat excessiva',
+    fd_plague_c:'Purple Plague — compost AuAl₅ detectat',
+    fd_plague_ok:'Simulant degradació tèrmica a llarg termini',
+    cf0:'Trencament distància', cf1:'Cratering', cf2:'Lifted Ball', cf3:'Loop Sweep',
+    c_fail_prefix:'⚠ FALLADA: ',
+    err_title:  'FALLADA DETECTADA',
+    rec0: 'Reduir distància pad→lead o usar fil de major diàmetre.',
+    rec1: 'Reduir pressió de bonding i/o potència ultrasònica.',
+    rec2: 'Augmentar temperatura de stage i verificar neteja de pads.',
+    rec3: 'Reduir velocitat de cap·lilar a < 15 wire/s.',
+    rec4: 'Considerar Cu wire o revestiment de pads per evitar AuAl₅.',
+    fi0: 'La longitud màxima del fil està limitada pel seu mòdul de Young i el diàmetre. Per Au de 25µm la distància màxima pràctica és ~3–3,5mm. Més enllà, la deformació plàstica és irreversible i el fil falla per fractura dúctil, normalment en el punt de menor secció o major tensió de l\'arc.',
+    fi1: 'L\'energia termosònica aplicada en el 1r Bond supera la resistència mecànica del pad d\'Al o Au. El dany es propaga al dielèctric subjacent (SiO₂) i pot arribar al substrat de Si. Visible al microscopi com a cràters o delaminacions. Causes: temperatura excessiva, potència ultrasònica alta, o duresa incorrecta del pad.',
+    fi2: 'L\'enllaç intermetàl·lic Au-Al requereix temperatura (~150°C mín.), pressió i temps suficients. Si algun d\'aquests és insuficient, la bola queda unida per adhesió mecànica dèbil. Sota tensió en el loop, el ball es desprèn del pad. Detectable per pull test o shear test. Freqüent en xips amb pads oxidats o contaminats.',
+    fi3: 'Durant el moviment del cap·lilar des del 1r Bond al 2n Bond, la inèrcia i la vibració poden desplaçar el fil lateralment. Amb velocitats > 15 wire/s o potència US alta, el sweep pot superar 20µm, causant contacte entre fils adjacents (curtcircuit). Més crític en pitches fins < 50µm.',
+    fi4: 'Fenomen de corrosió intermetàl·lica entre Au i Al a temperatures de 150–300°C. Forma compostos fràgils (AuAl₂ = "white plague", Au₅Al₂ = "purple plague"). El compost AuAl₅ de color violeta té alta resistivitat i fragilitat. Ocorre amb el temps (anys) en encapsulats plàstics. Mitigació: usar Cu wire o augmentar puresa de pads.',
+    cfd0: 'El fil s\'estira més enllà del seu límit elàstic quan la distància pad→lead supera ~3500 µm per Au de 25 µm. El trencament ocorre típicament al 55–70% de l\'arc.',
+    cfd1: 'Pressió o potència ultrasònica excessiva en el 1r bond. La força mecànica fractura el pad metàl·lic i pot danyar les capes del substrat del die.',
+    cfd2: 'Temperatura o pressió insuficient. No es forma l\'enllaç intermetàl·lic Au-Al necessari. La bola es desprèn del pad en aplicar tensió en l\'arc.',
+    cfd3: 'Velocitat del cap·lilar o potència ultrasònica excessiva. El fil es desvia lateralment durant la formació de l\'arc, podent contactar fils adjacents.',
   }
 };
 
@@ -854,7 +1044,7 @@ function applyLang(){
   const _bf=document.getElementById('btnFail'); if(_bf)_bf.textContent=simFail?T('btn_fail_on'):T('btn_fail_off');
   // Update initial log text if empty
   const log=document.getElementById('bondLog');
-  if(log&&log.textContent.trim()===DICT.es.log_init||log.textContent.trim()===DICT.en.log_init){
+  if(log&&(log.textContent.trim()===DICT.es.log_init||log.textContent.trim()===DICT.en.log_init||log.textContent.trim()===DICT.ca.log_init)){
     log.textContent=T('log_init');
   }
   // Update stat recommendation
@@ -862,6 +1052,7 @@ function applyLang(){
   // Update lang buttons
   document.getElementById('btnES').classList.toggle('active',LANG==='es');
   document.getElementById('btnEN').classList.toggle('active',LANG==='en');
+  document.getElementById('btnCA').classList.toggle('active',LANG==='ca');
   // Re-run param update to refresh translated warnings
   updateParams();
 }
@@ -2754,7 +2945,7 @@ function initCapTab(){
     }
     ctx.font='7px DM Mono,monospace'; ctx.fillStyle='#C87800'; ctx.textAlign='center';
     ctx.shadowColor='rgba(255,150,0,0.4)'; ctx.shadowBlur=4;
-    ctx.fillText(LANG==='en'?'bonding wire 25µm':'hilo bonding 25µm',(rp.cx+lp2.cx)/2,rp.cy-arcH-8);
+    ctx.fillText(LANG==='en'?'bonding wire 25µm':LANG==='ca'?'fil bonding 25µm':'hilo bonding 25µm',(rp.cx+lp2.cx)/2,rp.cy-arcH-8);
     ctx.shadowBlur=0;
   }
   function lerp2(a,b,t){return a+(b-a)*t;}
@@ -2764,10 +2955,10 @@ function initCapTab(){
     const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
     ctx.clearRect(0,0,W,H); ctx.fillStyle='#F5F2EC'; ctx.fillRect(0,0,W,H);
     const items=[
-      {label:LANG==='en'?'Human hair':'Cabello humano', size:70,  col:'#AAAAAA'},
-      {label:LANG==='en'?'Bonding wire (Au 25µm)':'Hilo bonding (Au 25µm)', size:9,   col:'#E8A020'},
+      {label:LANG==='en'?'Human hair':LANG==='ca'?'Cabell humà':'Cabello humano', size:70,  col:'#AAAAAA'},
+      {label:LANG==='en'?'Bonding wire (Au 25µm)':LANG==='ca'?'Fil bonding (Au 25µm)':'Hilo bonding (Au 25µm)', size:9,   col:'#E8A020'},
       {label:'Pad (~80µm)',  size:28,  col:'#D4AF37'},
-      {label:LANG==='en'?'Transistor (7nm)':'Transistor (7nm)',  size:0.5, col:'#3355DD'},
+      {label:LANG==='en'?'Transistor (7nm)':LANG==='ca'?'Transistor (7nm)':'Transistor (7nm)',  size:0.5, col:'#3355DD'},
     ];
     const maxSz=70, barMaxW=W-200, barH=14, startX=170, startY=12;
     items.forEach((it,i)=>{
