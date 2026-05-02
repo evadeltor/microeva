@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Visión Industrial — Cómo funciona una cámara</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #efefef;
+  --bg2:     #e4e4e4;
+  --bg3:     #d8d8d8;
+  --card:    #ffffff;
+  --border:  rgba(0,0,0,0.10);
+  --border2: rgba(0,0,0,0.20);
+  --text:    #1a1a1a;
+  --text2:   #555555;
+  --text3:   #999999;
+  --accent:  #2563eb;
+  --danger:  #dc2626;
+  --good:    #16a34a;
+  --warn:    #d97706;
+  --sans:    'IBM Plex Sans', sans-serif;
+  --mono:    'IBM Plex Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+}
+
+header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.header-left { flex: 1; min-width: 0; }
+.header-label { font-family: var(--mono); font-size: 9px; color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 2px; }
+header h1 { font-size: 1.1rem; font-weight: 300; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+header h1 strong { font-weight: 500; }
+.header-sub { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-top: 2px; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.logo-img { height: 80px; width: auto; object-fit: contain; }
+.header-authors { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
+.header-authors span { font-family: var(--mono); font-size: 9px; color: var(--text3); }
+
+.tabs-nav {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  scrollbar-width: none;
+}
+.tabs-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text3);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-btn.disabled { opacity: 0.3; pointer-events: none; }
+.tab-num { font-size: 9px; color: var(--text3); }
+.tab-btn.active .tab-num { color: var(--accent); opacity: 0.5; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.section { padding: 1.25rem; border-bottom: 1px solid var(--border); }
+.section-label { font-family: var(--mono); font-size: 9px; color: var(--accent); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 1rem; }
+
+.controls { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 1.25rem; }
+.ctrl { display: flex; flex-direction: column; gap: 8px; }
+.ctrl-label { font-family: var(--mono); font-size: 11px; color: var(--text2); display: flex; justify-content: space-between; align-items: center; }
+.ctrl-label span { color: var(--accent); font-weight: 500; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  background: var(--border2);
+  border-radius: 3px;
+  outline: none;
+  touch-action: pan-y;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  margin-top: -10px;
+}
+input[type=range]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+}
+
+.cameras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+.cam { display: flex; flex-direction: column; gap: 6px; }
+.cam-title { font-family: var(--mono); font-size: 11px; color: var(--text); font-weight: 500; }
+.cam-sub   { font-family: var(--mono); font-size: 9px;  color: var(--text3); }
+.canvas-wrap { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: #1a1a1a; }
+canvas { display: block; width: 100%; height: auto; }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.stat { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 7px 8px; }
+.stat-label { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 0.04em; margin-bottom: 1px; }
+.stat-val   { font-family: var(--mono); font-size: 17px; font-weight: 500; color: var(--text); }
+.stat-val.good { color: var(--good); }
+.stat-val.bad  { color: var(--danger); }
+.stat-val.warn { color: var(--warn); }
+
+.verdict {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--text2);
+  font-family: var(--mono);
+  line-height: 1.6;
+  border-radius: 0 4px 4px 0;
+}
+
+.info-text p { font-size: 14px; color: var(--text2); line-height: 1.75; margin-bottom: 0.75rem; }
+.info-text p:last-child { margin-bottom: 0; }
+.info-text strong { color: var(--text); font-weight: 500; }
+.highlight {
+  border-left: 3px solid var(--accent);
+  padding: 0.5rem 0.75rem;
+  margin: 1rem 0;
+  font-size: 13px;
+  color: var(--text);
+  font-style: italic;
+  background: rgba(37,99,235,0.06);
+  border-radius: 0 4px 4px 0;
+}
+
+.diagram-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow: hidden; }
+.diagram-title { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; }
+svg { overflow: visible; }
+svg text { font-family: 'IBM Plex Mono', monospace; }
+
+.pixel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; align-items: stretch; }
+.pixel-box { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; display: flex; flex-direction: column; justify-content: center; }
+.pixel-box-title { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+.pixel-canvas-wrap { width: 100%; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; background: #f5f5f5; }
+.pixel-canvas-wrap canvas { display: block; max-width: 100%; height: auto; }
+
+.contact-hero { text-align: center; padding: 2rem 1.25rem 1.5rem; }
+.contact-title { font-size: 1.5rem; font-weight: 300; color: var(--text); margin-bottom: 0.6rem; letter-spacing: -0.02em; }
+.contact-desc { font-size: 14px; color: var(--text2); max-width: 360px; margin: 0 auto; line-height: 1.7; }
+.contact-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.contact-card {
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.5rem 1.25rem 1.25rem; text-align: center; gap: 10px;
+}
+.contact-photo { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; object-position: top center; }
+.contact-name { font-size: 16px; font-weight: 500; color: var(--text); }
+.contact-role { font-size: 12px; color: var(--text3); font-family: var(--mono); line-height: 1.5; }
+.contact-links { display: flex; flex-direction: column; gap: 4px; align-items: center; margin-top: 4px; }
+.contact-link { font-size: 13px; color: var(--accent); text-decoration: none; font-family: var(--mono); }
+.contact-link:active { opacity: 0.7; }
+.contact-link-sec { color: var(--text2); }
+.contact-web { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; text-align: center; }
+.contact-web-label { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+.contact-web-url { font-size: 17px; font-weight: 500; color: var(--accent); text-decoration: none; }
+
+.subtabs-nav {
+  display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; gap: 0; margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.subtabs-nav::-webkit-scrollbar { display: none; }
+.subtab-btn {
+  flex: 0 0 auto; background: none; border: none;
+  border-bottom: 2px solid transparent; color: var(--text3);
+  font-family: var(--mono); font-size: 11px; padding: 0.65rem 0.9rem;
+  cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.subtab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.subtab-panel { display: none; }
+.subtab-panel.active { display: block; }
+
+.well-bar-wrap {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;
+  height: 28px; overflow: hidden; margin-bottom: 6px; position: relative;
+}
+.well-bar-fill { height: 100%; border-radius: 6px 0 0 6px; transition: width 0.15s, background 0.15s; }
+.well-bar-label {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-family: var(--mono); font-size: 10px; color: var(--text2);
+}
+
+/* Escala exposición motion blur */
+.exp-scale {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 9px; color: var(--text3);
+  margin-top: 4px; padding: 0 2px;
+}
+.exp-center { text-align: center; color: var(--good); font-weight: 500; }
+
+.tree { font-family: var(--mono); font-size: 12px; }
+.tree-node { margin: 0; }
+.tree-header {
+  display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+  cursor: pointer; border-radius: 6px; transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.tree-header:active { background: var(--bg2); }
+.tree-toggle {
+  width: 16px; height: 16px; border-radius: 4px; background: var(--accent);
+  color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: transform 0.2s;
+}
+.tree-toggle.open { transform: rotate(90deg); }
+.tree-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
+.tree-label { color: var(--text); line-height: 1.4; }
+.tree-desc { color: var(--text2); font-size: 11px; margin-left: 4px; }
+.tree-children {
+  margin-left: 24px; border-left: 1.5px solid var(--border2);
+  padding-left: 8px; display: none;
+}
+.tree-children.open { display: block; }
+.tree-leaf { display: flex; align-items: flex-start; gap: 8px; padding: 5px 10px; border-radius: 6px; }
+.tree-leaf .tree-dot { margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="header-label">Visión Industrial</div>
+    <h1>Cómo funciona <strong>una cámara</strong></h1>
+    <div class="header-sub">simuladores interactivos</div>
+  </div>
+  <div class="header-right">
+    <div class="header-authors">
+      <span>Héctor Cordal</span>
+      <span>Eva Deltor</span>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs-nav">
+  <button class="tab-btn active" data-tab="filtro"><span class="tab-num">01</span> Filtros</button>
+  <button class="tab-btn" data-tab="sensor"><span class="tab-num">02</span> Sensor</button>
+  <button class="tab-btn" data-tab="electronica"><span class="tab-num">03</span> Electrónica</button>
+  <button class="tab-btn" data-tab="optica"><span class="tab-num">04</span> Shutter</button>
+  <button class="tab-btn" data-tab="disclaimer"><span class="tab-num">i</span> Disclaimer</button>
+  <button class="tab-btn" data-tab="contacto"><span class="tab-num">✉</span> Contacto</button>
+</nav>
+
+<!-- ══════ PESTAÑA 01 — FILTROS ══════ -->
+<div class="tab-panel active" id="tab-filtro">
+  <div class="section">
+    <div class="section-label">Simulador — Monocromo vs Color</div>
+    <div class="controls">
+      <div class="ctrl"><div class="ctrl-label">Iluminación <span id="f-lux-val">media</span></div><input type="range" id="f-light" min="1" max="5" step="1" value="3"></div>
+      <div class="ctrl"><div class="ctrl-label">Ruido electrónico <span id="f-noise-val">normal</span></div><input type="range" id="f-enoise" min="1" max="5" step="1" value="2"></div>
+      <div class="ctrl"><div class="ctrl-label">Resolución <span id="f-res-val">media</span></div><input type="range" id="f-res" min="1" max="3" step="1" value="2"></div>
+    </div>
+    <div class="cameras">
+      <div class="cam">
+        <div class="cam-title">Monocromo</div><div class="cam-sub" id="f-mono-px"></div>
+        <div class="canvas-wrap"><canvas id="f-mono"></canvas></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Fotones/px</div><div class="stat-val" id="f-mono-ph"></div></div>
+          <div class="stat"><div class="stat-label">SNR</div><div class="stat-val" id="f-mono-snr"></div></div>
+        </div>
+      </div>
+      <div class="cam">
+        <div class="cam-title">Color (Bayer)</div><div class="cam-sub" id="f-col-px"></div>
+        <div class="canvas-wrap"><canvas id="f-col"></canvas></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Fotones/px</div><div class="stat-val" id="f-col-ph"></div></div>
+          <div class="stat"><div class="stat-label">SNR</div><div class="stat-val" id="f-col-snr"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="verdict" id="f-verdict"></div>
+  </div>
+  <div class="section info-text">
+    <div class="section-label">¿Qué está pasando?</div>
+    <p>Lo primero que encuentra un fotón no es el sensor, sino los <strong>filtros que colocamos delante</strong>. El ejemplo más claro es la elección entre cámara de color y monocromo.</p>
+    <p>Un sensor no mide color: mide <strong>intensidad de luz</strong>. Al colocar un filtro de color, cada píxel solo deja pasar una banda del espectro — el resto se pierde.</p>
+    <div class="highlight">Al filtrar perdemos información a propósito. Lo que el filtro bloquea no se mide, no se almacena, no existe para la cámara.</div>
+    <p>El filtro Bayer organiza los píxeles en un patrón de 2×2: 1 rojo, 2 verdes y 1 azul. Cada píxel solo deja pasar <em>su</em> color y bloquea el resto — así que de media, cada píxel recibe aproximadamente <strong>1 de cada 3 fotones</strong> que llegan. Menos fotones significa peor señal y más ruido.</p>
+    <p>Cuando la aplicación no necesita color — <strong>que en industria es la mayoría de las veces</strong> — elegir color "por si acaso" es regalar señal.</p>
+  </div>
+  <div class="section">
+    <div class="diagram-wrap">
+      <div class="diagram-title">Espectro electromagnético completo</div>
+      <svg viewBox="0 0 300 76" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="vis-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stop-color="#7b00ff"/>
+            <stop offset="18%"  stop-color="#0044ff"/>
+            <stop offset="38%"  stop-color="#00cc44"/>
+            <stop offset="60%"  stop-color="#aacc00"/>
+            <stop offset="80%"  stop-color="#ff8800"/>
+            <stop offset="100%" stop-color="#ff2200"/>
+          </linearGradient>
+        </defs>
+        <rect x="0"   y="4"  width="55"  height="20" rx="2" fill="#6d28d9" opacity="0.5"/>
+        <text x="27"  y="18" font-size="8" fill="#ede9fe" text-anchor="middle">UV</text>
+        <rect x="57"  y="4"  width="110" height="20" rx="2" fill="url(#vis-grad)" opacity="0.9"/>
+        <text x="112" y="18" font-size="8" fill="#fff" text-anchor="middle" font-weight="500">VISIBLE</text>
+        <rect x="169" y="4"  width="131" height="20" rx="2" fill="#b45309" opacity="0.5"/>
+        <text x="234" y="18" font-size="8" fill="#fef3c7" text-anchor="middle">IR (infrarrojo)</text>
+        <text x="0"   y="36" font-size="6" fill="#aaa">&lt;380nm</text>
+        <text x="57"  y="36" font-size="6" fill="#aaa">380nm</text>
+        <text x="155" y="36" font-size="6" fill="#aaa">700nm</text>
+        <text x="250" y="36" font-size="6" fill="#aaa">&gt;1µm</text>
+        <line x1="57"  y1="2" x2="57"  y2="38" stroke="#aaa" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <line x1="167" y1="2" x2="167" y2="38" stroke="#aaa" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="0" y="52" font-size="6" fill="#bbb" letter-spacing="0.3">filtro Bayer</text>
+        <rect x="0"   y="56" width="55"  height="8" rx="1" fill="#dc2626" opacity="0.6"/>
+        <rect x="57"  y="56" width="110" height="8" rx="1" fill="#16a34a" opacity="0.25"/>
+        <rect x="169" y="56" width="131" height="8" rx="1" fill="#dc2626" opacity="0.6"/>
+        <text x="27"  y="74" font-size="6" fill="#dc2626" text-anchor="middle">bloq.</text>
+        <text x="112" y="74" font-size="6" fill="#16a34a" text-anchor="middle">pasa (~33%)</text>
+        <text x="234" y="74" font-size="6" fill="#dc2626" text-anchor="middle">bloq.</text>
+      </svg>
+    </div>
+  </div>
+  <div class="section">
+    <div class="diagram-wrap">
+      <div class="diagram-title">Array de píxeles — con y sin filtro Bayer</div>
+      <div style="display:flex;gap:10px;margin-bottom:10px;">
+        <button id="bayer-on"  onclick="setBayer(true)"  style="flex:1;padding:7px;font-family:monospace;font-size:11px;border-radius:6px;border:2px solid #2563eb;background:#2563eb;color:#fff;cursor:pointer;">Con filtro Bayer</button>
+        <button id="bayer-off" onclick="setBayer(false)" style="flex:1;padding:7px;font-family:monospace;font-size:11px;border-radius:6px;border:1.5px solid #ccc;background:#fff;color:#555;cursor:pointer;">Sin filtro Bayer</button>
+      </div>
+      <canvas id="bayer-canvas" style="width:100%;height:auto;display:block;border-radius:4px;"></canvas>
+      <div id="bayer-desc" style="margin-top:8px;font-family:monospace;font-size:11px;color:#555;line-height:1.5;padding:8px 10px;background:#f8f8f8;border-radius:6px;border-left:3px solid #2563eb;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PESTAÑA 02 — SENSOR ══════ -->
+<div class="tab-panel" id="tab-sensor">
+  <div class="section">
+    <div class="section-label">Simulador — Pixel Pitch y Fill Factor</div>
+    <div class="controls">
+      <div class="ctrl"><div class="ctrl-label">Tamaño de píxel (pitch) <span id="s-pitch-val">5.0 µm</span></div><input type="range" id="s-pitch" min="1" max="5" step="1" value="3"></div>
+      <div class="ctrl"><div class="ctrl-label">Fill factor <span id="s-ff-val">60%</span></div><input type="range" id="s-ff" min="1" max="5" step="1" value="3"></div>
+      <div class="ctrl"><div class="ctrl-label">Iluminación <span id="s-lux-val">media</span></div><input type="range" id="s-light" min="1" max="5" step="1" value="3"></div>
+    </div>
+    <div class="pixel-grid">
+      <div class="pixel-box">
+        <div class="pixel-box-title">Estructura del píxel</div>
+        <div class="pixel-canvas-wrap"><canvas id="s-pixel" width="200" height="200"></canvas></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Pitch</div><div class="stat-val" id="s-pitch-disp" style="font-size:13px"></div></div>
+          <div class="stat"><div class="stat-label">Fill factor</div><div class="stat-val" id="s-ff-disp"></div></div>
+        </div>
+      </div>
+      <div class="pixel-box">
+        <div class="pixel-box-title">Imagen capturada</div>
+        <div class="pixel-canvas-wrap"><canvas id="s-scene" width="200" height="200"></canvas></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Fotones/px</div><div class="stat-val" id="s-ph"></div></div>
+          <div class="stat"><div class="stat-label">SNR</div><div class="stat-val" id="s-snr"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="verdict" id="s-verdict"></div>
+  </div>
+  <div class="section info-text">
+    <div class="section-label">¿Qué está pasando?</div>
+    <p>El sensor transforma fotones en electrones. Un parámetro fundamental es el <strong>pixel pitch</strong>: el tamaño físico de cada píxel.</p>
+    <p>Imaginad cada píxel como un <strong>cubo que recoge agua de lluvia</strong>: cuanto más diámetro tenga, más agua recoge en el mismo tiempo. Un píxel grande capta más fotones — y más fotones significa mejor señal y menos ruido.</p>
+    <p>Pero no todo el píxel captura luz. Cada píxel tiene dos zonas: la <strong>zona fotosensible</strong> (el fotodiodo) y la <strong>zona de circuitería</strong>. La proporción de superficie útil se llama <strong>fill factor</strong>.</p>
+    <div class="highlight">En píxeles pequeños, la circuitería puede ocupar una fracción significativa del área. La tecnología BSI resuelve esto colocando la circuitería detrás del silicio.</div>
+  </div>
+  <div class="section">
+    <div class="diagram-wrap">
+      <div class="diagram-title">FSI vs BSI</div>
+      <canvas id="fsi-bsi-canvas" width="1200" height="680" style="width:100%;height:auto;display:block;border-radius:4px;background:#f5f5f5;"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PESTAÑA 03 — ELECTRÓNICA ══════ -->
+<div class="tab-panel" id="tab-electronica">
+  <div class="section">
+    <div class="section-label">Electrónica del sensor</div>
+    <nav class="subtabs-nav">
+      <button class="subtab-btn active" data-subtab="saturacion">Saturación / Full Well</button>
+      <button class="subtab-btn" data-subtab="motion">Motion Blur</button>
+      <button class="subtab-btn" data-subtab="dynamic">Rango Dinámico</button>
+    </nav>
+
+    <!-- SUB 1: SATURACIÓN -->
+    <div class="subtab-panel active" id="subtab-saturacion">
+      <div class="controls">
+        <div class="ctrl">
+          <div class="ctrl-label">Iluminación de la escena <span id="e-light-val">media</span></div>
+          <input type="range" id="e-light" min="1" max="10" step="1" value="5">
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-label">Full well capacity <span id="e-fwc-val">media (15 ke⁻)</span></div>
+          <input type="range" id="e-fwc" min="1" max="5" step="1" value="3">
+        </div>
+      </div>
+      <div class="canvas-wrap" style="margin-bottom:1rem;">
+        <canvas id="e-sat-canvas" width="300" height="200" style="width:100%;height:auto;display:block;"></canvas>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:6px;">LLENADO DEL PÍXEL (full well capacity)</div>
+        <div class="well-bar-wrap">
+          <div class="well-bar-fill" id="e-well-bar" style="width:60%;background:#16a34a;"></div>
+          <span class="well-bar-label" id="e-well-label">60%</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);">0 e⁻ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Full well</div>
+      </div>
+      <div class="stats" style="margin-bottom:1rem;">
+        <div class="stat"><div class="stat-label">Píxeles saturados</div><div class="stat-val" id="e-sat-pct">0%</div></div>
+        <div class="stat"><div class="stat-label">Zona útil</div><div class="stat-val good" id="e-sat-good">100%</div></div>
+      </div>
+      <div class="verdict" id="e-sat-verdict"></div>
+    </div>
+
+    <!-- SUB 2: MOTION BLUR — versión corregida -->
+    <div class="subtab-panel" id="subtab-motion">
+      <div class="controls">
+        <div class="ctrl">
+          <div class="ctrl-label">Velocidad del objeto <span id="e-speed-val">media</span></div>
+          <input type="range" id="e-speed" min="1" max="5" step="1" value="3">
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-label">Tiempo de exposición <span id="e-exp-val">1/500 s — óptimo</span></div>
+          <input type="range" id="e-exp" min="1" max="9" step="1" value="5">
+          <div class="exp-scale">
+            <span>oscuro / nítido</span>
+            <span class="exp-center">óptimo</span>
+            <span>brillante / borroso</span>
+          </div>
+        </div>
+      </div>
+      <div class="canvas-wrap" style="margin-bottom:1rem;">
+        <canvas id="e-blur-canvas" width="300" height="160" style="width:100%;height:auto;display:block;"></canvas>
+      </div>
+      <div class="verdict" id="e-blur-verdict"></div>
+    </div>
+
+    <!-- SUB 3: RANGO DINÁMICO -->
+    <div class="subtab-panel" id="subtab-dynamic">
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--good);font-weight:500;margin-bottom:4px;">Referencia — Alto DR (90 dB)</div>
+        <div class="canvas-wrap"><canvas id="e-dr-hi" width="800" height="80" style="width:100%;display:block;"></canvas></div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text3);margin:3px 2px 0;">
+          <span>oscuro</span><span>brillante</span>
+        </div>
+      </div>
+
+      <div class="controls" style="margin-bottom:.75rem;">
+        <div class="ctrl">
+          <div class="ctrl-label">Rango dinámico del sensor <span id="e-dr-val">66 dB</span></div>
+          <input type="range" id="e-dr-slider" min="1" max="5" step="1" value="3">
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem;">
+        <div style="font-family:var(--mono);font-size:10px;font-weight:500;margin-bottom:4px;" id="e-dr-lo-title">Sensor — 66 dB</div>
+        <div class="canvas-wrap"><canvas id="e-dr-lo" width="800" height="80" style="width:100%;display:block;"></canvas></div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text3);margin:3px 2px 0;">
+          <span>oscuro</span><span>brillante</span>
+        </div>
+      </div>
+
+      <div class="verdict" id="e-dr-verdict"></div>
+    </div>
+  </div>
+
+  <div class="section info-text">
+    <div class="section-label">¿Qué está pasando?</div>
+    <p>La electrónica necesita electrones para funcionar. Cada píxel tiene una <strong>capacidad máxima de electrones</strong> que puede almacenar antes de saturarse: es la <strong>full well capacity</strong>. Cuando se llena, el píxel no distingue entre mucha luz y muchísima — todo se ve blanco.</p>
+    <p>El <strong>tiempo de exposición</strong> define cuánto tiempo acumula carga cada píxel. Más exposición significa más señal (más brillo), pero si la pieza se mueve aparece el <strong>motion blur</strong>. Brillo y blur crecen juntos — no puedes tener uno sin el otro solo ajustando la exposición. La solución industrial es el flash estroboscópico.</p>
+    <p>La diferencia entre la señal más débil y la más fuerte que el sensor puede capturar <em>a la vez</em> es el <strong>rango dinámico</strong>, medido en decibelios (dB).</p>
+    <div class="highlight">El diseño de un sistema de visión es siempre un compromiso: full well, rango dinámico y exposición están ligados. No hay configuración perfecta — hay configuración adecuada para la aplicación.</div>
+  </div>
+
+  <div class="section">
+    <div class="diagram-wrap">
+      <div class="diagram-title">Full well capacity y rango dinámico</div>
+      <svg viewBox="0 0 280 148" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <!-- eje vertical izquierdo -->
+        <line x1="52" y1="8" x2="52" y2="140" stroke="#ccc" stroke-width="1"/>
+        <!-- flecha arriba -->
+        <polygon points="52,5 49,12 55,12" fill="#ccc"/>
+
+        <!-- etiquetas eje Y -->
+        <text x="50" y="12"  font-size="7" fill="#888" text-anchor="end">Full well</text>
+        <text x="50" y="140" font-size="7" fill="#888" text-anchor="end">0 e⁻</text>
+
+        <!-- zona saturación (arriba) -->
+        <rect x="54" y="8"  width="170" height="22" rx="2" fill="#dc2626" opacity="0.13"/>
+        <text x="139" y="16" font-size="7" fill="#dc2626" text-anchor="middle" font-weight="500">SATURACIÓN</text>
+        <text x="139" y="26" font-size="6.5" fill="#dc2626" text-anchor="middle">píxel lleno — sin información</text>
+
+        <!-- zona útil (centro) -->
+        <rect x="54" y="30"  width="170" height="80" rx="2" fill="#2563eb" opacity="0.07"/>
+        <text x="139" y="72" font-size="8.5" fill="#2563eb" text-anchor="middle" font-weight="500">rango dinámico útil</text>
+        <text x="139" y="84" font-size="7" fill="#2563eb" text-anchor="middle" opacity="0.7">señal distinguible del ruido</text>
+
+        <!-- zona ruido (abajo) -->
+        <rect x="54" y="110" width="170" height="22" rx="2" fill="#d97706" opacity="0.13"/>
+        <text x="139" y="121" font-size="7" fill="#d97706" text-anchor="middle" font-weight="500">RUIDO DE LECTURA</text>
+        <text x="139" y="130" font-size="6.5" fill="#d97706" text-anchor="middle">señal demasiado débil</text>
+
+        <!-- líneas de separación -->
+        <line x1="54" y1="30"  x2="224" y2="30"  stroke="#dc2626" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.5"/>
+        <line x1="54" y1="110" x2="224" y2="110" stroke="#d97706" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.5"/>
+
+        <!-- flecha dB lateral -->
+        <line x1="232" y1="30" x2="232" y2="110" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="0"/>
+        <polygon points="232,27 229,34 235,34" fill="#2563eb"/>
+        <polygon points="232,113 229,106 235,106" fill="#2563eb"/>
+        <text x="248" y="74" font-size="7.5" fill="#2563eb" text-anchor="middle" transform="rotate(90,248,74)">dB / stops</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Símil</div>
+    <div class="diagram-wrap">
+      <div class="diagram-title">El cubo de agua</div>
+      <canvas id="bucket-canvas" width="300" height="180" style="width:100%;height:auto;display:block;border-radius:4px;background:#f5f5f5;"></canvas>
+    </div>
+    <div class="section info-text" style="padding:0;border:none;margin-top:1rem;">
+      <p>Imagina que cada píxel es un <strong>cubo que recoge lluvia</strong> durante la exposición. Los fotones son las gotas de agua.</p>
+      <p>Mientras el cubo no se llena, puedes saber exactamente cuánta lluvia ha caído mirando el nivel del agua. Pero <strong>cuando el cubo rebosa, toda la información se pierde</strong>: ya no sabes si llovió un poco más o muchísimo más — el resultado es el mismo, el cubo está lleno y desbordando.</p>
+      <p>La <strong>full well capacity</strong> es el tamaño del cubo. Un cubo más grande tarda más en rebosar — puede recoger más lluvia antes de perder información. La <strong>iluminación</strong> es la intensidad de la lluvia.</p>
+      <div class="highlight">En el sensor, "el cubo rebosa" se traduce en píxeles blancos puros — sin ningún detalle. No importa cuánta más luz llegue: el píxel ya no puede distinguirla.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PESTAÑA 04 — SHUTTER ══════ -->
+<div class="tab-panel" id="tab-optica">
+  <div class="section">
+    <div class="section-label">Simulador — Rolling vs Global Shutter</div>
+    <div class="controls">
+      <div class="ctrl">
+        <div class="ctrl-label">Velocidad del objeto <span id="sh-speed-val">media</span></div>
+        <input type="range" id="sh-speed" min="1" max="5" step="1" value="3">
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-label">Tipo de movimiento <span id="sh-dir-val">horizontal</span></div>
+        <input type="range" id="sh-dir" min="1" max="3" step="1" value="1">
+      </div>
+    </div>
+    <div class="cameras">
+      <div class="cam">
+        <div class="cam-title">Rolling Shutter</div>
+        <div class="cam-sub">lee fila a fila</div>
+        <div class="canvas-wrap"><canvas id="sh-rolling"></canvas></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Lectura</div><div class="stat-val" style="font-size:13px">fila a fila</div></div>
+          <div class="stat"><div class="stat-label">Distorsión</div><div class="stat-val" id="sh-rolling-dist"></div></div>
+        </div>
+      </div>
+      <div class="cam">
+        <div class="cam-title">Global Shutter</div>
+        <div class="cam-sub">lee todos los píxeles a la vez</div>
+        <div class="canvas-wrap"><canvas id="sh-global"></canvas></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Lectura</div><div class="stat-val" style="font-size:13px">simultánea</div></div>
+          <div class="stat"><div class="stat-label">Distorsión</div><div class="stat-val good" id="sh-global-dist">0px</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="verdict" id="sh-verdict"></div>
+  </div>
+  <div class="section info-text">
+    <div class="section-label">¿Qué está pasando?</div>
+    <p>El <strong>rolling shutter</strong> lee el sensor fila a fila. Si el objeto se mueve mientras se está leyendo, cada fila captura el objeto en una posición ligeramente distinta — el resultado es una imagen distorsionada.</p>
+    <p>El <strong>global shutter</strong> lee todos los píxeles simultáneamente. No importa cuánto se mueva el objeto — todos los píxeles capturan el mismo instante.</p>
+    <div class="highlight">En industria con objetos en movimiento rápido, el global shutter no es un lujo — es un requisito. El rolling shutter introduce errores de geometría que ningún algoritmo puede corregir después.</div>
+  </div>
+  <div class="section">
+    <div class="diagram-wrap">
+      <div class="diagram-title">Rolling vs Global — proceso de lectura</div>
+      <svg viewBox="0 0 320 136" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="12" font-size="8" fill="#555" letter-spacing="0.5">ROLLING SHUTTER</text>
+        <rect x="0" y="18" width="130" height="84" rx="2" fill="#e8e8e8" stroke="#ccc" stroke-width="0.5"/>
+        <rect x="0" y="18" width="130" height="11" rx="1" fill="#2563eb" opacity="0.85"/>
+        <rect x="0" y="31" width="130" height="11" rx="1" fill="#2563eb" opacity="0.65"/>
+        <rect x="0" y="44" width="130" height="11" rx="1" fill="#2563eb" opacity="0.45"/>
+        <rect x="0" y="57" width="130" height="11" rx="1" fill="#2563eb" opacity="0.25"/>
+        <rect x="0" y="70" width="130" height="11" rx="1" fill="#2563eb" opacity="0.12"/>
+        <rect x="0" y="83" width="130" height="11" rx="1" fill="#2563eb" opacity="0.05"/>
+        <text x="134" y="26" font-size="6" fill="#2563eb">t=0ms</text>
+        <text x="134" y="39" font-size="6" fill="#2563eb">t=1ms</text>
+        <text x="134" y="52" font-size="6" fill="#555">t=2ms</text>
+        <text x="134" y="65" font-size="6" fill="#555">t=3ms</text>
+        <text x="134" y="78" font-size="6" fill="#999">t=4ms</text>
+        <text x="134" y="91" font-size="6" fill="#999">t=5ms</text>
+        <text x="65" y="118" font-size="7" fill="#dc2626" text-anchor="middle">cada fila = instante diferente</text>
+        <text x="65" y="128" font-size="7" fill="#dc2626" text-anchor="middle">→ distorsión</text>
+        <text x="180" y="12" font-size="8" fill="#555" letter-spacing="0.5">GLOBAL SHUTTER</text>
+        <rect x="180" y="18" width="130" height="84" rx="2" fill="#2563eb" opacity="0.75"/>
+        <text x="245" y="58" font-size="8" fill="#fff" text-anchor="middle">todos los píxeles</text>
+        <text x="245" y="70" font-size="8" fill="#fff" text-anchor="middle">al mismo instante</text>
+        <text x="245" y="26" font-size="6" fill="#bfdbfe" text-anchor="middle">t=0ms</text>
+        <text x="245" y="118" font-size="7" fill="#16a34a" text-anchor="middle">un solo instante</text>
+        <text x="245" y="128" font-size="7" fill="#16a34a" text-anchor="middle">→ geometría perfecta</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PESTAÑA DISCLAIMER ══════ -->
+<div class="tab-panel" id="tab-disclaimer">
+  <div class="section info-text">
+    <div class="section-label">Nota importante</div>
+    <p><strong>Este contenido es una introducción, no un manual completo.</strong></p>
+    <p>Los conceptos explicados aquí son técnicamente correctos, pero el mundo de la visión artificial es enormemente amplio. Los simuladores son simplificaciones pedagógicas diseñadas para ilustrar conceptos clave.</p>
+    <div class="highlight">Si estás evaluando una aplicación real, consulta con un especialista. Cada proyecto merece un análisis específico.</div>
+  </div>
+  <div class="section">
+    <div class="section-label">Tipos de cámara industrial</div>
+    <div id="tree-root" class="tree"></div>
+  </div>
+</div>
+
+<!-- ══════ PESTAÑA CONTACTO ══════ -->
+<div class="tab-panel" id="tab-contacto">
+  <div class="section contact-hero">
+    <h2 class="contact-title">¿Hablamos?</h2>
+    <p class="contact-desc">Si tienes dudas sobre visión artificial, selección de cámara o quieres valorar un proyecto concreto, contacta con nosotros.</p>
+  </div>
+  <div class="section">
+    <div class="contact-cards">
+      <div class="contact-card">
+        <img src="data:image/jpeg;base64,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" alt="Héctor Cordal" class="contact-photo">
+        <div class="contact-name">Héctor Cordal</div>
+        <div class="contact-role">Responsable Departamento de Visión<br>Grupo Álava</div>
+        <div class="contact-links">
+          <a href="mailto:hcordal@grupoalava.com" class="contact-link">hcordal@grupoalava.com</a>
+          <a href="tel:+34607969410" class="contact-link contact-link-sec">+34 607 969 410</a>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-name">Eva Deltor</div>
+        <div class="contact-role">Doctoranda en microelectrónica<br>Analog and Mixed-Signal IC design<br>IMB-CNM</div>
+        <div class="contact-links">
+          <a href="mailto:eva.deltor@imb-cnm.cisc.es" class="contact-link">eva.deltor@imb-cnm.cisc.es</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="contact-web">
+      <div class="contact-web-label">Web corporativa</div>
+      <a href="https://www.grupoalava.com" class="contact-web-url">www.grupoalava.com</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── TABS ─────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn:not(.disabled)').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    window.scrollTo(0, 0);
+  });
+});
+
+// ── UTILS ────────────────────────────────────────────────
+function gaussian() {
+  let u, v;
+  do { u = Math.random(); } while (!u);
+  do { v = Math.random(); } while (!v);
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+function poisson(m) { return m <= 0 ? 0 : Math.max(0, m + gaussian() * Math.sqrt(m)); }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function gArr(a, x, y, W, H) { return a[Math.max(0,Math.min(H-1,y))*W + Math.max(0,Math.min(W-1,x))]; }
+
+const LIGHT_PH  = [10, 30, 90, 250, 550];
+const NOISE_RD  = [2, 6, 15, 30, 55];
+const LIGHT_LBL = ['muy baja','baja','media','buena','alta'];
+const NOISE_LBL = ['mínimo','normal','alto','muy alto','extremo'];
+const RES       = [{label:'baja',W:160,H:120},{label:'media',W:260,H:200},{label:'alta',W:400,H:308}];
+
+// ── TAB 01: FILTROS ──────────────────────────────────────
+function buildScene(W, H) {
+  const c = document.createElement('canvas'); c.width=W; c.height=H;
+  const x = c.getContext('2d');
+  x.fillStyle='#2a2a2a'; x.fillRect(0,0,W,H);
+  const sw=Math.round(W/14);
+  for (let i=0;i<W;i+=sw) { x.fillStyle=Math.floor(i/sw)%2===0?'#252525':'#303030'; x.fillRect(i,0,sw,H); }
+  const bx=Math.round(W*.08),by=Math.round(H*.1),bw=Math.round(W*.84),bh=Math.round(H*.78);
+  x.fillStyle='#1a1a1a'; x.fillRect(bx+3,by+3,bw,bh);
+  x.fillStyle='#8B6340'; x.fillRect(bx,by,bw,bh);
+  x.strokeStyle='#5C3D1E'; x.lineWidth=Math.max(1,W*.003); x.strokeRect(bx,by,bw,bh);
+  const lx=bx+Math.round(bw*.08),ly=by+Math.round(bh*.18),lw=Math.round(bw*.56),lh=Math.round(bh*.46);
+  x.fillStyle='#f0ece4'; x.fillRect(lx,ly,lw,lh);
+  x.strokeStyle='#c8b89a'; x.lineWidth=.5; x.strokeRect(lx,ly,lw,lh);
+  const fs=Math.max(8,Math.round(H*.042)),fb=Math.max(11,Math.round(H*.1));
+  x.fillStyle='#666'; x.font=`${fs}px monospace`; x.textAlign='left';
+  x.fillText('LOTE / LOT',lx+Math.round(lw*.05),ly+Math.round(lh*.26));
+  x.fillStyle='#111'; x.font=`bold ${fb}px monospace`;
+  x.fillText('2024-A3',lx+Math.round(lw*.05),ly+Math.round(lh*.62));
+  x.fillStyle='#555'; x.font=`${fs}px monospace`;
+  x.fillText('PROD: 03/2024',lx+Math.round(lw*.05),ly+Math.round(lh*.88));
+  const d=x.getImageData(0,0,W,H),br=new Float32Array(W*H),cs=new Uint8ClampedArray(W*H*3);
+  for (let i=0;i<W*H;i++) {
+    const r=d.data[i*4],g=d.data[i*4+1],b=d.data[i*4+2];
+    br[i]=(0.299*r+0.587*g+0.114*b)/255; cs[i*3]=r; cs[i*3+1]=g; cs[i*3+2]=b;
+  }
+  return {br,cs};
+}
+
+function simFilter() {
+  const li=parseInt(document.getElementById('f-light').value)-1;
+  const ni=parseInt(document.getElementById('f-enoise').value)-1;
+  const ri=parseInt(document.getElementById('f-res').value)-1;
+  document.getElementById('f-lux-val').textContent  =LIGHT_LBL[li];
+  document.getElementById('f-noise-val').textContent=NOISE_LBL[ni];
+  document.getElementById('f-res-val').textContent  =RES[ri].label;
+  const maxPh=LIGHT_PH[li],rN=NOISE_RD[ni],fE=0.33,{W,H}=RES[ri];
+  const mc=document.getElementById('f-mono'); mc.width=W; mc.height=H;
+  const cc=document.getElementById('f-col');  cc.width=W; cc.height=H;
+  document.getElementById('f-mono-px').textContent=`${W}×${H}px`;
+  document.getElementById('f-col-px').textContent =`${W}×${H}px`;
+  const {br,cs}=buildScene(W,H);
+  const mR=new Float32Array(W*H);
+  for (let i=0;i<W*H;i++) mR[i]=poisson(br[i]*maxPh)+gaussian()*rN;
+  const rR=new Float32Array(W*H),rG=new Float32Array(W*H),rB=new Float32Array(W*H);
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++) {
+    const i=y*W+x,isR=x%2===0&&y%2===0,isB=x%2===1&&y%2===1;
+    if      (isR) rR[i]=poisson(cs[i*3]/255*maxPh*fE)+gaussian()*rN;
+    else if (isB) rB[i]=poisson(cs[i*3+2]/255*maxPh*fE)+gaussian()*rN;
+    else          rG[i]=poisson(cs[i*3+1]/255*maxPh*fE)+gaussian()*rN;
+  }
+  const dR=new Float32Array(W*H),dG=new Float32Array(W*H),dB=new Float32Array(W*H);
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++) {
+    const i=y*W+x,isR=x%2===0&&y%2===0,isB=x%2===1&&y%2===1;
+    if (isR) {
+      dR[i]=rR[i];
+      dG[i]=(gArr(rG,x-1,y,W,H)+gArr(rG,x+1,y,W,H)+gArr(rG,x,y-1,W,H)+gArr(rG,x,y+1,W,H))/4;
+      dB[i]=(gArr(rB,x-1,y-1,W,H)+gArr(rB,x+1,y-1,W,H)+gArr(rB,x-1,y+1,W,H)+gArr(rB,x+1,y+1,W,H))/4;
+    } else if (isB) {
+      dB[i]=rB[i];
+      dG[i]=(gArr(rG,x-1,y,W,H)+gArr(rG,x+1,y,W,H)+gArr(rG,x,y-1,W,H)+gArr(rG,x,y+1,W,H))/4;
+      dR[i]=(gArr(rR,x-1,y-1,W,H)+gArr(rR,x+1,y-1,W,H)+gArr(rR,x-1,y+1,W,H)+gArr(rR,x+1,y+1,W,H))/4;
+    } else {
+      dG[i]=rG[i];
+      if (y%2===0){dR[i]=(gArr(rR,x-1,y,W,H)+gArr(rR,x+1,y,W,H))/2;dB[i]=(gArr(rB,x,y-1,W,H)+gArr(rB,x,y+1,W,H))/2;}
+      else        {dB[i]=(gArr(rB,x-1,y,W,H)+gArr(rB,x+1,y,W,H))/2;dR[i]=(gArr(rR,x,y-1,W,H)+gArr(rR,x,y+1,W,H))/2;}
+    }
+  }
+  const mCtx=mc.getContext('2d'),cCtx=cc.getContext('2d');
+  const mImg=mCtx.createImageData(W,H),cImg=cCtx.createImageData(W,H);
+  let sM=0,sC=0,cnt=0;const scC=maxPh*fE;
+  for (let i=0;i<W*H;i++) {
+    const p=i*4,vm=clamp(mR[i]/maxPh*255,0,255);
+    mImg.data[p]=vm;mImg.data[p+1]=vm;mImg.data[p+2]=vm;mImg.data[p+3]=255;
+    cImg.data[p]=clamp(dR[i]/scC*255,0,255);cImg.data[p+1]=clamp(dG[i]/scC*255,0,255);
+    cImg.data[p+2]=clamp(dB[i]/scC*255,0,255);cImg.data[p+3]=255;
+    const sigM=br[i]*maxPh,sigC=br[i]*maxPh*fE;
+    if(sigM>1){sM+=sigM/Math.sqrt(sigM+rN*rN);sC+=sigC/Math.sqrt(sigC+rN*rN);cnt++;}
+  }
+  mCtx.putImageData(mImg,0,0);cCtx.putImageData(cImg,0,0);
+  const snrM=cnt?(sM/cnt).toFixed(1):'0',snrC=cnt?(sC/cnt).toFixed(1):'0';
+  document.getElementById('f-mono-ph').textContent=maxPh;
+  document.getElementById('f-col-ph').textContent=Math.round(maxPh*fE);
+  const fm=parseFloat(snrM),fc=parseFloat(snrC);
+  const mEl=document.getElementById('f-mono-snr'),cEl=document.getElementById('f-col-snr');
+  mEl.textContent=snrM;mEl.className='stat-val'+(fm>5?' good':fm>2?' warn':' bad');
+  cEl.textContent=snrC;cEl.className='stat-val'+(fc>5?' good':fc>2?' warn':' bad');
+  const ratio=(fm/Math.max(fc,.01)).toFixed(1);
+  let msg;
+  if(fc<1.5) msg=`El sensor de color no puede leer el código con fiabilidad. El monocromo tiene ${ratio}x mejor SNR.`;
+  else if(fm/fc>1.4) msg=`El monocromo tiene ${ratio}x mejor SNR. El código "2024-A3" se lee con más margen.`;
+  else msg=`Con esta iluminación ambos sensores leen bien (ratio ${ratio}x). Con monocromo obtienes el mismo resultado con menos luz.`;
+  document.getElementById('f-verdict').textContent=msg;
+}
+['f-light','f-enoise','f-res'].forEach(id=>document.getElementById(id).addEventListener('input',simFilter));
+
+// ── TAB 02: SENSOR ───────────────────────────────────────
+const PITCH_UM  = [1.67,2.4,5.0,8.45,12.0];
+const PITCH_LBL = ['1.67 µm','2.4 µm','5.0 µm','8.45 µm','12.0 µm'];
+const LIGHT_PH2 = [8,25,80,220,500];
+
+function drawPixel(ff, pitchIdx) {
+  if(pitchIdx===undefined) pitchIdx=2;
+  const cv=document.getElementById('s-pixel');
+  const dpr=window.devicePixelRatio||2;
+  const availW=200;
+  cv.width=Math.round(availW*dpr);cv.height=Math.round(availW*dpr);
+  cv.style.width=availW+'px';cv.style.height=availW+'px';
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,availW,availW);
+  ctx.fillStyle='#f5f5f5';ctx.fillRect(0,0,availW,availW);
+
+  // El tamaño del cuadrado escala con el pitch
+  // pitchIdx 0..4 → tamaño de 35% a 88% del canvas
+  const sizeRatios=[0.35,0.45,0.58,0.72,0.88];
+  const pixelSize=Math.round(availW*sizeRatios[pitchIdx]);
+  // Centrar el píxel
+  const ox=Math.round((availW-pixelSize)/2);
+  const oy=Math.round((availW-pixelSize)/2);
+
+  // Cuadrado del píxel completo (circuitería)
+  ctx.fillStyle='#7c3aed';ctx.globalAlpha=.28;
+  ctx.fillRect(ox,oy,pixelSize,pixelSize);
+  ctx.globalAlpha=1;
+  ctx.strokeStyle='#444';ctx.lineWidth=1.5;
+  ctx.strokeRect(ox,oy,pixelSize,pixelSize);
+
+  // Fotodiodo (cuadrado interior, escalado por fill factor)
+  const fdSize=Math.round(pixelSize*Math.sqrt(ff/100));
+  const fdOff=Math.round((pixelSize-fdSize)/2);
+  ctx.fillStyle='#166534';ctx.globalAlpha=.8;
+  ctx.fillRect(ox+fdOff,oy+fdOff,fdSize,fdSize);
+  ctx.globalAlpha=1;
+
+  // Etiquetas dentro del fotodiodo
+  const labelSize=Math.max(9,Math.round(fdSize*0.13));
+  ctx.fillStyle='#4ade80';ctx.font=`bold ${labelSize}px monospace`;ctx.textAlign='center';
+  ctx.fillText('fotodiodo',ox+fdOff+fdSize/2,oy+fdOff+fdSize/2-Math.round(labelSize*0.3));
+  ctx.fillStyle='#86efac';ctx.font=`${labelSize}px monospace`;
+  ctx.fillText(`${ff}%`,ox+fdOff+fdSize/2,oy+fdOff+fdSize/2+Math.round(labelSize*1.1));
+
+  // Etiqueta circuitería
+  if(ff<88){
+    const circFS=Math.max(8,Math.round(pixelSize*0.06));
+    ctx.fillStyle='#c4b5fd';ctx.font=`${circFS}px monospace`;
+    ctx.fillText('circ.',ox+pixelSize/2,oy+pixelSize-Math.round(circFS*0.8));
+  }
+
+  // Flechas de fotones (solo encima del píxel)
+  const arrowCount=Math.max(3,Math.round(pixelSize/30));
+  const arrowPad=pixelSize/(arrowCount+1);
+  for(let a=0;a<arrowCount;a++){
+    const ax=ox+arrowPad*(a+1);
+    const inFD=ax>(ox+fdOff)&&ax<(ox+fdOff+fdSize);
+    ctx.strokeStyle=inFD?'#fbbf24':'#f87171';
+    ctx.globalAlpha=inFD?.9:.3;
+    ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(ax,oy-12);ctx.lineTo(ax,oy-3);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(ax-3,oy-6);ctx.lineTo(ax,oy-2);ctx.lineTo(ax+3,oy-6);ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+
+  // Etiqueta del pitch debajo
+  const pitchFS=Math.max(9,Math.round(pixelSize*0.08));
+  ctx.fillStyle='#999';ctx.font=`${pitchFS}px monospace`;
+  ctx.fillText(PITCH_LBL[pitchIdx],availW/2,oy+pixelSize+Math.round(pitchFS*1.8));
+}
+
+const _ss=(()=>{
+  const c=document.createElement('canvas');c.width=200;c.height=200;
+  const x=c.getContext('2d');
+  x.fillStyle='#1a1a1a';x.fillRect(0,0,200,200);
+  x.fillStyle='#ddd';x.font='bold 44px monospace';x.textAlign='center';x.textBaseline='middle';x.fillText('LOT',100,70);
+  x.font='28px monospace';x.fillStyle='#aaa';x.fillText('2024-A3',100,130);
+  const d=x.getImageData(0,0,200,200),b=new Float32Array(200*200);
+  for(let i=0;i<200*200;i++) b[i]=d.data[i*4]/255;
+  return b;
+})();
+
+function simSensor() {
+  const pi=parseInt(document.getElementById('s-pitch').value)-1;
+  const ffi=parseInt(document.getElementById('s-ff').value)-1;
+  const li=parseInt(document.getElementById('s-light').value)-1;
+  const FF_VALS=[25,40,60,80,95];
+  const FF_LBLS=['25%','40%','60%','80%','95%'];
+  const ff=FF_VALS[ffi];
+  document.getElementById('s-pitch-val').textContent=PITCH_LBL[pi];
+  document.getElementById('s-ff-val').textContent   =FF_LBLS[ffi];
+  document.getElementById('s-lux-val').textContent  =LIGHT_LBL[li];
+  document.getElementById('s-pitch-disp').textContent=PITCH_LBL[pi];
+  document.getElementById('s-ff-disp').textContent   =FF_LBLS[ffi];
+  drawPixel(ff, pi);
+  const aR=Math.pow(PITCH_UM[pi]/PITCH_UM[2],2);
+  const photons=Math.round(LIGHT_PH2[li]*aR*(ff/100));
+  // Read noise escala con el pitch: píxeles pequeños → menos ruido electrónico
+  // 1.67µm → ~1.2e⁻, 2.4µm → ~1.8e⁻, 5.0µm → ~3.5e⁻, 8.45µm → ~5.5e⁻, 12.0µm → ~8e⁻
+  const RN_BY_PITCH=[1.2, 1.8, 3.5, 5.5, 8];
+  const rN=RN_BY_PITCH[pi],W=200,H=200;
+  const sc=document.getElementById('s-scene');sc.width=W;sc.height=H;
+  const sCtx=sc.getContext('2d'),sImg=sCtx.createImageData(W,H);
+  let snrS=0,cnt=0;const maxPh=Math.max(photons,1);
+  for(let i=0;i<W*H;i++){
+    const sig=_ss[i]*photons,m=poisson(sig)+gaussian()*rN;
+    const v=clamp(m/maxPh*255,0,255),p=i*4;
+    sImg.data[p]=v;sImg.data[p+1]=v;sImg.data[p+2]=v;sImg.data[p+3]=255;
+    if(sig>1){snrS+=sig/Math.sqrt(sig+rN*rN);cnt++;}
+  }
+  sCtx.putImageData(sImg,0,0);
+  const snr=cnt?(snrS/cnt).toFixed(1):'0';
+  const phEl=document.getElementById('s-ph'),snrEl=document.getElementById('s-snr');
+  phEl.textContent=photons;snrEl.textContent=snr;
+  const fs=parseFloat(snr);
+  phEl.className ='stat-val'+(photons>50?' good':photons>15?' warn':' bad');
+  snrEl.className='stat-val'+(fs>5?' good':fs>2?' warn':' bad');
+  const fsiP=document.getElementById('d-fsi-photo'),fsiC=document.getElementById('d-fsi-circ'),fsiT=document.getElementById('d-fsi-pct');
+  if(fsiP&&fsiC&&fsiT){const tw=130,fw=Math.round(tw*ff/100);fsiP.setAttribute('width',fw);fsiC.setAttribute('x',fw);fsiC.setAttribute('width',tw-fw);fsiT.textContent=ff+'%';}
+  let msg;
+  if(photons<10) msg=`Con ${photons} fotones/px el SNR es crítico. El texto no es legible de forma fiable.`;
+  else if(photons<40) msg=`SNR ajustado (${photons} fotones/px). Funciona, pero sin margen.`;
+  else msg=`Con ${photons} fotones/px el sistema tiene buen margen. El código es legible de forma robusta.`;
+  document.getElementById('s-verdict').textContent=msg;
+}
+['s-pitch','s-ff','s-light'].forEach(id=>document.getElementById(id).addEventListener('input',simSensor));
+
+
+// ── SUBTABS ──────────────────────────────────────────────
+document.querySelectorAll('.subtab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const parent = btn.closest('.section');
+    parent.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+    parent.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('subtab-' + btn.dataset.subtab).classList.add('active');
+    if (btn.dataset.subtab === 'saturacion') simSat();
+    if (btn.dataset.subtab === 'motion')     simBlur();
+    if (btn.dataset.subtab === 'dynamic')    simDR();
+  });
+});
+
+// ── SATURACIÓN ───────────────────────────────────────────
+const FWC_VALS   = [4000, 8000, 15000, 30000, 60000];
+const FWC_LBLS   = ['muy baja (4 ke⁻)','baja (8 ke⁻)','media (15 ke⁻)','alta (30 ke⁻)','muy alta (60 ke⁻)'];
+const LIGHT_MULT = [0.05,0.1,0.2,0.35,0.55,0.75,1.0,1.4,1.9,2.6];
+const LIGHT_LBLS2= ['muy baja','','baja','','media','','alta','','muy alta','máxima'];
+
+// Escena de saturación: misma caja + etiqueta que el DR
+function satBuildObjects(W,H){
+  const oc=document.createElement('canvas');oc.width=W;oc.height=H;
+  const ctx=oc.getContext('2d');
+  // fondo cinta
+  ctx.fillStyle='#222';ctx.fillRect(0,0,W,H);
+  for(let x=0;x<W;x+=16){ctx.fillStyle=x%32===0?'#282828':'#1e1e1e';ctx.fillRect(x,0,8,H);}
+  // caja
+  const bx=Math.round(W*0.05),by=Math.round(H*0.07),bw=Math.round(W*0.9),bh=Math.round(H*0.86);
+  ctx.fillStyle='rgb(115,78,42)';ctx.fillRect(bx,by,bw,bh);
+  ctx.strokeStyle='rgb(75,48,22)';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw,bh);
+  // etiqueta
+  const lx=Math.round(W*0.24),ly=Math.round(H*0.19),lw=Math.round(W*0.5),lh=Math.round(H*0.6);
+  ctx.fillStyle='rgb(234,230,220)';ctx.fillRect(lx,ly,lw,lh);
+  ctx.strokeStyle='rgba(0,0,0,0.12)';ctx.lineWidth=0.5;ctx.strokeRect(lx,ly,lw,lh);
+  const fs=Math.max(7,Math.round(lh*0.13)),fb=Math.max(9,Math.round(lh*0.27));
+  ctx.fillStyle='rgb(110,110,110)';ctx.font=`${fs}px monospace`;ctx.textAlign='left';
+  ctx.fillText('LOT / LOTE',lx+Math.round(lw*0.07),ly+Math.round(lh*0.22));
+  ctx.fillStyle='rgb(12,12,12)';ctx.font=`bold ${fb}px monospace`;
+  ctx.fillText('2024-A3',lx+Math.round(lw*0.07),ly+Math.round(lh*0.58));
+  ctx.fillStyle='rgb(110,110,110)';ctx.font=`${fs}px monospace`;
+  ctx.fillText('03/2024',lx+Math.round(lw*0.07),ly+Math.round(lh*0.8));
+  const bax=lx+Math.round(lw*0.07),bay=ly+Math.round(lh*0.87),baw=Math.round(lw*0.78),bah=Math.max(3,Math.round(lh*0.09));
+  ctx.fillStyle='rgb(238,238,238)';ctx.fillRect(bax,bay,baw,bah);
+  for(let b=0;b<baw;b++){if(b%7===0||b%7===3){ctx.fillStyle='rgb(8,8,8)';ctx.fillRect(bax+b,bay,1,bah);}}
+  // reflejo en la caja (zona brillante superior derecha)
+  const grd=ctx.createRadialGradient(bx+bw*0.78,by+bh*0.22,0,bx+bw*0.78,by+bh*0.22,bw*0.22);
+  grd.addColorStop(0,'rgba(255,255,255,0.55)');
+  grd.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=grd;ctx.fillRect(bx,by,bw,bh);
+  const od=ctx.getImageData(0,0,W,H);
+  const gray=new Float32Array(W*H);
+  for(let i=0;i<W*H;i++) gray[i]=(od.data[i*4]*0.299+od.data[i*4+1]*0.587+od.data[i*4+2]*0.114)/255;
+  return gray;
+}
+
+// Cache del frame de objetos para no reconstruirlo en cada render
+let _satFrame=null, _satFrameW=0, _satFrameH=0;
+
+function simSat() {
+  const li   = parseInt(document.getElementById('e-light').value) - 1;
+  const fwci = parseInt(document.getElementById('e-fwc').value) - 1;
+  document.getElementById('e-light-val').textContent = LIGHT_LBLS2[li] || 'media';
+  document.getElementById('e-fwc-val').textContent   = FWC_LBLS[fwci];
+
+  const lightMult = LIGHT_MULT[li];
+  const fwc       = FWC_VALS[fwci];
+
+  const cv  = document.getElementById('e-sat-canvas');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+
+  // Reconstruir frame si el tamaño cambió
+  if(!_satFrame||_satFrameW!==W||_satFrameH!==H){
+    _satFrame=satBuildObjects(W,H);_satFrameW=W;_satFrameH=H;
+  }
+  const objGray=_satFrame;
+
+  // Señal en electrones: depende de la luz y del valor de la escena
+  // La FWC es SOLO el techo — no entra en expScale
+  // Con más FWC el mismo número de fotones llena menos proporción del pozo
+  const expScale = lightMult * 30000 * 2.0; // referencia fija: 30ke⁻ = FWC media
+
+  const img = ctx.createImageData(W, H);
+  let satPx=0, fillSum=0;
+
+  for(let i=0;i<W*H;i++){
+    const electrons = objGray[i] * expScale;
+    const fill      = Math.min(electrons, fwc);
+    fillSum += fill/fwc;
+    const p = i*4;
+    if(electrons >= fwc){
+      // SATURADO — blanco puro, sin información
+      img.data[p]=255;img.data[p+1]=255;img.data[p+2]=255;img.data[p+3]=255;
+      satPx++;
+    } else {
+      // Zona útil — mapeo lineal de electrones a gris
+      const v = Math.round((fill/fwc)*255);
+      img.data[p]=v;img.data[p+1]=v;img.data[p+2]=v;img.data[p+3]=255;
+    }
+  }
+  ctx.putImageData(img,0,0);
+
+  // Barra de llenado: media del pozo sobre toda la imagen
+  const avgFill = Math.min(fillSum/(W*H), 1.0);
+  const pct     = Math.round(avgFill*100);
+  const barEl   = document.getElementById('e-well-bar');
+  const lblEl   = document.getElementById('e-well-label');
+  barEl.style.width      = Math.min(pct,100)+'%';
+  barEl.style.background = pct>=100?'#dc2626':pct>75?'#d97706':'#16a34a';
+  lblEl.textContent      = pct>=100?'¡SATURADO!':pct+'%';
+
+  // Métricas
+  const satPct  = Math.round(satPx/(W*H)*100);
+  const goodPct = Math.max(0,100-satPct);
+  const satEl   = document.getElementById('e-sat-pct');
+  const goodEl  = document.getElementById('e-sat-good');
+  satEl.textContent  = satPct+'%';
+  satEl.className    = 'stat-val'+(satPct>20?' bad':satPct>5?' warn':' good');
+  goodEl.textContent = goodPct+'%';
+  goodEl.className   = 'stat-val'+(goodPct>80?' good':goodPct>50?' warn':' bad');
+
+  // Veredicto
+  let msg;
+  if(satPct>40) msg=`El ${satPct}% de los píxeles están saturados — el texto de la etiqueta y las zonas brillantes han desaparecido en blanco puro. Aumenta la FWC o reduce la iluminación.`;
+  else if(satPct>10) msg=`${satPct}% de píxeles saturados. El reflejo de la caja empieza a perder detalle. Aumentar la FWC o reducir la exposición mejoraría la imagen.`;
+  else if(satPct>0) msg=`Saturación leve (${satPct}%). Solo las zonas de máximo reflejo se queman — el texto sigue legible.`;
+  else if(pct>80) msg=`Píxeles al ${pct}% de capacidad. Buena señal pero cerca del límite — cualquier pico de iluminación puede saturar.`;
+  else msg=`Píxeles al ${pct}% de capacidad. Señal óptima sin saturación — el sistema tiene margen ante variaciones de la línea.`;
+  document.getElementById('e-sat-verdict').textContent = msg;
+}
+['e-light','e-fwc'].forEach(id=>document.getElementById(id).addEventListener('input',simSat));
+
+// ── MOTION BLUR — versión corregida ──────────────────────
+const EXP_MULT  = [0.0625,0.125,0.25,0.5,1,2,4,8,16];
+const EXP_LABELS= ['1/8000 s','1/4000 s','1/2000 s','1/1000 s','1/500 s','1/250 s','1/125 s','1/60 s','1/30 s'];
+const SPEED_L_B = ['muy lenta','lenta','media','rápida','muy rápida'];
+const SPEED_PX  = [0.15,0.6,2.5,6,15]; // px de blur en el punto óptimo (mult=1)
+
+function buildBlurFrame(W, H) {
+  const oc = document.createElement('canvas');
+  oc.width = W; oc.height = H;
+  const ctx = oc.getContext('2d');
+  ctx.fillStyle = '#000'; ctx.fillRect(0,0,W,H);
+  const bx=10,by=8,bw=W-20,bh=H-18;
+  ctx.fillStyle='rgb(122,84,48)'; ctx.fillRect(bx,by,bw,bh);
+  ctx.strokeStyle='rgb(80,52,28)'; ctx.lineWidth=2; ctx.strokeRect(bx,by,bw,bh);
+  const lx=bx+Math.round(bw*0.18),ly=by+Math.round(bh*0.18),lw=Math.round(bw*0.62),lh=Math.round(bh*0.64);
+  ctx.fillStyle='rgb(236,232,224)'; ctx.fillRect(lx,ly,lw,lh);
+  ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=0.5; ctx.strokeRect(lx,ly,lw,lh);
+  const fs=Math.max(8,Math.round(lh*0.15));
+  const fb=Math.max(11,Math.round(lh*0.34));
+  ctx.fillStyle='rgb(100,100,100)'; ctx.font=`${fs}px monospace`; ctx.textAlign='left';
+  ctx.fillText('LOT / LOTE',lx+Math.round(lw*0.05),ly+Math.round(lh*0.22));
+  ctx.fillStyle='rgb(15,15,15)'; ctx.font=`bold ${fb}px monospace`;
+  ctx.fillText('2024-A3',lx+Math.round(lw*0.05),ly+Math.round(lh*0.62));
+  ctx.fillStyle='rgb(100,100,100)'; ctx.font=`${fs}px monospace`;
+  ctx.fillText('PROD: 03/2024',lx+Math.round(lw*0.05),ly+Math.round(lh*0.84));
+  const barX=lx+Math.round(lw*0.05),barY=ly+Math.round(lh*0.88),barW=Math.round(lw*0.7),barH=Math.max(4,Math.round(lh*0.1));
+  ctx.fillStyle='rgb(240,240,240)'; ctx.fillRect(barX,barY,barW,barH);
+  for(let b=0;b<barW;b++){const w=b%7;if(w===0||w===3){ctx.fillStyle='rgb(10,10,10)';ctx.fillRect(barX+b,barY,1,barH);}}
+  return oc;
+}
+
+function simBlur() {
+  const si  = parseInt(document.getElementById('e-speed').value) - 1;
+  const ei  = parseInt(document.getElementById('e-exp').value) - 1;
+  document.getElementById('e-speed-val').textContent = SPEED_L_B[si];
+  const centerLabel = ei === 4 ? ' — óptimo' : '';
+  document.getElementById('e-exp-val').textContent = EXP_LABELS[ei] + centerLabel;
+
+  const mult      = EXP_MULT[ei];
+  const blurPx    = SPEED_PX[si] * mult;   // crece con velocidad Y con tiempo
+  const brightness= mult;                   // solo depende del tiempo
+
+  const cv  = document.getElementById('e-blur-canvas');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Fondo cinta
+  ctx.fillStyle = '#111'; ctx.fillRect(0,0,W,H);
+  for(let x=0;x<W;x+=10){
+    ctx.fillStyle=x%20===0?'#181818':'#141414';
+    ctx.fillRect(x,0,5,H);
+  }
+
+  const frame = buildBlurFrame(W, H);
+
+  // PASO 1 — blur: N copias desplazadas, alpha=1/N (suma = 1, brillo neutro)
+  const steps = Math.max(1, Math.min(Math.round(blurPx * 3) + 1, 80));
+  ctx.globalCompositeOperation = 'source-over';
+  for(let s = 0; s < steps; s++){
+    const dx = steps <= 1 ? 0 : s * (blurPx / (steps - 1));
+    ctx.globalAlpha = 1 / steps;
+    ctx.drawImage(frame, dx, 0);
+  }
+  ctx.globalAlpha = 1;
+
+  // PASO 2 — brillo: overlay independiente de la velocidad
+  ctx.globalCompositeOperation = 'source-over';
+  if(brightness > 1){
+    const whitePct = clamp(1 - 1/brightness, 0, 0.94);
+    ctx.globalAlpha = whitePct;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+  } else if(brightness < 1){
+    const blackPct = clamp(1 - brightness, 0, 0.94);
+    ctx.globalAlpha = blackPct;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+  }
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+
+  // Barra de estado
+  ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(0,H-18,W,18);
+  const blurR = Math.round(blurPx);
+  const col = blurR>8?'#f87171':blurR>2?'#fbbf24':'#4ade80';
+  ctx.fillStyle=col; ctx.font='8px monospace'; ctx.textAlign='left';
+  const bStr = brightness>=10?Math.round(brightness)+'×':brightness.toFixed(brightness<0.1?3:brightness<1?2:1)+'×';
+  ctx.fillText(`brillo: ${bStr}  |  blur: ${blurR}px`, 5, H-6);
+
+  // Veredicto
+  let msg;
+  if(ei===4)
+    msg=`Punto óptimo (${EXP_LABELS[4]}): brillo ${bStr} con ${blurR}px de blur. Sube la exposición → más brillante y más borroso. Bájala → más oscuro y más nítido.`;
+  else if(ei<4){
+    const stops=4-ei;
+    msg=`${stops} stop${stops>1?'s':''} por debajo del óptimo — imagen ${bStr}. Más nítida (${blurR}px), pero más oscura. Necesitarías más iluminación para compensar.`;
+  } else {
+    const stops=ei-4;
+    msg=`${stops} stop${stops>1?'s':''} por encima del óptimo — imagen ${bStr} con ${blurR}px de blur. Brillo y blur crecen juntos: no puedes tener uno sin el otro solo con la exposición.`;
+  }
+  document.getElementById('e-blur-verdict').textContent = msg;
+}
+
+document.getElementById('e-speed').addEventListener('input', simBlur);
+document.getElementById('e-exp').addEventListener('input', simBlur);
+
+
+// ── RANGO DINÁMICO ───────────────────────────────────────
+const DR_VALS  = [40, 55, 66, 78, 90];
+const DR_LBLS  = ['40 dB (bajo)','55 dB','66 dB (típico)','78 dB','90 dB (alto)'];
+const CONTRAST_LBLS = ['muy bajo','bajo','medio','alto','extremo'];
+
+// ── RANGO DINÁMICO — dos sensores, escala absoluta ───────
+const DR_CONT_L   = ['muy bajo','bajo','medio','alto','extremo'];
+const DR_CONT_V   = [3,8,30,100,400];
+const DR_EXP_L    = ['muy oscura','oscura','media','brillante','muy brillante'];
+const DR_EXP_ABS  = [0.0015,0.004,0.01,0.025,0.06];
+
+function drBuildLuminance(W,H,sceneRatio){
+  // Gradiente logarítmico de izquierda (muy oscuro) a derecha (muy brillante)
+  // sceneRatio define cuántas veces es más brillante el extremo derecho que el izquierdo
+  const lum=new Float32Array(W*H);
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      const nx=x/W;
+      // Escala logarítmica: igual espaciado perceptual de oscuro a brillante
+      lum[y*W+x]=Math.pow(sceneRatio, nx);
+    }
+  }
+  return lum;
+}
+
+function drBuildObjects(W,H){
+  // Sin textura de objeto — el gradiente es la escena
+  // Devolvemos todo a 1 para que signal = lum directamente
+  const gray=new Float32Array(W*H);
+  gray.fill(1);
+  return gray;
+}
+
+function drRenderSensor(canvasId,drDB){
+  const cv=document.getElementById(canvasId);
+  if(!cv) return {satF:0,darkF:0};
+  const W=cv.width, H=cv.height;
+  const ctx=cv.getContext('2d');
+
+  const drFraction=drDB/90;
+  const loFrac=(1-drFraction)/2;
+
+  const img=ctx.createImageData(W,H);
+  let satPx=0,darkPx=0;
+
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      const p=(y*W+x)*4;
+      const nx=x/(W-1);
+      const mapped=(nx-loFrac)/drFraction;
+      let v;
+      if(mapped<=0){v=0;darkPx++;}
+      else if(mapped>=1){v=255;satPx++;}
+      else{v=Math.round(mapped*255);}
+      img.data[p]=v;img.data[p+1]=v;img.data[p+2]=v;img.data[p+3]=255;
+    }
+  }
+  ctx.putImageData(img,0,0);
+  return{satF:satPx/(W*H),darkF:darkPx/(W*H)};
+}
+
+// DR vals para el slider del sensor
+const DR_SLIDER_V=[40,55,66,78,90];
+const DR_SLIDER_L=['40 dB (muy bajo)','55 dB (bajo)','66 dB (típico)','78 dB (alto)','90 dB (muy alto)'];
+
+function simDR(){
+  const di=parseInt(document.getElementById('e-dr-slider').value)-1;
+  const drDB=DR_SLIDER_V[di];
+  document.getElementById('e-dr-val').textContent=DR_SLIDER_L[di];
+  const titleEl=document.getElementById('e-dr-lo-title');
+  titleEl.textContent=`Sensor — ${drDB} dB`;
+  titleEl.style.color=drDB>=78?'var(--good)':drDB>=55?'var(--warn)':'var(--danger)';
+  drRenderSensor('e-dr-hi',90);
+  const lo=drRenderSensor('e-dr-lo',drDB);
+  const loL=Math.round((lo.satF+lo.darkF)*100);
+  let msg;
+  if(drDB>=86) msg=`Con ${drDB} dB el sensor captura todo el gradiente de negro a blanco sin perder ningún extremo.`;
+  else if(drDB>=70) msg=`Con ${drDB} dB el sensor pierde el ${loL}% de la escena — un poco de negro por abajo y de blanco por arriba.`;
+  else if(drDB>=55) msg=`Con ${drDB} dB se pierden ${loL}% de los tonos — los grises más oscuros se aplanan en negro y los más claros se queman en blanco.`;
+  else msg=`Con ${drDB} dB el sensor solo captura el ${100-loL}% central del gradiente. Todo lo demás es negro o blanco puro — sin información recuperable.`;
+  document.getElementById('e-dr-verdict').textContent=msg;
+}
+document.getElementById('e-dr-slider').addEventListener('input',simDR);
+
+
+// ── BAYER ARRAY ───────────────────────────────────────────
+let bayerMode = true;
+function setBayer(on) {
+  bayerMode = on;
+  document.getElementById('bayer-on').style.background  = on ? '#2563eb' : '#fff';
+  document.getElementById('bayer-on').style.color       = on ? '#fff'    : '#555';
+  document.getElementById('bayer-on').style.borderColor = on ? '#2563eb' : '#ccc';
+  document.getElementById('bayer-off').style.background = on ? '#fff'    : '#2563eb';
+  document.getElementById('bayer-off').style.color      = on ? '#555'    : '#fff';
+  document.getElementById('bayer-off').style.borderColor= on ? '#ccc'    : '#2563eb';
+  drawBayer();
+}
+function drawBayer() {
+  const cv = document.getElementById('bayer-canvas');
+  if (!cv) return;
+  const dpr = window.devicePixelRatio || 2;
+  const displayW = cv.parentElement.clientWidth || 560;
+  const displayH = Math.round(displayW * 1.0);
+  cv.width  = Math.round(displayW * dpr);
+  cv.height = Math.round(displayH * dpr);
+  cv.style.width  = displayW + 'px';
+  cv.style.height = displayH + 'px';
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = displayW, H = displayH;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#f5f5f5'; ctx.fillRect(0, 0, W, H);
+  const COLS = 5, ROWS = 4;
+  const isoX = Math.round(W * 0.092);
+  const isoY = Math.round(isoX * 0.5);
+  const sensorThick = Math.round(H * 0.04);
+  const filterThick = Math.round(H * 0.018);
+  const filterGap   = Math.round(H * 0.18);
+  const gridW = COLS * isoX + ROWS * isoX;
+  const originX = (W - gridW) / 2 + ROWS * isoX;
+  const originY = H - Math.round(H * 0.08);
+  const BC = [['#e53e3e','#38a169','#e53e3e','#38a169','#e53e3e'],['#38a169','#3182ce','#38a169','#3182ce','#38a169'],['#e53e3e','#38a169','#e53e3e','#38a169','#e53e3e'],['#38a169','#3182ce','#38a169','#3182ce','#38a169']];
+  const BL = [['R','G','R','G','R'],['G','B','G','B','G'],['R','G','R','G','R'],['G','B','G','B','G']];
+  function iso(col, row, z) { return { x: originX + col*isoX - row*isoX, y: originY - col*isoY - row*isoY - z }; }
+  // Sensor faces
+  const drawFace=(pts,fill,stroke)=>{ctx.fillStyle=fill;ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();};
+  drawFace([iso(0,0,sensorThick),iso(COLS,0,sensorThick),iso(COLS,0,0),iso(0,0,0)],'#b0b0b0','#999');
+  drawFace([iso(COLS,0,sensorThick),iso(COLS,ROWS,sensorThick),iso(COLS,ROWS,0),iso(COLS,0,0)],'#c0c0c0','#aaa');
+  drawFace([iso(0,ROWS,sensorThick),iso(0,0,sensorThick),iso(0,0,0),iso(0,ROWS,0)],'#c8c8c8','#aaa');
+  drawFace([iso(0,ROWS,sensorThick),iso(COLS,ROWS,sensorThick),iso(COLS,ROWS,0),iso(0,ROWS,0)],'#b8b8b8','#aaa');
+  for(let row=0;row<ROWS;row++) for(let col=0;col<COLS;col++) {
+    drawFace([iso(col,row+1,sensorThick),iso(col+1,row+1,sensorThick),iso(col+1,row,sensorThick),iso(col,row,sensorThick)],'#d4d4d4','#bbb');
+  }
+  if (bayerMode) {
+    const fZ = sensorThick + filterGap;
+    for(let row=0;row<ROWS;row++) for(let col=0;col<COLS;col++) {
+      const color=BC[row][col],letter=BL[row][col];
+      ctx.globalAlpha=0.88;
+      drawFace([iso(col,row+1,fZ+filterThick),iso(col+1,row+1,fZ+filterThick),iso(col+1,row,fZ+filterThick),iso(col,row,fZ+filterThick)],color,'rgba(0,0,0,0.15)');
+      ctx.globalAlpha=1;
+      const ctr=iso(col+0.5,row+0.5,fZ+filterThick+1);
+      ctx.fillStyle='#fff'; ctx.font='bold 14px monospace'; ctx.textAlign='center';
+      ctx.fillText(letter,ctr.x,ctr.y+5);
+    }
+  }
+  ctx.globalAlpha=1;
+  ctx.font='bold 13px monospace'; ctx.fillStyle='#222';
+  const sp=iso(0,Math.round(ROWS*0.5),sensorThick);
+  const slx=Math.round(W*0.06),sly=sp.y+Math.round(H*0.1);
+  ctx.textAlign='left'; ctx.fillText('array de píxeles',slx,sly);
+  if (bayerMode) {
+    const fZ=sensorThick+filterGap+filterThick;
+    const fp=iso(Math.round(COLS*0.5),ROWS,fZ);
+    const flx=Math.round(W*0.5),fly=Math.round(H*0.05);
+    ctx.textAlign='center'; ctx.fillText('filtro Bayer',flx,fly);
+  }
+  ctx.font='12px monospace'; ctx.textAlign='left';
+  const ly=H-18;
+  if (bayerMode) {
+    let lx=16;
+    [['R','#e53e3e'],['G','#38a169'],['B','#3182ce']].forEach(([l,c])=>{
+      ctx.fillStyle=c;ctx.fillRect(lx,ly,11,11);
+      ctx.fillStyle='#444';ctx.fillText(l,lx+14,ly+10);lx+=42;
+    });
+  }
+  const desc=document.getElementById('bayer-desc');
+  if (desc) {
+    desc.textContent = bayerMode
+      ? 'El filtro Bayer (capa superior) asigna un color R, G o B a cada píxel. Solo deja pasar ~33% de la luz — el resto se bloquea. El color final se reconstruye interpolando píxeles vecinos (demosaicing).'
+      : 'Sin filtro Bayer: el sensor recibe todos los fotones de cualquier longitud de onda. 3x más luz por píxel → mejor SNR → imagen más limpia, especialmente con poca luz.';
+  }
+}
+
+
+// ── SHUTTER SIMULATOR ────────────────────────────────────
+const SH_SPEEDS  = [0.5, 2, 5, 10, 20];
+const SH_SPEED_LBL = ['muy lenta','lenta','media','rápida','muy rápida'];
+const SH_DIR_LBL = ['horizontal','vertical','rotación'];
+
+function drawShutter() {
+  const si = parseInt(document.getElementById('sh-speed').value) - 1;
+  const di = parseInt(document.getElementById('sh-dir').value) - 1;
+  document.getElementById('sh-speed-val').textContent = SH_SPEED_LBL[si];
+  document.getElementById('sh-dir-val').textContent   = SH_DIR_LBL[di];
+  const speed = SH_SPEEDS[si];
+  const W = 280, H = 200;
+  ['sh-rolling','sh-global'].forEach(id => {
+    const cv = document.getElementById(id);
+    const dpr = window.devicePixelRatio || 2;
+    cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    const ctx = cv.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(0, 0, W, H);
+    for (let x = 0; x < W; x += 20) {
+      ctx.fillStyle = x % 40 === 0 ? '#222' : '#1e1e1e';
+      ctx.fillRect(x, 0, 10, H);
+    }
+    const isRolling = id === 'sh-rolling';
+    const rows = 40;
+    const rowDelay = speed * 0.3;
+    for (let row = 0; row < rows; row++) {
+      const y0 = Math.round(row * H / rows);
+      const y1 = Math.round((row + 1) * H / rows);
+      const rowH = y1 - y0;
+      let offsetX = 0, offsetY = 0;
+      if (isRolling) {
+        if (di === 0) offsetX = row * rowDelay;
+        if (di === 1) offsetY = row * rowDelay * 0.5;
+        if (di === 2) { const angle = row * rowDelay * 0.015; offsetX = Math.sin(angle) * speed * 8; offsetY = (1 - Math.cos(angle)) * speed * 4; }
+      }
+      const boxX = 40 + offsetX, boxY = 20 + offsetY;
+      const boxW = 200, boxH2 = 160;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(0, y0, W, rowH); ctx.clip();
+      ctx.fillStyle = '#8B6340'; ctx.fillRect(boxX, boxY, boxW, boxH2);
+      const lblX = boxX + 30, lblY = boxY + 35, lblW = 140, lblH2 = 80;
+      ctx.fillStyle = '#f0ece4'; ctx.fillRect(lblX, lblY, lblW, lblH2);
+      ctx.fillStyle = '#111'; ctx.font = 'bold 20px monospace'; ctx.textAlign = 'left';
+      ctx.fillText('2024-A3', lblX + 8, lblY + 44);
+      ctx.fillStyle = '#666'; ctx.font = '10px monospace';
+      ctx.fillText('LOTE / LOT', lblX + 8, lblY + 18);
+      ctx.restore();
+    }
+    const distEl = document.getElementById(isRolling ? 'sh-rolling-dist' : 'sh-global-dist');
+    if (distEl) {
+      if (isRolling) {
+        const distPx = Math.round((rows-1) * rowDelay);
+        distEl.textContent = distPx + 'px';
+        distEl.className = 'stat-val ' + (distPx > 20 ? 'bad' : distPx > 5 ? 'warn' : 'good');
+      } else {
+        distEl.textContent = '0px';
+        distEl.className = 'stat-val good';
+      }
+    }
+  });
+  const distPx = Math.round(39 * SH_SPEEDS[si] * 0.3);
+  let msg;
+  if (distPx > 40) msg = `Con esta velocidad el rolling shutter introduce ${distPx}px de distorsión. El código es ilegible y la geometría está completamente deformada.`;
+  else if (distPx > 10) msg = `${distPx}px de distorsión por rolling shutter. En control de calidad dimensional, esta deformación generaría medidas incorrectas.`;
+  else msg = `Distorsión mínima (${distPx}px) — a esta velocidad el rolling shutter puede ser suficiente.`;
+  document.getElementById('sh-verdict').textContent = msg;
+}
+['sh-speed','sh-dir'].forEach(id => document.getElementById(id).addEventListener('input', drawShutter));
+
+
+// ── ÁRBOL DE TIPOS DE CÁMARA ──────────────────────────────
+const CAMERA_TREE = {
+  label: 'Cámara Industrial',
+  children: [
+    { label: 'Por arquitectura del sensor', children: [
+      { label: 'CCD', desc: 'alta calidad de imagen, mayor coste y consumo' },
+      { label: 'CMOS', desc: 'más rápido, menor coste, domina el mercado actual', children: [
+        { label: 'FSI (front-illuminated)', desc: 'circuitería en la parte frontal, fill factor limitado' },
+        { label: 'BSI (back-illuminated)', desc: 'circuitería detrás del silicio, fill factor ~100%' },
+        { label: 'Stacked CMOS', desc: 'sensor y procesador apilados, altísima velocidad' },
+      ]},
+    ]},
+    { label: 'Por tipo de filtro', children: [
+      { label: 'Sin filtro', desc: 'monocromo puro — máxima sensibilidad y menor ruido' },
+      { label: 'Filtros de color', children: [
+        { label: 'Bayer (RGGB)', desc: 'el más común — 1R, 2G, 1B por cada 2×2 píxeles' },
+        { label: '3CCD / 3CMOS', desc: 'un sensor por canal RGB — sin pérdida de resolución' },
+      ]},
+      { label: 'Filtros espectrales', children: [
+        { label: 'Paso banda (bandpass)', desc: 'deja pasar solo una longitud de onda concreta' },
+        { label: 'Filtro IR cut', desc: 'bloquea infrarrojo — presente en casi todas las cámaras de color' },
+        { label: 'Filtro polarizador', desc: 'elimina reflejos en superficies brillantes' },
+        { label: 'Filtro NIR', desc: '700–1000nm — inspección de materiales, detección de defectos' },
+        { label: 'Filtro SWIR', desc: '1000–1700nm — ver a través de plásticos y humedad' },
+      ]},
+    ]},
+    { label: 'Por shutter', children: [
+      { label: 'Rolling shutter', desc: 'lee fila a fila — más barato, distorsión en movimiento' },
+      { label: 'Global shutter', desc: 'lee todos los píxeles a la vez — sin distorsión, mayor coste' },
+    ]},
+    { label: 'Por formato de captura', children: [
+      { label: 'Area scan', desc: 'imagen completa de una vez — el más común' },
+      { label: 'Line scan', desc: 'una línea cada vez — para objetos en movimiento continuo en cinta' },
+      { label: 'Time of Flight (ToF)', desc: 'mide distancia por tiempo de vuelo del fotón' },
+      { label: 'Structured light', desc: 'profundidad por proyección de patrón de luz' },
+    ]},
+    { label: 'Por espectro', children: [
+      { label: 'Visible (380–700nm)', desc: 'luz que ve el ojo humano' },
+      { label: 'Near IR / NIR (700–1000nm)', desc: 'inspección de materiales, control de procesos' },
+      { label: 'SWIR (1000–1700nm)', desc: 'ver a través de plásticos, silicio, humedad' },
+      { label: 'MWIR (3–5µm)', desc: 'termografía, control de temperatura' },
+      { label: 'LWIR / Térmica (8–14µm)', desc: 'imagen térmica — sin iluminación externa' },
+      { label: 'Rayos X', desc: 'inspección interior de piezas y packaging' },
+    ]},
+    { label: 'Por interfaz de datos', children: [
+      { label: 'GigE Vision', desc: 'flexible, larga distancia, hasta 1Gbps' },
+      { label: '10GigE', desc: 'alta velocidad y larga distancia, hasta 10Gbps' },
+      { label: 'USB3 Vision', desc: 'plug & play, fácil integración, hasta 5Gbps' },
+      { label: 'CoaXPress', desc: 'muy alta velocidad, hasta 12.5Gbps por canal' },
+    ]},
+  ]
+};
+
+function buildTree(node, level) {
+  const div = document.createElement('div');
+  div.className = 'tree-node';
+  if (node.children && node.children.length > 0) {
+    const header = document.createElement('div'); header.className = 'tree-header';
+    const toggle = document.createElement('div'); toggle.className = 'tree-toggle'; toggle.textContent = '▶';
+    const labelWrap = document.createElement('div');
+    labelWrap.innerHTML = `<span class="tree-label">${node.label}</span>${node.desc?`<span class="tree-desc">— ${node.desc}</span>`:''}`;
+    header.appendChild(toggle); header.appendChild(labelWrap);
+    const children = document.createElement('div'); children.className = 'tree-children';
+    node.children.forEach(child => children.appendChild(buildTree(child, level + 1)));
+    if (level === 0) { toggle.classList.add('open'); children.classList.add('open'); }
+    header.addEventListener('click', () => { toggle.classList.toggle('open'); children.classList.toggle('open'); });
+    div.appendChild(header); div.appendChild(children);
+  } else {
+    const leaf = document.createElement('div'); leaf.className = 'tree-leaf';
+    leaf.innerHTML = `<div class="tree-dot"></div><div><span class="tree-label">${node.label}</span>${node.desc?`<span class="tree-desc"> — ${node.desc}</span>`:''}</div>`;
+    div.appendChild(leaf);
+  }
+  return div;
+}
+
+const treeRoot = document.getElementById('tree-root');
+if (treeRoot) CAMERA_TREE.children.forEach(node => treeRoot.appendChild(buildTree(node, 0)));
+
+// ── SÍMIL CUBO DE AGUA ───────────────────────────────────
+(function(){
+  const cv=document.getElementById('bucket-canvas');
+  if(!cv) return;
+  const dpr=window.devicePixelRatio||2;
+  // Usamos el ancho real del canvas para que ocupe todo
+  const DW=cv.parentElement.clientWidth||300, DH=200;
+  cv.width=DW*dpr; cv.height=DH*dpr;
+  cv.style.width=DW+'px'; cv.style.height=DH+'px';
+  const ctx=cv.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  // Cubo en el tercio izquierdo, texto en los dos tercios derechos
+  const BW=64, BH=DH*0.62;
+  const BX=Math.round(DW*0.12), BY=Math.round((DH-BH)/2)+8;
+  const BRIM_Y=BY;
+  const TX=BX+BW+Math.round(DW*0.08); // inicio zona de texto
+
+  let phase=0, fillLevel=0, t=0;
+  let drops=[], splashes=[];
+
+  function spawnDrop(){
+    drops.push({x:BX+6+Math.random()*(BW-12),y:-6,vy:1+Math.random()*0.6,r:2.2,alive:true});
+  }
+  function spawnSplash(x,y){
+    for(let i=0;i<5;i++){
+      const a=-Math.PI+Math.random()*Math.PI,sp=1.2+Math.random()*1.8;
+      splashes.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,life:1,r:1.5+Math.random()});
+    }
+  }
+
+  function drawBucket(fill){
+    const topW=BW, botW=BW+12, tx=BX, bx=BX-6;
+    // Sombra
+    ctx.fillStyle='rgba(0,0,0,0.06)';
+    ctx.beginPath();
+    ctx.moveTo(tx+2,BY+2);ctx.lineTo(tx+topW+2,BY+2);
+    ctx.lineTo(bx+botW+2,BY+BH+2);ctx.lineTo(bx+2,BY+BH+2);
+    ctx.closePath();ctx.fill();
+    // Cuerpo
+    ctx.fillStyle='#d1d5db';
+    ctx.beginPath();
+    ctx.moveTo(tx,BY);ctx.lineTo(tx+topW,BY);
+    ctx.lineTo(bx+botW,BY+BH);ctx.lineTo(bx,BY+BH);
+    ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#9ca3af';ctx.lineWidth=1.5;ctx.stroke();
+    // Agua
+    const waterH=Math.min(fill,1)*BH;
+    const waterY=BY+BH-waterH;
+    const ov=fill>=1;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(tx+1,BY+1);ctx.lineTo(tx+topW-1,BY+1);
+    ctx.lineTo(bx+botW-1,BY+BH-1);ctx.lineTo(bx+1,BY+BH-1);
+    ctx.closePath();ctx.clip();
+    ctx.fillStyle=ov?'rgba(239,68,68,0.5)':'rgba(59,130,246,0.5)';
+    ctx.fillRect(bx,waterY,botW,waterH);
+    if(waterH>4){
+      ctx.fillStyle=ov?'rgba(239,68,68,0.75)':'rgba(59,130,246,0.75)';
+      ctx.beginPath();ctx.moveTo(bx,waterY);
+      for(let wx=0;wx<=botW;wx+=4){
+        ctx.lineTo(bx+wx,waterY+Math.sin((wx/botW)*Math.PI*2+t*0.08)*(ov?2.5:1.5));
+      }
+      ctx.lineTo(bx+botW,waterY+waterH);ctx.lineTo(bx,waterY+waterH);
+      ctx.closePath();ctx.fill();
+    }
+    ctx.restore();
+    // Borde superior
+    ctx.strokeStyle='#6b7280';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(tx,BY);ctx.lineTo(tx+topW,BY);ctx.stroke();
+    // Asa
+    ctx.strokeStyle='#9ca3af';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(tx+topW/2,BY-9,15,Math.PI,0);ctx.stroke();
+    // Chorro rebosando
+    if(ov){
+      ctx.fillStyle='rgba(239,68,68,0.55)';
+      [[tx,bx],[tx+topW,bx+botW]].forEach(([sx,ex])=>{
+        ctx.beginPath();
+        ctx.moveTo(sx,BRIM_Y);
+        ctx.bezierCurveTo(ex-4,BRIM_Y+16,ex-6,BRIM_Y+34,ex-4,BRIM_Y+54);
+        ctx.lineTo(ex,BRIM_Y+54);
+        ctx.bezierCurveTo(ex-2,BRIM_Y+34,ex,BRIM_Y+16,sx,BRIM_Y);
+        ctx.fill();
+      });
+    }
+  }
+
+  function drawRain(intensity){
+    ctx.strokeStyle='rgba(147,197,253,0.35)';ctx.lineWidth=1;
+    for(let i=0;i<Math.round(intensity*6);i++){
+      const rx=Math.random()*DW,ry=Math.random()*DH;
+      ctx.beginPath();ctx.moveTo(rx,ry);ctx.lineTo(rx-2,ry+10);ctx.stroke();
+    }
+  }
+
+  function drawText(fill){
+    const ov=fill>=1;
+    const pct=Math.round(Math.min(fill,1)*100);
+    const col=ov?'#dc2626':fill>0.75?'#d97706':'#16a34a';
+    const cy=DH/2;
+    const rw=DW-TX-8; // ancho disponible para texto
+
+    // Porcentaje grande
+    ctx.fillStyle=col;
+    ctx.font=`bold ${Math.round(DH*0.2)}px monospace`;
+    ctx.textAlign='left';
+    ctx.fillText(pct+'%',TX,cy-4);
+
+    // Estado
+    ctx.font=`${Math.round(DH*0.075)}px monospace`;
+    ctx.fillStyle=col;
+    const estado=ov?'¡REBOSA!':fill>0.75?'casi lleno':fill>0.1?'llenando...':'vacío';
+    ctx.fillText(estado,TX,cy+Math.round(DH*0.13));
+
+    // Línea horizontal de nivel dentro del cubo
+    const arrowY=BY+BH-(Math.min(fill,1)*BH);
+    if(fill>0.04&&fill<1){
+      ctx.strokeStyle=col;ctx.lineWidth=1;ctx.setLineDash([3,2]);
+      ctx.beginPath();ctx.moveTo(BX-6,arrowY);ctx.lineTo(BX+BW+6,arrowY);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Separador vertical
+    ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=1;ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(TX-Math.round(DW*0.04),DH*0.15);ctx.lineTo(TX-Math.round(DW*0.04),DH*0.85);ctx.stroke();
+
+    // Etiqueta FWC (borde superior del cubo)
+    ctx.fillStyle='#9ca3af';ctx.font=`7px monospace`;ctx.textAlign='left';
+    ctx.fillText('← full well capacity (techo)',BX+BW+6,BY+8);
+
+    // Texto explicativo abajo
+    const small=Math.round(DH*0.063);
+    ctx.font=`${small}px monospace`;ctx.fillStyle='#6b7280';
+    if(ov){
+      ctx.fillStyle='rgba(220,38,38,0.85)';
+      ctx.fillText('sin información:',TX,cy+Math.round(DH*0.32));
+      ctx.fillStyle='#6b7280';
+      ctx.fillText('el píxel ya no',TX,cy+Math.round(DH*0.32)+small+2);
+      ctx.fillText('distingue más luz',TX,cy+Math.round(DH*0.32)+small*2+4);
+    } else {
+      ctx.fillText('nivel = señal',TX,cy+Math.round(DH*0.32));
+      ctx.fillText('medible',TX,cy+Math.round(DH*0.32)+small+2);
+    }
+  }
+
+  function frame(){
+    t++;
+    ctx.clearRect(0,0,DW,DH);
+    ctx.fillStyle='#f8f8f8';ctx.fillRect(0,0,DW,DH);
+    const ov=fillLevel>=1;
+    if(phase===0){fillLevel+=0.003;if(t%8===0)spawnDrop();if(fillLevel>=1){fillLevel=1;phase=1;}}
+    else if(phase===1){if(t%6===0)spawnDrop();if(t%3===0)spawnSplash(BX+Math.random()*BW,BRIM_Y);if(t>280)phase=2;}
+    else if(phase===2){fillLevel=Math.max(0,fillLevel-0.016);if(fillLevel<=0){fillLevel=0;phase=0;t=0;drops=[];splashes=[];}}
+    drawRain(phase===0?1:phase===1?1.5:0.2);
+    drawBucket(fillLevel);
+    drops.forEach(d=>{
+      d.y+=d.vy;d.vy+=0.07;
+      const sy=BY+BH-(Math.min(fillLevel,1)*BH);
+      if(d.y+d.r>=sy&&d.y<BY+BH){spawnSplash(d.x,sy);d.alive=false;}
+      if(d.y>BY+BH)d.alive=false;
+      if(d.alive){ctx.fillStyle='rgba(59,130,246,0.8)';ctx.beginPath();ctx.ellipse(d.x,d.y,d.r*0.7,d.r,0,0,Math.PI*2);ctx.fill();}
+    });
+    drops=drops.filter(d=>d.alive);
+    splashes.forEach(s=>{
+      s.x+=s.vx;s.y+=s.vy;s.vy+=0.12;s.life-=0.06;
+      if(s.life>0){ctx.globalAlpha=s.life;ctx.fillStyle=fillLevel>=1?'rgba(239,68,68,0.9)':'rgba(59,130,246,0.9)';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+    });
+    splashes=splashes.filter(s=>s.life>0);
+    drawText(fillLevel);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// ── FSI vs BSI 3D isométrico ─────────────────────────────
+function drawFsiBsi(){
+  const cv=document.getElementById('fsi-bsi-canvas');
+  if(!cv) return;
+  const W=cv.width, H=cv.height;
+  const ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#f5f5f5';ctx.fillRect(0,0,W,H);
+
+  const isoX=56, isoY=28;
+  function iso(col,row,z,ox,oy){return{x:ox+col*isoX-row*isoX,y:oy-col*isoY-row*isoY-z};}
+  function face(pts,fill,stroke,alpha){
+    ctx.globalAlpha=alpha||1;ctx.fillStyle=fill;
+    ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+    ctx.closePath();ctx.fill();
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}
+    ctx.globalAlpha=1;
+  }
+  function arrow(x1,y1,x2,y2,col,dashed){
+    ctx.strokeStyle=col;ctx.lineWidth=3;
+    ctx.setLineDash(dashed?[6,6]:[]);
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    const a=Math.atan2(y2-y1,x2-x1);
+    ctx.fillStyle=col;ctx.beginPath();
+    ctx.moveTo(x2,y2);ctx.lineTo(x2-14*Math.cos(a-0.4),y2-14*Math.sin(a-0.4));
+    ctx.lineTo(x2-14*Math.cos(a+0.4),y2-14*Math.sin(a+0.4));
+    ctx.closePath();ctx.fill();ctx.setLineDash([]);
+  }
+
+  const COLS=4,ROWS=3,LH=60,photoW=3,circW=1;
+
+  // ═══ FSI (izquierda) ═══
+  const fO={x:240,y:480};
+
+  // Fotodiodo back (fondo, se dibuja primero)
+  face([iso(0,ROWS,LH,fO.x,fO.y),iso(photoW,ROWS,LH,fO.x,fO.y),iso(photoW,ROWS,0,fO.x,fO.y),iso(0,ROWS,0,fO.x,fO.y)],'#0f5228','#0d4a22',0.65);
+  // Fotodiodo left
+  face([iso(0,ROWS,LH,fO.x,fO.y),iso(0,0,LH,fO.x,fO.y),iso(0,0,0,fO.x,fO.y),iso(0,ROWS,0,fO.x,fO.y)],'#1e8c45','#0d4a22',0.7);
+  // Circuitería back
+  face([iso(photoW,ROWS,LH,fO.x,fO.y),iso(COLS,ROWS,LH,fO.x,fO.y),iso(COLS,ROWS,0,fO.x,fO.y),iso(photoW,ROWS,0,fO.x,fO.y)],'#6929c4','rgba(80,30,160,0.3)',0.4);
+  // Fotodiodo top
+  for(let r=0;r<ROWS;r++) for(let c=0;c<photoW;c++)
+    face([iso(c,r+1,LH,fO.x,fO.y),iso(c+1,r+1,LH,fO.x,fO.y),iso(c+1,r,LH,fO.x,fO.y),iso(c,r,LH,fO.x,fO.y)],'#166534','#0d4a22',0.8);
+  // Fotodiodo front
+  for(let c=0;c<photoW;c++)
+    face([iso(c,0,LH,fO.x,fO.y),iso(c+1,0,LH,fO.x,fO.y),iso(c+1,0,0,fO.x,fO.y),iso(c,0,0,fO.x,fO.y)],'#1a7a3e','#0d4a22',0.75);
+  // Fotodiodo right side
+  face([iso(photoW,0,LH,fO.x,fO.y),iso(photoW,ROWS,LH,fO.x,fO.y),iso(photoW,ROWS,0,fO.x,fO.y),iso(photoW,0,0,fO.x,fO.y)],'#1e8c45','#0d4a22',0.7);
+  // Circuitería top
+  for(let r=0;r<ROWS;r++) for(let c=photoW;c<COLS;c++)
+    face([iso(c,r+1,LH,fO.x,fO.y),iso(c+1,r+1,LH,fO.x,fO.y),iso(c+1,r,LH,fO.x,fO.y),iso(c,r,LH,fO.x,fO.y)],'#7c3aed','rgba(80,30,160,0.3)',0.5);
+  // Circuitería front
+  for(let c=photoW;c<COLS;c++)
+    face([iso(c,0,LH,fO.x,fO.y),iso(c+1,0,LH,fO.x,fO.y),iso(c+1,0,0,fO.x,fO.y),iso(c,0,0,fO.x,fO.y)],'#8b5cf6','rgba(80,30,160,0.3)',0.45);
+  // Circuitería right
+  face([iso(COLS,0,LH,fO.x,fO.y),iso(COLS,ROWS,LH,fO.x,fO.y),iso(COLS,ROWS,0,fO.x,fO.y),iso(COLS,0,0,fO.x,fO.y)],'#9d71f7','rgba(80,30,160,0.3)',0.4);
+
+  // Etiquetas FSI
+  const fm=iso(photoW/2,ROWS/2,LH+4,fO.x,fO.y);
+  ctx.fillStyle='#bbf7d0';ctx.font='bold 20px monospace';ctx.textAlign='center';
+  ctx.fillText('fotodiodo',fm.x,fm.y);
+  ctx.fillStyle='#4ade80';ctx.font='bold 22px monospace';
+  ctx.fillText('60%',fm.x,fm.y+28);
+  const cm=iso(photoW+circW/2,ROWS/2,LH+4,fO.x,fO.y);
+  ctx.fillStyle='#c4b5fd';ctx.font='18px monospace';
+  ctx.fillText('circ.',cm.x,cm.y+8);
+
+  // Flechas FSI
+  for(let a=0;a<5;a++){
+    const col=a*0.9+0.3;
+    const t=iso(col,ROWS/2,LH+130,fO.x,fO.y),b=iso(col,ROWS/2,LH+20,fO.x,fO.y);
+    arrow(t.x,t.y,b.x,b.y,col<photoW?'#d97706':'#dc2626',col>=photoW);
+  }
+  const bp=iso(COLS*0.78,ROWS/2,LH+148,fO.x,fO.y);
+  ctx.fillStyle='#dc2626';ctx.font='18px monospace';ctx.textAlign='center';
+  ctx.fillText('bloqueado',bp.x,bp.y);
+
+  // ═══ BSI (derecha) ═══
+  const bO={x:840,y:480};
+
+  // Fotodiodo back (fondo)
+  face([iso(0,ROWS,LH,bO.x,bO.y),iso(COLS,ROWS,LH,bO.x,bO.y),iso(COLS,ROWS,0,bO.x,bO.y),iso(0,ROWS,0,bO.x,bO.y)],'#0f5228','#0d4a22',0.65);
+  // Fotodiodo left
+  face([iso(0,ROWS,LH,bO.x,bO.y),iso(0,0,LH,bO.x,bO.y),iso(0,0,0,bO.x,bO.y),iso(0,ROWS,0,bO.x,bO.y)],'#1e8c45','#0d4a22',0.7);
+  // Fotodiodo top (cubre todo)
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++)
+    face([iso(c,r+1,LH,bO.x,bO.y),iso(c+1,r+1,LH,bO.x,bO.y),iso(c+1,r,LH,bO.x,bO.y),iso(c,r,LH,bO.x,bO.y)],'#166534','#0d4a22',0.8);
+  for(let c=0;c<COLS;c++)
+    face([iso(c,0,LH,bO.x,bO.y),iso(c+1,0,LH,bO.x,bO.y),iso(c+1,0,0,bO.x,bO.y),iso(c,0,0,bO.x,bO.y)],'#1a7a3e','#0d4a22',0.75);
+  face([iso(COLS,0,LH,bO.x,bO.y),iso(COLS,ROWS,LH,bO.x,bO.y),iso(COLS,ROWS,0,bO.x,bO.y),iso(COLS,0,0,bO.x,bO.y)],'#1e8c45','#0d4a22',0.7);
+
+  // Circuitería debajo
+  const co=-70;
+  // Circuitería back
+  face([iso(0,ROWS,co+10,bO.x,bO.y),iso(COLS,ROWS,co+10,bO.x,bO.y),iso(COLS,ROWS,co,bO.x,bO.y),iso(0,ROWS,co,bO.x,bO.y)],'#6929c4','rgba(80,30,160,0.3)',0.35);
+  // Circuitería left
+  face([iso(0,ROWS,co+10,bO.x,bO.y),iso(0,0,co+10,bO.x,bO.y),iso(0,0,co,bO.x,bO.y),iso(0,ROWS,co,bO.x,bO.y)],'#8b5cf6','rgba(80,30,160,0.3)',0.4);
+  // Circuitería top
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++)
+    face([iso(c,r+1,co+10,bO.x,bO.y),iso(c+1,r+1,co+10,bO.x,bO.y),iso(c+1,r,co+10,bO.x,bO.y),iso(c,r,co+10,bO.x,bO.y)],'#7c3aed','rgba(80,30,160,0.3)',0.45);
+  // Circuitería front
+  for(let c=0;c<COLS;c++)
+    face([iso(c,0,co+10,bO.x,bO.y),iso(c+1,0,co+10,bO.x,bO.y),iso(c+1,0,co,bO.x,bO.y),iso(c,0,co,bO.x,bO.y)],'#8b5cf6','rgba(80,30,160,0.3)',0.4);
+  // Circuitería right
+  face([iso(COLS,0,co+10,bO.x,bO.y),iso(COLS,ROWS,co+10,bO.x,bO.y),iso(COLS,ROWS,co,bO.x,bO.y),iso(COLS,0,co,bO.x,bO.y)],'#9d71f7','rgba(80,30,160,0.3)',0.38);
+
+  // Etiquetas BSI
+  const bm=iso(COLS/2,ROWS/2,LH+4,bO.x,bO.y);
+  ctx.fillStyle='#bbf7d0';ctx.font='bold 20px monospace';ctx.textAlign='center';
+  ctx.fillText('fotodiodo',bm.x,bm.y);
+  ctx.fillStyle='#4ade80';ctx.font='bold 22px monospace';
+  ctx.fillText('~100%',bm.x,bm.y+28);
+  const bcm=iso(COLS/2,ROWS/2,co-80,bO.x,bO.y);
+  ctx.fillStyle='#4c1d95';ctx.font='bold 20px monospace';
+  ctx.fillText('circuitería (detrás)',bcm.x,bcm.y+8);
+
+  // Flechas BSI — todos pasan
+  for(let a=0;a<5;a++){
+    const col=a*0.9+0.3;
+    const t=iso(col,ROWS/2,LH+130,bO.x,bO.y),b=iso(col,ROWS/2,LH+20,bO.x,bO.y);
+    arrow(t.x,t.y,b.x,b.y,'#d97706',false);
+  }
+  const pp=iso(COLS/2,ROWS/2,LH+148,bO.x,bO.y);
+  ctx.fillStyle='#16a34a';ctx.font='18px monospace';ctx.textAlign='center';
+  ctx.fillText('todos los fotones pasan',pp.x,pp.y);
+}
+
+setTimeout(drawBayer, 100);
+drawFsiBsi();
+simFilter();
+simSensor();
+simSat();
+simBlur();
+simDR();
+drawShutter();
+// eliminar variables obsoletas que ya no se usan
+// (DR_VALS y CONTRAST_LBLS se definen arriba pero no se usan en simDR nuevo)
+</script>
+</body>
+</html>
