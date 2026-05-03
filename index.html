@@ -3,6 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- SECURITY HEADERS (versión meta-tag, válida para GitHub Pages)    -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+
+    <!-- Content Security Policy: controla qué recursos se pueden cargar.
+         Esto bloquea scripts externos no autorizados, evita XSS y restringe
+         a qué dominios se pueden hacer fetch/POST. -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: https:;
+        connect-src 'self' https://script.google.com https://script.googleusercontent.com;
+        form-action 'self';
+        frame-ancestors 'none';
+        base-uri 'self';
+        upgrade-insecure-requests;
+    ">
+
+    <!-- Bloquea sniffing de tipo MIME (impide que un .txt se ejecute como JS) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+    <!-- Limita la información que se manda a otros dominios al hacer click en enlaces externos -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- Restringe acceso a APIs sensibles del navegador (cámara, micro, geo, etc.) -->
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+
     <title>Eva Deltor</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect x=%2230%22 y=%2230%22 width=%2240%22 height=%2240%22 fill=%22%231a1a1a%22 rx=%223%22/><rect x=%2238%22 y=%2238%22 width=%2224%22 height=%2224%22 fill=%22none%22 stroke=%22%23D4A574%22 stroke-width=%221.5%22/><g fill=%22%231a1a1a%22><rect x=%2235%22 y=%2218%22 width=%223%22 height=%2212%22/><rect x=%2245%22 y=%2218%22 width=%223%22 height=%2212%22/><rect x=%2255%22 y=%2218%22 width=%223%22 height=%2212%22/><rect x=%2265%22 y=%2218%22 width=%223%22 height=%2212%22/><rect x=%2235%22 y=%2270%22 width=%223%22 height=%2212%22/><rect x=%2245%22 y=%2270%22 width=%223%22 height=%2212%22/><rect x=%2255%22 y=%2270%22 width=%223%22 height=%2212%22/><rect x=%2265%22 y=%2270%22 width=%223%22 height=%2212%22/><rect x=%2218%22 y=%2235%22 width=%2212%22 height=%223%22/><rect x=%2218%22 y=%2245%22 width=%2212%22 height=%223%22/><rect x=%2218%22 y=%2255%22 width=%2212%22 height=%223%22/><rect x=%2218%22 y=%2265%22 width=%2212%22 height=%223%22/><rect x=%2270%22 y=%2235%22 width=%2212%22 height=%223%22/><rect x=%2270%22 y=%2245%22 width=%2212%22 height=%223%22/><rect x=%2270%22 y=%2255%22 width=%2212%22 height=%223%22/><rect x=%2270%22 y=%2265%22 width=%2212%22 height=%223%22/></g></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -871,6 +901,10 @@
                                 <label class="form-label" id="label_mensaje">Mensaje</label>
                                 <textarea class="newsletter-input" id="contactoMensaje" placeholder="Cuéntame en qué puedo ayudarte..." rows="4" style="background:white;color:var(--text);border-color:var(--border);resize:vertical;font-family:'Poppins',sans-serif;font-size:0.9rem;"></textarea>
                             </div>
+                            <!-- Honeypot anti-bots: invisible para humanos, pero los bots lo rellenan -->
+                            <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+                                <label>No rellenes este campo: <input type="text" id="contactoWebsite" name="website" tabindex="-1" autocomplete="off"></label>
+                            </div>
                             <button class="btn btn-primary" id="contactoBtn" onclick="submitContacto()" style="border-radius:2px;">Enviar mensaje →</button>
                         </div>
                         <div style="display:none;padding:20px 0;" id="contactoSuccess">
@@ -894,6 +928,10 @@
                     <div class="newsletter-form" id="newsletterForm">
                         <input type="text" class="newsletter-input" id="newsletterName" placeholder="Tu nombre">
                         <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="Tu email">
+                        <!-- Honeypot anti-bots -->
+                        <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+                            <label>No rellenes: <input type="text" id="newsletterWebsite" name="website" tabindex="-1" autocomplete="off"></label>
+                        </div>
                         <button class="newsletter-btn" id="newsletter_btn" onclick="submitNewsletter()">Quiero estar al tanto →</button>
                         <span class="newsletter-note" id="newsletter_note">Sin spam. Solo contenido que vale la pena.</span>
                     </div>
@@ -1096,9 +1134,19 @@
             const el = document.getElementById(id);
             if (el && val !== undefined) el.textContent = val;
         }
-        function setHTML(id, val) {
+        // Versión segura: solo permite el tag <br> que es lo único que necesitamos
+        // para newsletter_ok. Cualquier otro HTML se escapa.
+        function setSafeHTML(id, val) {
             const el = document.getElementById(id);
-            if (el && val !== undefined) el.innerHTML = val;
+            if (!el || val === undefined) return;
+            // Escapa todo y luego restaura solo <br>
+            const escaped = val
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            el.innerHTML = escaped.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
         }
         function setPlaceholder(id, val) {
             const el = document.getElementById(id);
@@ -1188,7 +1236,7 @@
             setText('newsletter_p', t.newsletter_p);
             setText('newsletter_btn', t.newsletter_btn);
             setText('newsletter_note', t.newsletter_note);
-            setHTML('newsletter_ok', t.newsletter_ok);
+            setSafeHTML('newsletter_ok', t.newsletter_ok);
 
             // Footer
             setText('footer_sub', t.footer_sub);
@@ -1215,33 +1263,132 @@
             window.location.href = base + '?lang=' + lang;
         }
 
+        // ──────────────────────────────────────────────────────────────
+        // VALIDACIONES Y ENVÍO DE FORMULARIOS (versión endurecida)
+        // ──────────────────────────────────────────────────────────────
+
+        // Marca el momento en que se cargó la página (para detectar bots que
+        // envían el form en menos de 2 segundos)
+        const __pageLoadTime = Date.now();
+
+        // Regex realista para emails (no perfecto, pero rechaza basura como "a@")
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+        // Límites de longitud para evitar payloads abusivos
+        const LIMITS = { nombre: 100, email: 150, mensaje: 2000 };
+
+        function clip(str, max) {
+            return String(str || '').slice(0, max);
+        }
+
         function submitContacto() {
-            const nombre  = document.getElementById('contactoNombre').value.trim();
-            const email   = document.getElementById('contactoEmail').value.trim();
-            const mensaje = document.getElementById('contactoMensaje').value.trim();
-            if (!nombre || !email || !mensaje) { alert('Por favor rellena todos los campos.'); return; }
-            if (!email.includes('@')) { alert('Por favor introduce un email válido.'); return; }
+            // 1) Honeypot: si está relleno, es un bot. Fingimos éxito y salimos.
+            const hp = document.getElementById('contactoWebsite');
+            if (hp && hp.value) {
+                document.getElementById('contactoForm').style.display = 'none';
+                document.getElementById('contactoSuccess').style.display = 'block';
+                return;
+            }
+
+            // 2) Tiempo mínimo: los bots envían en <2s
+            if (Date.now() - __pageLoadTime < 2000) {
+                alert('Por favor espera un momento antes de enviar.');
+                return;
+            }
+
+            // 3) Recoger y limitar longitud
+            const nombre  = clip(document.getElementById('contactoNombre').value.trim(),  LIMITS.nombre);
+            const email   = clip(document.getElementById('contactoEmail').value.trim(),   LIMITS.email);
+            const mensaje = clip(document.getElementById('contactoMensaje').value.trim(), LIMITS.mensaje);
+
+            // 4) Validación
+            if (!nombre || !email || !mensaje) {
+                alert('Por favor rellena todos los campos.');
+                return;
+            }
+            if (!EMAIL_REGEX.test(email)) {
+                alert('Por favor introduce un email válido.');
+                return;
+            }
+            if (mensaje.length < 5) {
+                alert('El mensaje es demasiado corto.');
+                return;
+            }
+
+            // 5) Envío
             const btn = document.getElementById('contactoBtn');
-            btn.textContent = 'Enviando...'; btn.disabled = true;
+            btn.textContent = 'Enviando...';
+            btn.disabled = true;
+
             const formData = new FormData();
-            formData.append('nombre', nombre); formData.append('email', email); formData.append('mensaje', mensaje);
-            fetch('https://script.google.com/macros/s/AKfycbzPM_MfFm82iDLg8XDlEwmnzXKd-2Qbtg4lLtOhS6wZdzlB1I7VNfYKqmQ90MEmHjdT/exec', { method: 'POST', body: formData })
-            .then(() => { document.getElementById('contactoForm').style.display = 'none'; document.getElementById('contactoSuccess').style.display = 'block'; })
-            .catch(() => { document.getElementById('contactoForm').style.display = 'none'; document.getElementById('contactoSuccess').style.display = 'block'; });
+            formData.append('nombre', nombre);
+            formData.append('email', email);
+            formData.append('mensaje', mensaje);
+            formData.append('origin', window.location.origin);
+
+            fetch('https://script.google.com/macros/s/AKfycbzPM_MfFm82iDLg8XDlEwmnzXKd-2Qbtg4lLtOhS6wZdzlB1I7VNfYKqmQ90MEmHjdT/exec', {
+                method: 'POST',
+                body: formData,
+                referrerPolicy: 'strict-origin-when-cross-origin'
+            })
+            .then(() => {
+                document.getElementById('contactoForm').style.display = 'none';
+                document.getElementById('contactoSuccess').style.display = 'block';
+            })
+            .catch(() => {
+                document.getElementById('contactoForm').style.display = 'none';
+                document.getElementById('contactoSuccess').style.display = 'block';
+            });
         }
 
         function submitNewsletter() {
-            const name  = document.getElementById('newsletterName').value.trim();
-            const email = document.getElementById('newsletterEmail').value.trim();
-            if (!name || !email) { alert('Por favor rellena tu nombre y email.'); return; }
-            if (!email.includes('@')) { alert('Por favor introduce un email válido.'); return; }
+            // Honeypot
+            const hp = document.getElementById('newsletterWebsite');
+            if (hp && hp.value) {
+                document.getElementById('newsletterForm').style.display = 'none';
+                document.getElementById('newsletterSuccess').style.display = 'block';
+                return;
+            }
+
+            if (Date.now() - __pageLoadTime < 2000) {
+                alert('Por favor espera un momento antes de enviar.');
+                return;
+            }
+
+            const name  = clip(document.getElementById('newsletterName').value.trim(),  LIMITS.nombre);
+            const email = clip(document.getElementById('newsletterEmail').value.trim(), LIMITS.email);
+
+            if (!name || !email) {
+                alert('Por favor rellena tu nombre y email.');
+                return;
+            }
+            if (!EMAIL_REGEX.test(email)) {
+                alert('Por favor introduce un email válido.');
+                return;
+            }
+
             const btn = document.querySelector('.newsletter-btn');
-            btn.textContent = 'Enviando...'; btn.disabled = true;
+            btn.textContent = 'Enviando...';
+            btn.disabled = true;
+
             const formData = new FormData();
-            formData.append('nombre', name); formData.append('email', email);
-            fetch('https://script.google.com/macros/s/AKfycbzzBI12f_LID0PJ-fdPba6PODkwy3oSvN2fynqZ31q3PhSbSzWtGx6pw_Kkgpc3RGcl/exec', { method: 'POST', body: formData })
-            .then(() => { document.getElementById('newsletterForm').style.display = 'none'; document.getElementById('newsletterSuccess').style.display = 'block'; })
-            .catch(() => { document.getElementById('newsletterForm').style.display = 'none'; document.getElementById('newsletterSuccess').style.display = 'block'; });
+            formData.append('nombre', name);
+            formData.append('email', email);
+            formData.append('origin', window.location.origin);
+
+            fetch('https://script.google.com/macros/s/AKfycbzzBI12f_LID0PJ-fdPba6PODkwy3oSvN2fynqZ31q3PhSbSzWtGx6pw_Kkgpc3RGcl/exec', {
+                method: 'POST',
+                body: formData,
+                referrerPolicy: 'strict-origin-when-cross-origin'
+            })
+            .then(() => {
+                document.getElementById('newsletterForm').style.display = 'none';
+                document.getElementById('newsletterSuccess').style.display = 'block';
+            })
+            .catch(() => {
+                document.getElementById('newsletterForm').style.display = 'none';
+                document.getElementById('newsletterSuccess').style.display = 'block';
+            });
         }
     </script>
 </body>
