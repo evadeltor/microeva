@@ -59,6 +59,34 @@ header h1 strong { font-weight: 500; }
 .header-authors span { font-family: var(--mono); font-size: 9px; color: var(--text3); }
 .header-logo-group { position: absolute; top: 1rem; right: 1.25rem; height: 60px; width: auto; object-fit: contain; }
 
+/* Selector de idioma */
+.lang-switcher {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+  font-family: var(--mono);
+  background: var(--card);
+}
+.lang-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text2);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  border-right: 1px solid var(--border);
+}
+.lang-btn:last-child { border-right: none; }
+.lang-btn:hover { background: var(--bg2); }
+.lang-btn.active { background: var(--accent); color: #fff; }
+
 .tabs-nav {
   display: flex;
   overflow-x: auto;
@@ -281,9 +309,14 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
 
 <header>
   <div class="header-left">
-    <div class="header-label">Visión Industrial</div>
-    <h1>Cómo funciona <strong>una cámara</strong></h1>
-    <div class="header-sub">simuladores interactivos</div>
+    <div class="header-label" data-i18n="header.label">Visión Industrial</div>
+    <h1><span data-i18n="header.title.prefix">Cómo funciona</span> <strong data-i18n="header.title.strong">una cámara</strong></h1>
+    <div class="header-sub" data-i18n="header.sub">simuladores interactivos</div>
+    <div class="lang-switcher" style="margin-top:8px;display:inline-flex;">
+      <button class="lang-btn active" data-lang="es">ES</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ca">CA</button>
+    </div>
   </div>
   <div class="header-right">
     <div class="header-authors">
@@ -295,37 +328,37 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
 </header>
 
 <nav class="tabs-nav">
-  <button class="tab-btn active" data-tab="filtro"><span class="tab-num">01</span> Filtros</button>
-  <button class="tab-btn" data-tab="sensor"><span class="tab-num">02</span> Sensor</button>
-  <button class="tab-btn" data-tab="electronica"><span class="tab-num">03</span> Electrónica</button>
-  <button class="tab-btn" data-tab="optica"><span class="tab-num">04</span> Shutter</button>
-  <button class="tab-btn" data-tab="disclaimer"><span class="tab-num">i</span> Disclaimer</button>
-  <button class="tab-btn" data-tab="contacto"><span class="tab-num">✉</span> Contacto</button>
+  <button class="tab-btn active" data-tab="filtro"><span class="tab-num">01</span> <span data-i18n="tabs.filters">Filtros</span></button>
+  <button class="tab-btn" data-tab="sensor"><span class="tab-num">02</span> <span data-i18n="tabs.sensor">Sensor</span></button>
+  <button class="tab-btn" data-tab="electronica"><span class="tab-num">03</span> <span data-i18n="tabs.electronics">Electrónica</span></button>
+  <button class="tab-btn" data-tab="optica"><span class="tab-num">04</span> <span data-i18n="tabs.shutter">Shutter</span></button>
+  <button class="tab-btn" data-tab="disclaimer"><span class="tab-num">i</span> <span data-i18n="tabs.disclaimer">Disclaimer</span></button>
+  <button class="tab-btn" data-tab="contacto"><span class="tab-num">✉</span> <span data-i18n="tabs.contact">Contacto</span></button>
 </nav>
 
 <!-- ══════ PESTAÑA 01 — FILTROS ══════ -->
 <div class="tab-panel active" id="tab-filtro">
   <div class="section">
-    <div class="section-label">Simulador — Monocromo vs Color</div>
+    <div class="section-label" data-i18n="filter.simLabel">Simulador — Monocromo vs Color</div>
     <div class="controls">
-      <div class="ctrl"><div class="ctrl-label">Iluminación <span id="f-lux-val">media</span></div><input type="range" id="f-light" min="1" max="5" step="1" value="3"></div>
-      <div class="ctrl"><div class="ctrl-label">Ruido electrónico <span id="f-noise-val">normal</span></div><input type="range" id="f-enoise" min="1" max="5" step="1" value="2"></div>
-      <div class="ctrl"><div class="ctrl-label">Resolución <span id="f-res-val">media</span></div><input type="range" id="f-res" min="1" max="3" step="1" value="2"></div>
+      <div class="ctrl"><div class="ctrl-label"><span data-i18n="filter.illum">Iluminación</span> <span id="f-lux-val">media</span></div><input type="range" id="f-light" min="1" max="5" step="1" value="3"></div>
+      <div class="ctrl"><div class="ctrl-label"><span data-i18n="filter.noise">Ruido electrónico</span> <span id="f-noise-val">normal</span></div><input type="range" id="f-enoise" min="1" max="5" step="1" value="2"></div>
+      <div class="ctrl"><div class="ctrl-label"><span data-i18n="filter.res">Resolución</span> <span id="f-res-val">media</span></div><input type="range" id="f-res" min="1" max="3" step="1" value="2"></div>
     </div>
     <div class="cameras">
       <div class="cam">
-        <div class="cam-title">Monocromo</div><div class="cam-sub" id="f-mono-px"></div>
+        <div class="cam-title" data-i18n="filter.mono">Monocromo</div><div class="cam-sub" id="f-mono-px"></div>
         <div class="canvas-wrap"><canvas id="f-mono"></canvas></div>
         <div class="stats">
-          <div class="stat"><div class="stat-label">Fotones/px</div><div class="stat-val" id="f-mono-ph"></div></div>
+          <div class="stat"><div class="stat-label" data-i18n="filter.photonsPx">Fotones/px</div><div class="stat-val" id="f-mono-ph"></div></div>
           <div class="stat"><div class="stat-label">SNR</div><div class="stat-val" id="f-mono-snr"></div></div>
         </div>
       </div>
       <div class="cam">
-        <div class="cam-title">Color (Bayer)</div><div class="cam-sub" id="f-col-px"></div>
+        <div class="cam-title" data-i18n="filter.color">Color (Bayer)</div><div class="cam-sub" id="f-col-px"></div>
         <div class="canvas-wrap"><canvas id="f-col"></canvas></div>
         <div class="stats">
-          <div class="stat"><div class="stat-label">Fotones/px</div><div class="stat-val" id="f-col-ph"></div></div>
+          <div class="stat"><div class="stat-label" data-i18n="filter.photonsPx">Fotones/px</div><div class="stat-val" id="f-col-ph"></div></div>
           <div class="stat"><div class="stat-label">SNR</div><div class="stat-val" id="f-col-snr"></div></div>
         </div>
       </div>
@@ -333,16 +366,16 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
     <div class="verdict" id="f-verdict"></div>
   </div>
   <div class="section info-text">
-    <div class="section-label">¿Qué está pasando?</div>
-    <p>Lo primero que encuentra un fotón no es el sensor, sino los <strong>filtros que colocamos delante</strong>. El ejemplo más claro es la elección entre cámara de color y monocromo.</p>
-    <p>Un sensor no mide color: mide <strong>intensidad de luz</strong>. Al colocar un filtro de color, cada píxel solo deja pasar una banda del espectro — el resto se pierde.</p>
-    <div class="highlight">Al filtrar perdemos información a propósito. Lo que el filtro bloquea no se mide, no se almacena, no existe para la cámara.</div>
-    <p>El filtro Bayer organiza los píxeles en un patrón de 2×2: 1 rojo, 2 verdes y 1 azul. Cada píxel solo deja pasar <em>su</em> color y bloquea el resto — así que de media, cada píxel recibe aproximadamente <strong>1 de cada 3 fotones</strong> que llegan. Menos fotones significa peor señal y más ruido.</p>
-    <p>Cuando la aplicación no necesita color — <strong>que en industria es la mayoría de las veces</strong> — elegir color "por si acaso" es regalar señal.</p>
+    <div class="section-label" data-i18n="common.whatsHappening">¿Qué está pasando?</div>
+    <p data-i18n="filter.p1" data-i18n-html>Lo primero que encuentra un fotón no es el sensor, sino los <strong>filtros que colocamos delante</strong>. El ejemplo más claro es la elección entre cámara de color y monocromo.</p>
+    <p data-i18n="filter.p2" data-i18n-html>Un sensor no mide color: mide <strong>intensidad de luz</strong>. Al colocar un filtro de color, cada píxel solo deja pasar una banda del espectro — el resto se pierde.</p>
+    <div class="highlight" data-i18n="filter.highlight">Al filtrar perdemos información a propósito. Lo que el filtro bloquea no se mide, no se almacena, no existe para la cámara.</div>
+    <p data-i18n="filter.p3" data-i18n-html>El filtro Bayer organiza los píxeles en un patrón de 2×2: 1 rojo, 2 verdes y 1 azul. Cada píxel solo deja pasar <em>su</em> color y bloquea el resto — así que de media, cada píxel recibe aproximadamente <strong>1 de cada 3 fotones</strong> que llegan. Menos fotones significa peor señal y más ruido.</p>
+    <p data-i18n="filter.p4" data-i18n-html>Cuando la aplicación no necesita color — <strong>que en industria es la mayoría de las veces</strong> — elegir color "por si acaso" es regalar señal.</p>
   </div>
   <div class="section">
     <div class="diagram-wrap">
-      <div class="diagram-title">Espectro electromagnético completo</div>
+      <div class="diagram-title" data-i18n="filter.spectrumTitle">Espectro electromagnético completo</div>
       <svg viewBox="0 0 300 76" width="100%" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="vis-grad" x1="0" y1="0" x2="1" y2="0">
@@ -357,31 +390,31 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
         <rect x="0"   y="4"  width="55"  height="20" rx="2" fill="#6d28d9" opacity="0.5"/>
         <text x="27"  y="18" font-size="8" fill="#ede9fe" text-anchor="middle">UV</text>
         <rect x="57"  y="4"  width="110" height="20" rx="2" fill="url(#vis-grad)" opacity="0.9"/>
-        <text x="112" y="18" font-size="8" fill="#fff" text-anchor="middle" font-weight="500">VISIBLE</text>
+        <text x="112" y="18" font-size="8" fill="#fff" text-anchor="middle" font-weight="500" data-i18n="filter.svgVisible">VISIBLE</text>
         <rect x="169" y="4"  width="131" height="20" rx="2" fill="#b45309" opacity="0.5"/>
-        <text x="234" y="18" font-size="8" fill="#fef3c7" text-anchor="middle">IR (infrarrojo)</text>
+        <text x="234" y="18" font-size="8" fill="#fef3c7" text-anchor="middle" data-i18n="filter.svgIR">IR (infrarrojo)</text>
         <text x="0"   y="36" font-size="6" fill="#aaa">&lt;380nm</text>
         <text x="57"  y="36" font-size="6" fill="#aaa">380nm</text>
         <text x="155" y="36" font-size="6" fill="#aaa">700nm</text>
         <text x="250" y="36" font-size="6" fill="#aaa">&gt;1µm</text>
         <line x1="57"  y1="2" x2="57"  y2="38" stroke="#aaa" stroke-width="0.5" stroke-dasharray="2,2"/>
         <line x1="167" y1="2" x2="167" y2="38" stroke="#aaa" stroke-width="0.5" stroke-dasharray="2,2"/>
-        <text x="0" y="52" font-size="6" fill="#bbb" letter-spacing="0.3">filtro Bayer</text>
+        <text x="0" y="52" font-size="6" fill="#bbb" letter-spacing="0.3" data-i18n="filter.svgBayerLabel">filtro Bayer</text>
         <rect x="0"   y="56" width="55"  height="8" rx="1" fill="#dc2626" opacity="0.6"/>
         <rect x="57"  y="56" width="110" height="8" rx="1" fill="#16a34a" opacity="0.25"/>
         <rect x="169" y="56" width="131" height="8" rx="1" fill="#dc2626" opacity="0.6"/>
-        <text x="27"  y="74" font-size="6" fill="#dc2626" text-anchor="middle">bloq.</text>
-        <text x="112" y="74" font-size="6" fill="#16a34a" text-anchor="middle">pasa (~33%)</text>
-        <text x="234" y="74" font-size="6" fill="#dc2626" text-anchor="middle">bloq.</text>
+        <text x="27"  y="74" font-size="6" fill="#dc2626" text-anchor="middle" data-i18n="filter.svgBlock">bloq.</text>
+        <text x="112" y="74" font-size="6" fill="#16a34a" text-anchor="middle" data-i18n="filter.svgPass">pasa (~33%)</text>
+        <text x="234" y="74" font-size="6" fill="#dc2626" text-anchor="middle" data-i18n="filter.svgBlock">bloq.</text>
       </svg>
     </div>
   </div>
   <div class="section">
     <div class="diagram-wrap">
-      <div class="diagram-title">Array de píxeles — con y sin filtro Bayer</div>
+      <div class="diagram-title" data-i18n="filter.arrayTitle">Array de píxeles — con y sin filtro Bayer</div>
       <div style="display:flex;gap:10px;margin-bottom:10px;">
-        <button id="bayer-on"  onclick="setBayer(true)"  style="flex:1;padding:7px;font-family:monospace;font-size:11px;border-radius:6px;border:2px solid #2563eb;background:#2563eb;color:#fff;cursor:pointer;">Con filtro Bayer</button>
-        <button id="bayer-off" onclick="setBayer(false)" style="flex:1;padding:7px;font-family:monospace;font-size:11px;border-radius:6px;border:1.5px solid #ccc;background:#fff;color:#555;cursor:pointer;">Sin filtro Bayer</button>
+        <button id="bayer-on"  onclick="setBayer(true)"  style="flex:1;padding:7px;font-family:monospace;font-size:11px;border-radius:6px;border:2px solid #2563eb;background:#2563eb;color:#fff;cursor:pointer;" data-i18n="filter.withBayer">Con filtro Bayer</button>
+        <button id="bayer-off" onclick="setBayer(false)" style="flex:1;padding:7px;font-family:monospace;font-size:11px;border-radius:6px;border:1.5px solid #ccc;background:#fff;color:#555;cursor:pointer;" data-i18n="filter.withoutBayer">Sin filtro Bayer</button>
       </div>
       <canvas id="bayer-canvas" style="width:100%;height:auto;display:block;border-radius:4px;"></canvas>
       <div id="bayer-desc" style="margin-top:8px;font-family:monospace;font-size:11px;color:#555;line-height:1.5;padding:8px 10px;background:#f8f8f8;border-radius:6px;border-left:3px solid #2563eb;"></div>
@@ -392,26 +425,26 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
 <!-- ══════ PESTAÑA 02 — SENSOR ══════ -->
 <div class="tab-panel" id="tab-sensor">
   <div class="section">
-    <div class="section-label">Simulador — Pixel Pitch y Fill Factor</div>
+    <div class="section-label" data-i18n="sensor.simLabel">Simulador — Pixel Pitch y Fill Factor</div>
     <div class="controls">
-      <div class="ctrl"><div class="ctrl-label">Tamaño de píxel (pitch) <span id="s-pitch-val">5.0 µm</span></div><input type="range" id="s-pitch" min="1" max="5" step="1" value="3"></div>
-      <div class="ctrl"><div class="ctrl-label">Fill factor <span id="s-ff-val">60%</span></div><input type="range" id="s-ff" min="1" max="5" step="1" value="3"></div>
-      <div class="ctrl"><div class="ctrl-label">Iluminación <span id="s-lux-val">media</span></div><input type="range" id="s-light" min="1" max="5" step="1" value="3"></div>
+      <div class="ctrl"><div class="ctrl-label"><span data-i18n="sensor.pitch">Tamaño de píxel (pitch)</span> <span id="s-pitch-val">5.0 µm</span></div><input type="range" id="s-pitch" min="1" max="5" step="1" value="3"></div>
+      <div class="ctrl"><div class="ctrl-label"><span data-i18n="sensor.ff">Fill factor</span> <span id="s-ff-val">60%</span></div><input type="range" id="s-ff" min="1" max="5" step="1" value="3"></div>
+      <div class="ctrl"><div class="ctrl-label"><span data-i18n="filter.illum">Iluminación</span> <span id="s-lux-val">media</span></div><input type="range" id="s-light" min="1" max="5" step="1" value="3"></div>
     </div>
     <div class="pixel-grid">
       <div class="pixel-box">
-        <div class="pixel-box-title">Estructura del píxel</div>
+        <div class="pixel-box-title" data-i18n="sensor.pxStruct">Estructura del píxel</div>
         <div class="pixel-canvas-wrap"><canvas id="s-pixel" width="200" height="200"></canvas></div>
         <div class="stats">
-          <div class="stat"><div class="stat-label">Pitch</div><div class="stat-val" id="s-pitch-disp" style="font-size:13px"></div></div>
-          <div class="stat"><div class="stat-label">Fill factor</div><div class="stat-val" id="s-ff-disp"></div></div>
+          <div class="stat"><div class="stat-label" data-i18n="sensor.pitchShort">Pitch</div><div class="stat-val" id="s-pitch-disp" style="font-size:13px"></div></div>
+          <div class="stat"><div class="stat-label" data-i18n="sensor.ff">Fill factor</div><div class="stat-val" id="s-ff-disp"></div></div>
         </div>
       </div>
       <div class="pixel-box">
-        <div class="pixel-box-title">Imagen capturada</div>
+        <div class="pixel-box-title" data-i18n="sensor.captured">Imagen capturada</div>
         <div class="pixel-canvas-wrap"><canvas id="s-scene" width="200" height="200"></canvas></div>
         <div class="stats">
-          <div class="stat"><div class="stat-label">Fotones/px</div><div class="stat-val" id="s-ph"></div></div>
+          <div class="stat"><div class="stat-label" data-i18n="filter.photonsPx">Fotones/px</div><div class="stat-val" id="s-ph"></div></div>
           <div class="stat"><div class="stat-label">SNR</div><div class="stat-val" id="s-snr"></div></div>
         </div>
       </div>
@@ -419,11 +452,11 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
     <div class="verdict" id="s-verdict"></div>
   </div>
   <div class="section info-text">
-    <div class="section-label">¿Qué está pasando?</div>
-    <p>El sensor transforma fotones en electrones. Un parámetro fundamental es el <strong>pixel pitch</strong>: el tamaño físico de cada píxel.</p>
-    <p>Imaginad cada píxel como un <strong>cubo que recoge agua de lluvia</strong>: cuanto más diámetro tenga, más agua recoge en el mismo tiempo. Un píxel grande capta más fotones — y más fotones significa mejor señal y menos ruido.</p>
-    <p>Pero no todo el píxel captura luz. Cada píxel tiene dos zonas: la <strong>zona fotosensible</strong> (el fotodiodo) y la <strong>zona de circuitería</strong>. La proporción de superficie útil se llama <strong>fill factor</strong>.</p>
-    <div class="highlight">En píxeles pequeños, la circuitería puede ocupar una fracción significativa del área. La tecnología BSI resuelve esto colocando la circuitería detrás del silicio.</div>
+    <div class="section-label" data-i18n="common.whatsHappening">¿Qué está pasando?</div>
+    <p data-i18n="sensor.p1" data-i18n-html>El sensor transforma fotones en electrones. Un parámetro fundamental es el <strong>pixel pitch</strong>: el tamaño físico de cada píxel.</p>
+    <p data-i18n="sensor.p2" data-i18n-html>Imaginad cada píxel como un <strong>cubo que recoge agua de lluvia</strong>: cuanto más diámetro tenga, más agua recoge en el mismo tiempo. Un píxel grande capta más fotones — y más fotones significa mejor señal y menos ruido.</p>
+    <p data-i18n="sensor.p3" data-i18n-html>Pero no todo el píxel captura luz. Cada píxel tiene dos zonas: la <strong>zona fotosensible</strong> (el fotodiodo) y la <strong>zona de circuitería</strong>. La proporción de superficie útil se llama <strong>fill factor</strong>.</p>
+    <div class="highlight" data-i18n="sensor.highlight">En píxeles pequeños, la circuitería puede ocupar una fracción significativa del área. La tecnología BSI resuelve esto colocando la circuitería detrás del silicio.</div>
   </div>
   <div class="section">
     <div class="diagram-wrap">
@@ -436,22 +469,22 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
 <!-- ══════ PESTAÑA 03 — ELECTRÓNICA ══════ -->
 <div class="tab-panel" id="tab-electronica">
   <div class="section">
-    <div class="section-label">Electrónica del sensor</div>
+    <div class="section-label" data-i18n="electronics.title">Electrónica del sensor</div>
     <nav class="subtabs-nav">
-      <button class="subtab-btn active" data-subtab="saturacion">Saturación / Full Well</button>
-      <button class="subtab-btn" data-subtab="motion">Motion Blur</button>
-      <button class="subtab-btn" data-subtab="dynamic">Rango Dinámico</button>
+      <button class="subtab-btn active" data-subtab="saturacion" data-i18n="electronics.subSat">Saturación / Full Well</button>
+      <button class="subtab-btn" data-subtab="motion" data-i18n="electronics.subMotion">Motion Blur</button>
+      <button class="subtab-btn" data-subtab="dynamic" data-i18n="electronics.subDR">Rango Dinámico</button>
     </nav>
 
     <!-- SUB 1: SATURACIÓN -->
     <div class="subtab-panel active" id="subtab-saturacion">
       <div class="controls">
         <div class="ctrl">
-          <div class="ctrl-label">Iluminación de la escena <span id="e-light-val">media</span></div>
+          <div class="ctrl-label"><span data-i18n="electronics.sceneIllum">Iluminación de la escena</span> <span id="e-light-val">media</span></div>
           <input type="range" id="e-light" min="1" max="10" step="1" value="5">
         </div>
         <div class="ctrl">
-          <div class="ctrl-label">Full well capacity <span id="e-fwc-val">media (15 ke⁻)</span></div>
+          <div class="ctrl-label"><span data-i18n="electronics.fwc">Full well capacity</span> <span id="e-fwc-val">media (15 ke⁻)</span></div>
           <input type="range" id="e-fwc" min="1" max="5" step="1" value="3">
         </div>
       </div>
@@ -459,16 +492,16 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
         <canvas id="e-sat-canvas" width="300" height="200" style="width:100%;height:auto;display:block;"></canvas>
       </div>
       <div style="margin-bottom:1rem;">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:6px;">LLENADO DEL PÍXEL (full well capacity)</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:6px;" data-i18n="electronics.wellFill">LLENADO DEL PÍXEL (full well capacity)</div>
         <div class="well-bar-wrap">
           <div class="well-bar-fill" id="e-well-bar" style="width:60%;background:#16a34a;"></div>
           <span class="well-bar-label" id="e-well-label">60%</span>
         </div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);">0 e⁻ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Full well</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);">0 e⁻ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span data-i18n="electronics.fwLabel">Full well</span></div>
       </div>
       <div class="stats" style="margin-bottom:1rem;">
-        <div class="stat"><div class="stat-label">Píxeles saturados</div><div class="stat-val" id="e-sat-pct">0%</div></div>
-        <div class="stat"><div class="stat-label">Zona útil</div><div class="stat-val good" id="e-sat-good">100%</div></div>
+        <div class="stat"><div class="stat-label" data-i18n="electronics.satPx">Píxeles saturados</div><div class="stat-val" id="e-sat-pct">0%</div></div>
+        <div class="stat"><div class="stat-label" data-i18n="electronics.usefulZone">Zona útil</div><div class="stat-val good" id="e-sat-good">100%</div></div>
       </div>
       <div class="verdict" id="e-sat-verdict"></div>
     </div>
@@ -477,16 +510,16 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
     <div class="subtab-panel" id="subtab-motion">
       <div class="controls">
         <div class="ctrl">
-          <div class="ctrl-label">Velocidad del objeto <span id="e-speed-val">media</span></div>
+          <div class="ctrl-label"><span data-i18n="electronics.objSpeed">Velocidad del objeto</span> <span id="e-speed-val">media</span></div>
           <input type="range" id="e-speed" min="1" max="5" step="1" value="3">
         </div>
         <div class="ctrl">
-          <div class="ctrl-label">Tiempo de exposición <span id="e-exp-val">1/500 s — óptimo</span></div>
+          <div class="ctrl-label"><span data-i18n="electronics.expTime">Tiempo de exposición</span> <span id="e-exp-val">1/500 s — óptimo</span></div>
           <input type="range" id="e-exp" min="1" max="9" step="1" value="5">
           <div class="exp-scale">
-            <span>oscuro / nítido</span>
-            <span class="exp-center">óptimo</span>
-            <span>brillante / borroso</span>
+            <span data-i18n="electronics.darkSharp">oscuro / nítido</span>
+            <span class="exp-center" data-i18n="electronics.optimal">óptimo</span>
+            <span data-i18n="electronics.brightBlurry">brillante / borroso</span>
           </div>
         </div>
       </div>
@@ -499,16 +532,16 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
     <!-- SUB 3: RANGO DINÁMICO -->
     <div class="subtab-panel" id="subtab-dynamic">
       <div style="margin-bottom:1.25rem;">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--good);font-weight:500;margin-bottom:4px;">Referencia — Alto DR (90 dB)</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--good);font-weight:500;margin-bottom:4px;" data-i18n="electronics.refHigh">Referencia — Alto DR (90 dB)</div>
         <div class="canvas-wrap"><canvas id="e-dr-hi" width="800" height="80" style="width:100%;display:block;"></canvas></div>
         <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text3);margin:3px 2px 0;">
-          <span>oscuro</span><span>brillante</span>
+          <span data-i18n="electronics.dark">oscuro</span><span data-i18n="electronics.bright">brillante</span>
         </div>
       </div>
 
       <div class="controls" style="margin-bottom:.75rem;">
         <div class="ctrl">
-          <div class="ctrl-label">Rango dinámico del sensor <span id="e-dr-val">66 dB</span></div>
+          <div class="ctrl-label"><span data-i18n="electronics.sensorDR">Rango dinámico del sensor</span> <span id="e-dr-val">66 dB</span></div>
           <input type="range" id="e-dr-slider" min="1" max="5" step="1" value="3">
         </div>
       </div>
@@ -517,7 +550,7 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
         <div style="font-family:var(--mono);font-size:10px;font-weight:500;margin-bottom:4px;" id="e-dr-lo-title">Sensor — 66 dB</div>
         <div class="canvas-wrap"><canvas id="e-dr-lo" width="800" height="80" style="width:100%;display:block;"></canvas></div>
         <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text3);margin:3px 2px 0;">
-          <span>oscuro</span><span>brillante</span>
+          <span data-i18n="electronics.dark">oscuro</span><span data-i18n="electronics.bright">brillante</span>
         </div>
       </div>
 
@@ -526,16 +559,16 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
   </div>
 
   <div class="section info-text">
-    <div class="section-label">¿Qué está pasando?</div>
-    <p>La electrónica necesita electrones para funcionar. Cada píxel tiene una <strong>capacidad máxima de electrones</strong> que puede almacenar antes de saturarse: es la <strong>full well capacity</strong>. Cuando se llena, el píxel no distingue entre mucha luz y muchísima — todo se ve blanco.</p>
-    <p>El <strong>tiempo de exposición</strong> define cuánto tiempo acumula carga cada píxel. Más exposición significa más señal (más brillo), pero si la pieza se mueve aparece el <strong>motion blur</strong>. Brillo y blur crecen juntos — no puedes tener uno sin el otro solo ajustando la exposición. La solución industrial es el flash estroboscópico.</p>
-    <p>La diferencia entre la señal más débil y la más fuerte que el sensor puede capturar <em>a la vez</em> es el <strong>rango dinámico</strong>, medido en decibelios (dB).</p>
-    <div class="highlight">El diseño de un sistema de visión es siempre un compromiso: full well, rango dinámico y exposición están ligados. No hay configuración perfecta — hay configuración adecuada para la aplicación.</div>
+    <div class="section-label" data-i18n="common.whatsHappening">¿Qué está pasando?</div>
+    <p data-i18n="electronics.p1" data-i18n-html>La electrónica necesita electrones para funcionar. Cada píxel tiene una <strong>capacidad máxima de electrones</strong> que puede almacenar antes de saturarse: es la <strong>full well capacity</strong>. Cuando se llena, el píxel no distingue entre mucha luz y muchísima — todo se ve blanco.</p>
+    <p data-i18n="electronics.p2" data-i18n-html>El <strong>tiempo de exposición</strong> define cuánto tiempo acumula carga cada píxel. Más exposición significa más señal (más brillo), pero si la pieza se mueve aparece el <strong>motion blur</strong>. Brillo y blur crecen juntos — no puedes tener uno sin el otro solo ajustando la exposición. La solución industrial es el flash estroboscópico.</p>
+    <p data-i18n="electronics.p3" data-i18n-html>La diferencia entre la señal más débil y la más fuerte que el sensor puede capturar <em>a la vez</em> es el <strong>rango dinámico</strong>, medido en decibelios (dB).</p>
+    <div class="highlight" data-i18n="electronics.highlight">El diseño de un sistema de visión es siempre un compromiso: full well, rango dinámico y exposición están ligados. No hay configuración perfecta — hay configuración adecuada para la aplicación.</div>
   </div>
 
   <div class="section">
     <div class="diagram-wrap">
-      <div class="diagram-title">Full well capacity y rango dinámico</div>
+      <div class="diagram-title" data-i18n="electronics.diagTitle">Full well capacity y rango dinámico</div>
       <svg viewBox="0 0 280 148" width="100%" xmlns="http://www.w3.org/2000/svg">
         <!-- eje vertical izquierdo -->
         <line x1="52" y1="8" x2="52" y2="140" stroke="#ccc" stroke-width="1"/>
@@ -543,23 +576,23 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
         <polygon points="52,5 49,12 55,12" fill="#ccc"/>
 
         <!-- etiquetas eje Y -->
-        <text x="50" y="12"  font-size="7" fill="#888" text-anchor="end">Full well</text>
+        <text x="50" y="12"  font-size="7" fill="#888" text-anchor="end" data-i18n="electronics.fwLabel">Full well</text>
         <text x="50" y="140" font-size="7" fill="#888" text-anchor="end">0 e⁻</text>
 
         <!-- zona saturación (arriba) -->
         <rect x="54" y="8"  width="170" height="22" rx="2" fill="#dc2626" opacity="0.13"/>
-        <text x="139" y="16" font-size="7" fill="#dc2626" text-anchor="middle" font-weight="500">SATURACIÓN</text>
-        <text x="139" y="26" font-size="6.5" fill="#dc2626" text-anchor="middle">píxel lleno — sin información</text>
+        <text x="139" y="16" font-size="7" fill="#dc2626" text-anchor="middle" font-weight="500" data-i18n="electronics.svgSat">SATURACIÓN</text>
+        <text x="139" y="26" font-size="6.5" fill="#dc2626" text-anchor="middle" data-i18n="electronics.svgSatSub">píxel lleno — sin información</text>
 
         <!-- zona útil (centro) -->
         <rect x="54" y="30"  width="170" height="80" rx="2" fill="#2563eb" opacity="0.07"/>
-        <text x="139" y="72" font-size="8.5" fill="#2563eb" text-anchor="middle" font-weight="500">rango dinámico útil</text>
-        <text x="139" y="84" font-size="7" fill="#2563eb" text-anchor="middle" opacity="0.7">señal distinguible del ruido</text>
+        <text x="139" y="72" font-size="8.5" fill="#2563eb" text-anchor="middle" font-weight="500" data-i18n="electronics.svgUseful">rango dinámico útil</text>
+        <text x="139" y="84" font-size="7" fill="#2563eb" text-anchor="middle" opacity="0.7" data-i18n="electronics.svgUsefulSub">señal distinguible del ruido</text>
 
         <!-- zona ruido (abajo) -->
         <rect x="54" y="110" width="170" height="22" rx="2" fill="#d97706" opacity="0.13"/>
-        <text x="139" y="121" font-size="7" fill="#d97706" text-anchor="middle" font-weight="500">RUIDO DE LECTURA</text>
-        <text x="139" y="130" font-size="6.5" fill="#d97706" text-anchor="middle">señal demasiado débil</text>
+        <text x="139" y="121" font-size="7" fill="#d97706" text-anchor="middle" font-weight="500" data-i18n="electronics.svgRead">RUIDO DE LECTURA</text>
+        <text x="139" y="130" font-size="6.5" fill="#d97706" text-anchor="middle" data-i18n="electronics.svgReadSub">señal demasiado débil</text>
 
         <!-- líneas de separación -->
         <line x1="54" y1="30"  x2="224" y2="30"  stroke="#dc2626" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.5"/>
@@ -575,16 +608,16 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
   </div>
 
   <div class="section">
-    <div class="section-label">Símil</div>
+    <div class="section-label" data-i18n="electronics.simile">Símil</div>
     <div class="diagram-wrap">
-      <div class="diagram-title">El cubo de agua</div>
+      <div class="diagram-title" data-i18n="electronics.bucket">El cubo de agua</div>
       <canvas id="bucket-canvas" width="300" height="180" style="width:100%;height:auto;display:block;border-radius:4px;background:#f5f5f5;"></canvas>
     </div>
     <div class="section info-text" style="padding:0;border:none;margin-top:1rem;">
-      <p>Imagina que cada píxel es un <strong>cubo que recoge lluvia</strong> durante la exposición. Los fotones son las gotas de agua.</p>
-      <p>Mientras el cubo no se llena, puedes saber exactamente cuánta lluvia ha caído mirando el nivel del agua. Pero <strong>cuando el cubo rebosa, toda la información se pierde</strong>: ya no sabes si llovió un poco más o muchísimo más — el resultado es el mismo, el cubo está lleno y desbordando.</p>
-      <p>La <strong>full well capacity</strong> es el tamaño del cubo. Un cubo más grande tarda más en rebosar — puede recoger más lluvia antes de perder información. La <strong>iluminación</strong> es la intensidad de la lluvia.</p>
-      <div class="highlight">En el sensor, "el cubo rebosa" se traduce en píxeles blancos puros — sin ningún detalle. No importa cuánta más luz llegue: el píxel ya no puede distinguirla.</div>
+      <p data-i18n="electronics.bucketP1" data-i18n-html>Imagina que cada píxel es un <strong>cubo que recoge lluvia</strong> durante la exposición. Los fotones son las gotas de agua.</p>
+      <p data-i18n="electronics.bucketP2" data-i18n-html>Mientras el cubo no se llena, puedes saber exactamente cuánta lluvia ha caído mirando el nivel del agua. Pero <strong>cuando el cubo rebosa, toda la información se pierde</strong>: ya no sabes si llovió un poco más o muchísimo más — el resultado es el mismo, el cubo está lleno y desbordando.</p>
+      <p data-i18n="electronics.bucketP3" data-i18n-html>La <strong>full well capacity</strong> es el tamaño del cubo. Un cubo más grande tarda más en rebosar — puede recoger más lluvia antes de perder información. La <strong>iluminación</strong> es la intensidad de la lluvia.</p>
+      <div class="highlight" data-i18n="electronics.bucketHighlight">En el sensor, "el cubo rebosa" se traduce en píxeles blancos puros — sin ningún detalle. No importa cuánta más luz llegue: el píxel ya no puede distinguirla.</div>
     </div>
   </div>
 </div>
@@ -592,48 +625,48 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
 <!-- ══════ PESTAÑA 04 — SHUTTER ══════ -->
 <div class="tab-panel" id="tab-optica">
   <div class="section">
-    <div class="section-label">Simulador — Rolling vs Global Shutter</div>
+    <div class="section-label" data-i18n="shutter.simLabel">Simulador — Rolling vs Global Shutter</div>
     <div class="controls">
       <div class="ctrl">
-        <div class="ctrl-label">Velocidad del objeto <span id="sh-speed-val">media</span></div>
+        <div class="ctrl-label"><span data-i18n="electronics.objSpeed">Velocidad del objeto</span> <span id="sh-speed-val">media</span></div>
         <input type="range" id="sh-speed" min="1" max="5" step="1" value="3">
       </div>
       <div class="ctrl">
-        <div class="ctrl-label">Tipo de movimiento <span id="sh-dir-val">horizontal</span></div>
+        <div class="ctrl-label"><span data-i18n="shutter.motionType">Tipo de movimiento</span> <span id="sh-dir-val">horizontal</span></div>
         <input type="range" id="sh-dir" min="1" max="3" step="1" value="1">
       </div>
     </div>
     <div class="cameras">
       <div class="cam">
         <div class="cam-title">Rolling Shutter</div>
-        <div class="cam-sub">lee fila a fila</div>
+        <div class="cam-sub" data-i18n="shutter.rowByRow">lee fila a fila</div>
         <div class="canvas-wrap"><canvas id="sh-rolling"></canvas></div>
         <div class="stats">
-          <div class="stat"><div class="stat-label">Lectura</div><div class="stat-val" style="font-size:13px">fila a fila</div></div>
-          <div class="stat"><div class="stat-label">Distorsión</div><div class="stat-val" id="sh-rolling-dist"></div></div>
+          <div class="stat"><div class="stat-label" data-i18n="shutter.read">Lectura</div><div class="stat-val" style="font-size:13px" data-i18n="shutter.rowByRowShort">fila a fila</div></div>
+          <div class="stat"><div class="stat-label" data-i18n="shutter.distortion">Distorsión</div><div class="stat-val" id="sh-rolling-dist"></div></div>
         </div>
       </div>
       <div class="cam">
         <div class="cam-title">Global Shutter</div>
-        <div class="cam-sub">lee todos los píxeles a la vez</div>
+        <div class="cam-sub" data-i18n="shutter.allAtOnce">lee todos los píxeles a la vez</div>
         <div class="canvas-wrap"><canvas id="sh-global"></canvas></div>
         <div class="stats">
-          <div class="stat"><div class="stat-label">Lectura</div><div class="stat-val" style="font-size:13px">simultánea</div></div>
-          <div class="stat"><div class="stat-label">Distorsión</div><div class="stat-val good" id="sh-global-dist">0px</div></div>
+          <div class="stat"><div class="stat-label" data-i18n="shutter.read">Lectura</div><div class="stat-val" style="font-size:13px" data-i18n="shutter.simultaneous">simultánea</div></div>
+          <div class="stat"><div class="stat-label" data-i18n="shutter.distortion">Distorsión</div><div class="stat-val good" id="sh-global-dist">0px</div></div>
         </div>
       </div>
     </div>
     <div class="verdict" id="sh-verdict"></div>
   </div>
   <div class="section info-text">
-    <div class="section-label">¿Qué está pasando?</div>
-    <p>El <strong>rolling shutter</strong> lee el sensor fila a fila. Si el objeto se mueve mientras se está leyendo, cada fila captura el objeto en una posición ligeramente distinta — el resultado es una imagen distorsionada.</p>
-    <p>El <strong>global shutter</strong> lee todos los píxeles simultáneamente. No importa cuánto se mueva el objeto — todos los píxeles capturan el mismo instante.</p>
-    <div class="highlight">En industria con objetos en movimiento rápido, el global shutter no es un lujo — es un requisito. El rolling shutter introduce errores de geometría que ningún algoritmo puede corregir después.</div>
+    <div class="section-label" data-i18n="common.whatsHappening">¿Qué está pasando?</div>
+    <p data-i18n="shutter.p1" data-i18n-html>El <strong>rolling shutter</strong> lee el sensor fila a fila. Si el objeto se mueve mientras se está leyendo, cada fila captura el objeto en una posición ligeramente distinta — el resultado es una imagen distorsionada.</p>
+    <p data-i18n="shutter.p2" data-i18n-html>El <strong>global shutter</strong> lee todos los píxeles simultáneamente. No importa cuánto se mueva el objeto — todos los píxeles capturan el mismo instante.</p>
+    <div class="highlight" data-i18n="shutter.highlight">En industria con objetos en movimiento rápido, el global shutter no es un lujo — es un requisito. El rolling shutter introduce errores de geometría que ningún algoritmo puede corregir después.</div>
   </div>
   <div class="section">
     <div class="diagram-wrap">
-      <div class="diagram-title">Rolling vs Global — proceso de lectura</div>
+      <div class="diagram-title" data-i18n="shutter.diagTitle">Rolling vs Global — proceso de lectura</div>
       <svg viewBox="0 0 320 136" width="100%" xmlns="http://www.w3.org/2000/svg">
         <text x="0" y="12" font-size="8" fill="#555" letter-spacing="0.5">ROLLING SHUTTER</text>
         <rect x="0" y="18" width="130" height="84" rx="2" fill="#e8e8e8" stroke="#ccc" stroke-width="0.5"/>
@@ -649,15 +682,15 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
         <text x="134" y="65" font-size="6" fill="#555">t=3ms</text>
         <text x="134" y="78" font-size="6" fill="#999">t=4ms</text>
         <text x="134" y="91" font-size="6" fill="#999">t=5ms</text>
-        <text x="65" y="118" font-size="7" fill="#dc2626" text-anchor="middle">cada fila = instante diferente</text>
-        <text x="65" y="128" font-size="7" fill="#dc2626" text-anchor="middle">→ distorsión</text>
+        <text x="65" y="118" font-size="7" fill="#dc2626" text-anchor="middle" data-i18n="shutter.svgDiffInstant">cada fila = instante diferente</text>
+        <text x="65" y="128" font-size="7" fill="#dc2626" text-anchor="middle" data-i18n="shutter.svgDistArrow">→ distorsión</text>
         <text x="180" y="12" font-size="8" fill="#555" letter-spacing="0.5">GLOBAL SHUTTER</text>
         <rect x="180" y="18" width="130" height="84" rx="2" fill="#2563eb" opacity="0.75"/>
-        <text x="245" y="58" font-size="8" fill="#fff" text-anchor="middle">todos los píxeles</text>
-        <text x="245" y="70" font-size="8" fill="#fff" text-anchor="middle">al mismo instante</text>
+        <text x="245" y="58" font-size="8" fill="#fff" text-anchor="middle" data-i18n="shutter.svgAllPx">todos los píxeles</text>
+        <text x="245" y="70" font-size="8" fill="#fff" text-anchor="middle" data-i18n="shutter.svgSameInst">al mismo instante</text>
         <text x="245" y="26" font-size="6" fill="#bfdbfe" text-anchor="middle">t=0ms</text>
-        <text x="245" y="118" font-size="7" fill="#16a34a" text-anchor="middle">un solo instante</text>
-        <text x="245" y="128" font-size="7" fill="#16a34a" text-anchor="middle">→ geometría perfecta</text>
+        <text x="245" y="118" font-size="7" fill="#16a34a" text-anchor="middle" data-i18n="shutter.svgOneInst">un solo instante</text>
+        <text x="245" y="128" font-size="7" fill="#16a34a" text-anchor="middle" data-i18n="shutter.svgPerfectGeo">→ geometría perfecta</text>
       </svg>
     </div>
   </div>
@@ -666,13 +699,13 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
 <!-- ══════ PESTAÑA DISCLAIMER ══════ -->
 <div class="tab-panel" id="tab-disclaimer">
   <div class="section info-text">
-    <div class="section-label">Nota importante</div>
-    <p><strong>Este contenido es una introducción, no un manual completo.</strong></p>
-    <p>Los conceptos explicados aquí son técnicamente correctos, pero el mundo de la visión artificial es enormemente amplio. Los simuladores son simplificaciones pedagógicas diseñadas para ilustrar conceptos clave.</p>
-    <div class="highlight">Si estás evaluando una aplicación real, consulta con un especialista. Cada proyecto merece un análisis específico.</div>
+    <div class="section-label" data-i18n="disclaimer.label">Nota importante</div>
+    <p data-i18n="disclaimer.p1" data-i18n-html><strong>Este contenido es una introducción, no un manual completo.</strong></p>
+    <p data-i18n="disclaimer.p2">Los conceptos explicados aquí son técnicamente correctos, pero el mundo de la visión artificial es enormemente amplio. Los simuladores son simplificaciones pedagógicas diseñadas para ilustrar conceptos clave.</p>
+    <div class="highlight" data-i18n="disclaimer.highlight">Si estás evaluando una aplicación real, consulta con un especialista. Cada proyecto merece un análisis específico.</div>
   </div>
   <div class="section">
-    <div class="section-label">Tipos de cámara industrial</div>
+    <div class="section-label" data-i18n="disclaimer.treeTitle">Tipos de cámara industrial</div>
     <div id="tree-root" class="tree"></div>
   </div>
 </div>
@@ -680,15 +713,15 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
 <!-- ══════ PESTAÑA CONTACTO ══════ -->
 <div class="tab-panel" id="tab-contacto">
   <div class="section contact-hero">
-    <h2 class="contact-title">¿Hablamos?</h2>
-    <p class="contact-desc">Si tienes dudas sobre visión artificial, selección de cámara o quieres valorar un proyecto concreto, contacta con nosotros.</p>
+    <h2 class="contact-title" data-i18n="contact.title">¿Hablamos?</h2>
+    <p class="contact-desc" data-i18n="contact.desc">Si tienes dudas sobre visión artificial, selección de cámara o quieres valorar un proyecto concreto, contacta con nosotros.</p>
   </div>
   <div class="section">
     <div class="contact-cards">
       <div class="contact-card">
         <img src="img/HectorCordal.jpg" alt="Héctor Cordal" class="contact-photo">
         <div class="contact-name">Héctor Cordal</div>
-        <div class="contact-role">Responsable Departamento de Visión<br>Grupo Álava</div>
+        <div class="contact-role" data-i18n="contact.hectorRole" data-i18n-html>Responsable Departamento de Visión<br>Grupo Álava</div>
         <div class="contact-links">
           <a href="mailto:hcordal@grupoalava.com" class="contact-link">hcordal@grupoalava.com</a>
           <a href="tel:+34607969410" class="contact-link contact-link-sec">+34 607 969 410</a>
@@ -697,23 +730,739 @@ svg text { font-family: 'IBM Plex Mono', monospace; }
       <div class="contact-card">
         <img src="img/EvaDeltor.jpg" alt="Eva Deltor" class="contact-photo">
         <div class="contact-name">Eva Deltor</div>
-        <div class="contact-role">Doctoranda en microelectrónica<br>Analog and Mixed-Signal IC design<br>IMB-CNM</div>
+        <div class="contact-role" data-i18n="contact.evaRole" data-i18n-html>Doctoranda en microelectrónica<br>Analog and Mixed-Signal IC design<br>IMB-CNM</div>
         <div class="contact-links">
           <a href="mailto:eva.deltor@imb-cnm.cisc.es" class="contact-link">eva.deltor@imb-cnm.cisc.es</a>
-          <a href="../index.html" class="contact-btn-eva">Descubrir más →</a>
+          <a href="../index.html" class="contact-btn-eva" data-i18n="contact.discoverMore">Descubrir más →</a>
         </div>
       </div>
     </div>
   </div>
   <div class="section">
     <div class="contact-web">
-      <div class="contact-web-label">Web corporativa</div>
+      <div class="contact-web-label" data-i18n="contact.webLabel">Web corporativa</div>
       <a href="https://www.grupoalava.com" class="contact-web-url">www.grupoalava.com</a>
     </div>
   </div>
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════════
+// SISTEMA DE INTERNACIONALIZACIÓN (i18n)
+// ══════════════════════════════════════════════════════════
+const I18N = {
+  es: {
+    // ── HEADER / TABS ─────────────────────────────────────
+    'header.label': 'Visión Industrial',
+    'header.title.prefix': 'Cómo funciona',
+    'header.title.strong': 'una cámara',
+    'header.sub': 'simuladores interactivos',
+    'tabs.filters': 'Filtros',
+    'tabs.sensor': 'Sensor',
+    'tabs.electronics': 'Electrónica',
+    'tabs.shutter': 'Shutter',
+    'tabs.disclaimer': 'Disclaimer',
+    'tabs.contact': 'Contacto',
+    'common.whatsHappening': '¿Qué está pasando?',
+
+    // ── FILTROS ───────────────────────────────────────────
+    'filter.simLabel': 'Simulador — Monocromo vs Color',
+    'filter.illum': 'Iluminación',
+    'filter.noise': 'Ruido electrónico',
+    'filter.res': 'Resolución',
+    'filter.mono': 'Monocromo',
+    'filter.color': 'Color (Bayer)',
+    'filter.photonsPx': 'Fotones/px',
+    'filter.p1': 'Lo primero que encuentra un fotón no es el sensor, sino los <strong>filtros que colocamos delante</strong>. El ejemplo más claro es la elección entre cámara de color y monocromo.',
+    'filter.p2': 'Un sensor no mide color: mide <strong>intensidad de luz</strong>. Al colocar un filtro de color, cada píxel solo deja pasar una banda del espectro — el resto se pierde.',
+    'filter.highlight': 'Al filtrar perdemos información a propósito. Lo que el filtro bloquea no se mide, no se almacena, no existe para la cámara.',
+    'filter.p3': 'El filtro Bayer organiza los píxeles en un patrón de 2×2: 1 rojo, 2 verdes y 1 azul. Cada píxel solo deja pasar <em>su</em> color y bloquea el resto — así que de media, cada píxel recibe aproximadamente <strong>1 de cada 3 fotones</strong> que llegan. Menos fotones significa peor señal y más ruido.',
+    'filter.p4': 'Cuando la aplicación no necesita color — <strong>que en industria es la mayoría de las veces</strong> — elegir color "por si acaso" es regalar señal.',
+    'filter.spectrumTitle': 'Espectro electromagnético completo',
+    'filter.svgVisible': 'VISIBLE',
+    'filter.svgIR': 'IR (infrarrojo)',
+    'filter.svgBayerLabel': 'filtro Bayer',
+    'filter.svgBlock': 'bloq.',
+    'filter.svgPass': 'pasa (~33%)',
+    'filter.arrayTitle': 'Array de píxeles — con y sin filtro Bayer',
+    'filter.withBayer': 'Con filtro Bayer',
+    'filter.withoutBayer': 'Sin filtro Bayer',
+    // labels dinámicos sliders
+    'filter.lightLbls': ['muy baja','baja','media','buena','alta'],
+    'filter.noiseLbls': ['mínimo','normal','alto','muy alto','extremo'],
+    'filter.resLbls': ['baja','media','alta'],
+    'filter.arrayPx': 'array de píxeles',
+    'filter.bayerFilter': 'filtro Bayer',
+    'filter.bayerOnDesc': 'El filtro Bayer (capa superior) asigna un color R, G o B a cada píxel. Solo deja pasar ~33% de la luz — el resto se bloquea. El color final se reconstruye interpolando píxeles vecinos (demosaicing).',
+    'filter.bayerOffDesc': 'Sin filtro Bayer: el sensor recibe todos los fotones de cualquier longitud de onda. 3x más luz por píxel → mejor SNR → imagen más limpia, especialmente con poca luz.',
+    // Veredictos filtro
+    'filter.vCantRead': 'El sensor de color no puede leer el código con fiabilidad. El monocromo tiene {ratio}x mejor SNR.',
+    'filter.vBetter': 'El monocromo tiene {ratio}x mejor SNR. El código "2024-A3" se lee con más margen.',
+    'filter.vBoth': 'Con esta iluminación ambos sensores leen bien (ratio {ratio}x). Con monocromo obtienes el mismo resultado con menos luz.',
+
+    // ── SENSOR ────────────────────────────────────────────
+    'sensor.simLabel': 'Simulador — Pixel Pitch y Fill Factor',
+    'sensor.pitch': 'Tamaño de píxel (pitch)',
+    'sensor.pitchShort': 'Pitch',
+    'sensor.ff': 'Fill factor',
+    'sensor.pxStruct': 'Estructura del píxel',
+    'sensor.captured': 'Imagen capturada',
+    'sensor.p1': 'El sensor transforma fotones en electrones. Un parámetro fundamental es el <strong>pixel pitch</strong>: el tamaño físico de cada píxel.',
+    'sensor.p2': 'Imaginad cada píxel como un <strong>cubo que recoge agua de lluvia</strong>: cuanto más diámetro tenga, más agua recoge en el mismo tiempo. Un píxel grande capta más fotones — y más fotones significa mejor señal y menos ruido.',
+    'sensor.p3': 'Pero no todo el píxel captura luz. Cada píxel tiene dos zonas: la <strong>zona fotosensible</strong> (el fotodiodo) y la <strong>zona de circuitería</strong>. La proporción de superficie útil se llama <strong>fill factor</strong>.',
+    'sensor.highlight': 'En píxeles pequeños, la circuitería puede ocupar una fracción significativa del área. La tecnología BSI resuelve esto colocando la circuitería detrás del silicio.',
+    'sensor.photodiode': 'fotodiodo',
+    'sensor.circShort': 'circ.',
+    'sensor.circ': 'circuitería (detrás)',
+    'sensor.blocked': 'bloqueado',
+    'sensor.allPhotonsPass': 'todos los fotones pasan',
+    // veredictos sensor
+    'sensor.vCritical': 'Con {photons} fotones/px el SNR es crítico. El texto no es legible de forma fiable.',
+    'sensor.vTight': 'SNR ajustado ({photons} fotones/px). Funciona, pero sin margen.',
+    'sensor.vGood': 'Con {photons} fotones/px el sistema tiene buen margen. El código es legible de forma robusta.',
+
+    // ── ELECTRÓNICA ───────────────────────────────────────
+    'electronics.title': 'Electrónica del sensor',
+    'electronics.subSat': 'Saturación / Full Well',
+    'electronics.subMotion': 'Motion Blur',
+    'electronics.subDR': 'Rango Dinámico',
+    'electronics.sceneIllum': 'Iluminación de la escena',
+    'electronics.fwc': 'Full well capacity',
+    'electronics.wellFill': 'LLENADO DEL PÍXEL (full well capacity)',
+    'electronics.fwLabel': 'Full well',
+    'electronics.satPx': 'Píxeles saturados',
+    'electronics.usefulZone': 'Zona útil',
+    'electronics.objSpeed': 'Velocidad del objeto',
+    'electronics.expTime': 'Tiempo de exposición',
+    'electronics.darkSharp': 'oscuro / nítido',
+    'electronics.optimal': 'óptimo',
+    'electronics.brightBlurry': 'brillante / borroso',
+    'electronics.refHigh': 'Referencia — Alto DR (90 dB)',
+    'electronics.dark': 'oscuro',
+    'electronics.bright': 'brillante',
+    'electronics.sensorDR': 'Rango dinámico del sensor',
+    'electronics.sensorPrefix': 'Sensor',
+    'electronics.p1': 'La electrónica necesita electrones para funcionar. Cada píxel tiene una <strong>capacidad máxima de electrones</strong> que puede almacenar antes de saturarse: es la <strong>full well capacity</strong>. Cuando se llena, el píxel no distingue entre mucha luz y muchísima — todo se ve blanco.',
+    'electronics.p2': 'El <strong>tiempo de exposición</strong> define cuánto tiempo acumula carga cada píxel. Más exposición significa más señal (más brillo), pero si la pieza se mueve aparece el <strong>motion blur</strong>. Brillo y blur crecen juntos — no puedes tener uno sin el otro solo ajustando la exposición. La solución industrial es el flash estroboscópico.',
+    'electronics.p3': 'La diferencia entre la señal más débil y la más fuerte que el sensor puede capturar <em>a la vez</em> es el <strong>rango dinámico</strong>, medido en decibelios (dB).',
+    'electronics.highlight': 'El diseño de un sistema de visión es siempre un compromiso: full well, rango dinámico y exposición están ligados. No hay configuración perfecta — hay configuración adecuada para la aplicación.',
+    'electronics.diagTitle': 'Full well capacity y rango dinámico',
+    'electronics.svgSat': 'SATURACIÓN',
+    'electronics.svgSatSub': 'píxel lleno — sin información',
+    'electronics.svgUseful': 'rango dinámico útil',
+    'electronics.svgUsefulSub': 'señal distinguible del ruido',
+    'electronics.svgRead': 'RUIDO DE LECTURA',
+    'electronics.svgReadSub': 'señal demasiado débil',
+    'electronics.simile': 'Símil',
+    'electronics.bucket': 'El cubo de agua',
+    'electronics.bucketP1': 'Imagina que cada píxel es un <strong>cubo que recoge lluvia</strong> durante la exposición. Los fotones son las gotas de agua.',
+    'electronics.bucketP2': 'Mientras el cubo no se llena, puedes saber exactamente cuánta lluvia ha caído mirando el nivel del agua. Pero <strong>cuando el cubo rebosa, toda la información se pierde</strong>: ya no sabes si llovió un poco más o muchísimo más — el resultado es el mismo, el cubo está lleno y desbordando.',
+    'electronics.bucketP3': 'La <strong>full well capacity</strong> es el tamaño del cubo. Un cubo más grande tarda más en rebosar — puede recoger más lluvia antes de perder información. La <strong>iluminación</strong> es la intensidad de la lluvia.',
+    'electronics.bucketHighlight': 'En el sensor, "el cubo rebosa" se traduce en píxeles blancos puros — sin ningún detalle. No importa cuánta más luz llegue: el píxel ya no puede distinguirla.',
+    // labels sliders electrónica
+    'electronics.fwcLbls': ['muy baja (4 ke⁻)','baja (8 ke⁻)','media (15 ke⁻)','alta (30 ke⁻)','muy alta (60 ke⁻)'],
+    'electronics.lightLbls10': ['muy baja','','baja','','media','','alta','','muy alta','máxima'],
+    'electronics.speedLbls': ['muy lenta','lenta','media','rápida','muy rápida'],
+    'electronics.optimalSuffix': ' — óptimo',
+    'electronics.drLbls': ['40 dB (muy bajo)','55 dB (bajo)','66 dB (típico)','78 dB (alto)','90 dB (muy alto)'],
+    'electronics.saturated': '¡SATURADO!',
+    // bucket canvas
+    'electronics.bucketSat': '¡REBOSA!',
+    'electronics.bucketFilling': 'llenando...',
+    'electronics.bucketEmptying': 'vaciándose',
+    'electronics.bucketAlmostFull': 'casi lleno',
+    'electronics.bucketEmpty': 'vacío',
+    'electronics.bucketCeiling': '← full well capacity (techo)',
+    'electronics.bucketNoInfo': 'sin información:',
+    'electronics.bucketNoInfo2': 'el píxel ya no',
+    'electronics.bucketNoInfo3': 'distingue más luz',
+    'electronics.bucketLevel': 'nivel = señal',
+    'electronics.bucketLevel2': 'medible',
+    // veredictos saturación
+    'electronics.satV1': 'El {pct}% de los píxeles están saturados — el texto de la etiqueta y las zonas brillantes han desaparecido en blanco puro. Aumenta la FWC o reduce la iluminación.',
+    'electronics.satV2': '{pct}% de píxeles saturados. El reflejo de la caja empieza a perder detalle. Aumentar la FWC o reducir la exposición mejoraría la imagen.',
+    'electronics.satV3': 'Saturación leve ({pct}%). Solo las zonas de máximo reflejo se queman — el texto sigue legible.',
+    'electronics.satV4': 'Píxeles al {pct}% de capacidad. Buena señal pero cerca del límite — cualquier pico de iluminación puede saturar.',
+    'electronics.satV5': 'Píxeles al {pct}% de capacidad. Señal óptima sin saturación — el sistema tiene margen ante variaciones de la línea.',
+    // veredictos blur
+    'electronics.blurOpt': 'Punto óptimo ({exp}): brillo {b} con {blur}px de blur. Sube la exposición → más brillante y más borroso. Bájala → más oscuro y más nítido.',
+    'electronics.blurBelow': '{stops} stop{plural} por debajo del óptimo — imagen {b}. Más nítida ({blur}px), pero más oscura. Necesitarías más iluminación para compensar.',
+    'electronics.blurAbove': '{stops} stop{plural} por encima del óptimo — imagen {b} con {blur}px de blur. Brillo y blur crecen juntos: no puedes tener uno sin el otro solo con la exposición.',
+    'electronics.blurBrightness': 'brillo',
+    'electronics.blurLabel': 'blur',
+    // veredictos DR
+    'electronics.drV1': 'Con {db} dB el sensor captura todo el gradiente de negro a blanco sin perder ningún extremo.',
+    'electronics.drV2': 'Con {db} dB el sensor pierde el {loL}% de la escena — un poco de negro por abajo y de blanco por arriba.',
+    'electronics.drV3': 'Con {db} dB se pierden {loL}% de los tonos — los grises más oscuros se aplanan en negro y los más claros se queman en blanco.',
+    'electronics.drV4': 'Con {db} dB el sensor solo captura el {center}% central del gradiente. Todo lo demás es negro o blanco puro — sin información recuperable.',
+
+    // ── SHUTTER ────────────────────────────────────────────
+    'shutter.simLabel': 'Simulador — Rolling vs Global Shutter',
+    'shutter.motionType': 'Tipo de movimiento',
+    'shutter.rowByRow': 'lee fila a fila',
+    'shutter.rowByRowShort': 'fila a fila',
+    'shutter.allAtOnce': 'lee todos los píxeles a la vez',
+    'shutter.simultaneous': 'simultánea',
+    'shutter.read': 'Lectura',
+    'shutter.distortion': 'Distorsión',
+    'shutter.p1': 'El <strong>rolling shutter</strong> lee el sensor fila a fila. Si el objeto se mueve mientras se está leyendo, cada fila captura el objeto en una posición ligeramente distinta — el resultado es una imagen distorsionada.',
+    'shutter.p2': 'El <strong>global shutter</strong> lee todos los píxeles simultáneamente. No importa cuánto se mueva el objeto — todos los píxeles capturan el mismo instante.',
+    'shutter.highlight': 'En industria con objetos en movimiento rápido, el global shutter no es un lujo — es un requisito. El rolling shutter introduce errores de geometría que ningún algoritmo puede corregir después.',
+    'shutter.diagTitle': 'Rolling vs Global — proceso de lectura',
+    'shutter.svgDiffInstant': 'cada fila = instante diferente',
+    'shutter.svgDistArrow': '→ distorsión',
+    'shutter.svgAllPx': 'todos los píxeles',
+    'shutter.svgSameInst': 'al mismo instante',
+    'shutter.svgOneInst': 'un solo instante',
+    'shutter.svgPerfectGeo': '→ geometría perfecta',
+    'shutter.dirLbls': ['horizontal','vertical','rotación'],
+    'shutter.speedLbls': ['muy lenta','lenta','media','rápida','muy rápida'],
+    // veredictos shutter
+    'shutter.v1': 'Con esta velocidad el rolling shutter introduce {dist}px de distorsión. El código es ilegible y la geometría está completamente deformada.',
+    'shutter.v2': '{dist}px de distorsión por rolling shutter. En control de calidad dimensional, esta deformación generaría medidas incorrectas.',
+    'shutter.v3': 'Distorsión mínima ({dist}px) — a esta velocidad el rolling shutter puede ser suficiente.',
+
+    // ── DISCLAIMER ─────────────────────────────────────────
+    'disclaimer.label': 'Nota importante',
+    'disclaimer.p1': '<strong>Este contenido es una introducción, no un manual completo.</strong>',
+    'disclaimer.p2': 'Los conceptos explicados aquí son técnicamente correctos, pero el mundo de la visión artificial es enormemente amplio. Los simuladores son simplificaciones pedagógicas diseñadas para ilustrar conceptos clave.',
+    'disclaimer.highlight': 'Si estás evaluando una aplicación real, consulta con un especialista. Cada proyecto merece un análisis específico.',
+    'disclaimer.treeTitle': 'Tipos de cámara industrial',
+
+    // ── CONTACTO ───────────────────────────────────────────
+    'contact.title': '¿Hablamos?',
+    'contact.desc': 'Si tienes dudas sobre visión artificial, selección de cámara o quieres valorar un proyecto concreto, contacta con nosotros.',
+    'contact.hectorRole': 'Responsable Departamento de Visión<br>Grupo Álava',
+    'contact.evaRole': 'Doctoranda en microelectrónica<br>Analog and Mixed-Signal IC design<br>IMB-CNM',
+    'contact.discoverMore': 'Descubrir más →',
+    'contact.webLabel': 'Web corporativa',
+
+    // ── ÁRBOL DE CÁMARAS ──────────────────────────────────
+    'tree.root': 'Cámara Industrial',
+    'tree.byArch': 'Por arquitectura del sensor',
+    'tree.ccd': ['CCD','alta calidad de imagen, mayor coste y consumo'],
+    'tree.cmos': ['CMOS','más rápido, menor coste, domina el mercado actual'],
+    'tree.fsi': ['FSI (front-illuminated)','circuitería en la parte frontal, fill factor limitado'],
+    'tree.bsi': ['BSI (back-illuminated)','circuitería detrás del silicio, fill factor ~100%'],
+    'tree.stacked': ['Stacked CMOS','sensor y procesador apilados, altísima velocidad'],
+    'tree.byFilter': 'Por tipo de filtro',
+    'tree.noFilter': ['Sin filtro','monocromo puro — máxima sensibilidad y menor ruido'],
+    'tree.colorFilters': 'Filtros de color',
+    'tree.bayer': ['Bayer (RGGB)','el más común — 1R, 2G, 1B por cada 2×2 píxeles'],
+    'tree.threeCcd': ['3CCD / 3CMOS','un sensor por canal RGB — sin pérdida de resolución'],
+    'tree.spectralFilters': 'Filtros espectrales',
+    'tree.bandpass': ['Paso banda (bandpass)','deja pasar solo una longitud de onda concreta'],
+    'tree.irCut': ['Filtro IR cut','bloquea infrarrojo — presente en casi todas las cámaras de color'],
+    'tree.polarizer': ['Filtro polarizador','elimina reflejos en superficies brillantes'],
+    'tree.nir': ['Filtro NIR','700–1000nm — inspección de materiales, detección de defectos'],
+    'tree.swir': ['Filtro SWIR','1000–1700nm — ver a través de plásticos y humedad'],
+    'tree.byShutter': 'Por shutter',
+    'tree.rolling': ['Rolling shutter','lee fila a fila — más barato, distorsión en movimiento'],
+    'tree.global': ['Global shutter','lee todos los píxeles a la vez — sin distorsión, mayor coste'],
+    'tree.byCapture': 'Por formato de captura',
+    'tree.areaScan': ['Area scan','imagen completa de una vez — el más común'],
+    'tree.lineScan': ['Line scan','una línea cada vez — para objetos en movimiento continuo en cinta'],
+    'tree.tof': ['Time of Flight (ToF)','mide distancia por tiempo de vuelo del fotón'],
+    'tree.structured': ['Structured light','profundidad por proyección de patrón de luz'],
+    'tree.bySpectrum': 'Por espectro',
+    'tree.visible': ['Visible (380–700nm)','luz que ve el ojo humano'],
+    'tree.nirSp': ['Near IR / NIR (700–1000nm)','inspección de materiales, control de procesos'],
+    'tree.swirSp': ['SWIR (1000–1700nm)','ver a través de plásticos, silicio, humedad'],
+    'tree.mwir': ['MWIR (3–5µm)','termografía, control de temperatura'],
+    'tree.lwir': ['LWIR / Térmica (8–14µm)','imagen térmica — sin iluminación externa'],
+    'tree.xray': ['Rayos X','inspección interior de piezas y packaging'],
+    'tree.byInterface': 'Por interfaz de datos',
+    'tree.gige': ['GigE Vision','flexible, larga distancia, hasta 1Gbps'],
+    'tree.gige10': ['10GigE','alta velocidad y larga distancia, hasta 10Gbps'],
+    'tree.usb3': ['USB3 Vision','plug & play, fácil integración, hasta 5Gbps'],
+    'tree.coax': ['CoaXPress','muy alta velocidad, hasta 12.5Gbps por canal'],
+  },
+
+  en: {
+    'header.label': 'Industrial Vision',
+    'header.title.prefix': 'How',
+    'header.title.strong': 'a camera works',
+    'header.sub': 'interactive simulators',
+    'tabs.filters': 'Filters',
+    'tabs.sensor': 'Sensor',
+    'tabs.electronics': 'Electronics',
+    'tabs.shutter': 'Shutter',
+    'tabs.disclaimer': 'Disclaimer',
+    'tabs.contact': 'Contact',
+    'common.whatsHappening': 'What is happening?',
+
+    'filter.simLabel': 'Simulator — Monochrome vs Color',
+    'filter.illum': 'Illumination',
+    'filter.noise': 'Electronic noise',
+    'filter.res': 'Resolution',
+    'filter.mono': 'Monochrome',
+    'filter.color': 'Color (Bayer)',
+    'filter.photonsPx': 'Photons/px',
+    'filter.p1': 'The first thing a photon meets is not the sensor, but the <strong>filters we place in front of it</strong>. The clearest example is the choice between a color and a monochrome camera.',
+    'filter.p2': 'A sensor does not measure color: it measures <strong>light intensity</strong>. By placing a color filter, each pixel only lets through a band of the spectrum — the rest is lost.',
+    'filter.highlight': 'When we filter, we lose information on purpose. Whatever the filter blocks is not measured, not stored, does not exist for the camera.',
+    'filter.p3': 'The Bayer filter arranges pixels in a 2×2 pattern: 1 red, 2 greens and 1 blue. Each pixel only lets <em>its</em> color through and blocks the rest — so on average, each pixel receives roughly <strong>1 of every 3 photons</strong> that arrive. Fewer photons means worse signal and more noise.',
+    'filter.p4': 'When the application does not need color — <strong>which in industry is most of the time</strong> — choosing color "just in case" means giving away signal.',
+    'filter.spectrumTitle': 'Full electromagnetic spectrum',
+    'filter.svgVisible': 'VISIBLE',
+    'filter.svgIR': 'IR (infrared)',
+    'filter.svgBayerLabel': 'Bayer filter',
+    'filter.svgBlock': 'block',
+    'filter.svgPass': 'pass (~33%)',
+    'filter.arrayTitle': 'Pixel array — with and without Bayer filter',
+    'filter.withBayer': 'With Bayer filter',
+    'filter.withoutBayer': 'Without Bayer filter',
+    'filter.lightLbls': ['very low','low','medium','good','high'],
+    'filter.noiseLbls': ['minimum','normal','high','very high','extreme'],
+    'filter.resLbls': ['low','medium','high'],
+    'filter.arrayPx': 'pixel array',
+    'filter.bayerFilter': 'Bayer filter',
+    'filter.bayerOnDesc': 'The Bayer filter (top layer) assigns an R, G or B color to each pixel. It only lets through ~33% of the light — the rest is blocked. The final color is reconstructed by interpolating neighboring pixels (demosaicing).',
+    'filter.bayerOffDesc': 'Without Bayer filter: the sensor receives all photons of any wavelength. 3x more light per pixel → better SNR → cleaner image, especially in low light.',
+    'filter.vCantRead': 'The color sensor cannot read the code reliably. Monochrome has {ratio}x better SNR.',
+    'filter.vBetter': 'Monochrome has {ratio}x better SNR. The "2024-A3" code reads with more margin.',
+    'filter.vBoth': 'With this lighting both sensors read well (ratio {ratio}x). With monochrome you get the same result with less light.',
+
+    'sensor.simLabel': 'Simulator — Pixel Pitch and Fill Factor',
+    'sensor.pitch': 'Pixel size (pitch)',
+    'sensor.pitchShort': 'Pitch',
+    'sensor.ff': 'Fill factor',
+    'sensor.pxStruct': 'Pixel structure',
+    'sensor.captured': 'Captured image',
+    'sensor.p1': 'The sensor turns photons into electrons. A fundamental parameter is the <strong>pixel pitch</strong>: the physical size of each pixel.',
+    'sensor.p2': 'Imagine each pixel as a <strong>bucket collecting rainwater</strong>: the larger its diameter, the more water it collects in the same time. A large pixel captures more photons — and more photons means better signal and less noise.',
+    'sensor.p3': 'But not all of the pixel captures light. Each pixel has two zones: the <strong>photosensitive zone</strong> (the photodiode) and the <strong>circuitry zone</strong>. The proportion of useful surface is called <strong>fill factor</strong>.',
+    'sensor.highlight': 'In small pixels, the circuitry can take up a significant fraction of the area. BSI technology solves this by placing the circuitry behind the silicon.',
+    'sensor.photodiode': 'photodiode',
+    'sensor.circShort': 'circ.',
+    'sensor.circ': 'circuitry (behind)',
+    'sensor.blocked': 'blocked',
+    'sensor.allPhotonsPass': 'all photons pass',
+    'sensor.vCritical': 'With {photons} photons/px the SNR is critical. The text is not reliably readable.',
+    'sensor.vTight': 'Tight SNR ({photons} photons/px). It works, but with no margin.',
+    'sensor.vGood': 'With {photons} photons/px the system has good margin. The code is robustly readable.',
+
+    'electronics.title': 'Sensor electronics',
+    'electronics.subSat': 'Saturation / Full Well',
+    'electronics.subMotion': 'Motion Blur',
+    'electronics.subDR': 'Dynamic Range',
+    'electronics.sceneIllum': 'Scene illumination',
+    'electronics.fwc': 'Full well capacity',
+    'electronics.wellFill': 'PIXEL FILL (full well capacity)',
+    'electronics.fwLabel': 'Full well',
+    'electronics.satPx': 'Saturated pixels',
+    'electronics.usefulZone': 'Useful zone',
+    'electronics.objSpeed': 'Object speed',
+    'electronics.expTime': 'Exposure time',
+    'electronics.darkSharp': 'dark / sharp',
+    'electronics.optimal': 'optimal',
+    'electronics.brightBlurry': 'bright / blurry',
+    'electronics.refHigh': 'Reference — High DR (90 dB)',
+    'electronics.dark': 'dark',
+    'electronics.bright': 'bright',
+    'electronics.sensorDR': 'Sensor dynamic range',
+    'electronics.sensorPrefix': 'Sensor',
+    'electronics.p1': 'Electronics need electrons to work. Each pixel has a <strong>maximum electron capacity</strong> it can store before saturating: this is the <strong>full well capacity</strong>. When it fills up, the pixel cannot tell the difference between a lot of light and very much light — everything looks white.',
+    'electronics.p2': 'The <strong>exposure time</strong> defines how long each pixel accumulates charge. More exposure means more signal (more brightness), but if the part is moving, <strong>motion blur</strong> appears. Brightness and blur grow together — you cannot have one without the other just by adjusting exposure. The industrial solution is the strobe flash.',
+    'electronics.p3': 'The difference between the weakest and the strongest signal the sensor can capture <em>at the same time</em> is the <strong>dynamic range</strong>, measured in decibels (dB).',
+    'electronics.highlight': 'Designing a vision system is always a trade-off: full well, dynamic range and exposure are linked. There is no perfect setup — there is a setup that fits the application.',
+    'electronics.diagTitle': 'Full well capacity and dynamic range',
+    'electronics.svgSat': 'SATURATION',
+    'electronics.svgSatSub': 'pixel full — no information',
+    'electronics.svgUseful': 'useful dynamic range',
+    'electronics.svgUsefulSub': 'signal distinguishable from noise',
+    'electronics.svgRead': 'READ NOISE',
+    'electronics.svgReadSub': 'signal too weak',
+    'electronics.simile': 'Analogy',
+    'electronics.bucket': 'The water bucket',
+    'electronics.bucketP1': 'Imagine each pixel is a <strong>bucket collecting rain</strong> during exposure. Photons are the water drops.',
+    'electronics.bucketP2': 'While the bucket is not full, you can know exactly how much rain has fallen by looking at the water level. But <strong>when the bucket overflows, all the information is lost</strong>: you no longer know whether it rained a bit more or a lot more — the result is the same, the bucket is full and overflowing.',
+    'electronics.bucketP3': 'The <strong>full well capacity</strong> is the size of the bucket. A bigger bucket takes longer to overflow — it can collect more rain before losing information. <strong>Illumination</strong> is the intensity of the rain.',
+    'electronics.bucketHighlight': 'On the sensor, "the bucket overflows" translates to pure white pixels — with no detail. No matter how much more light arrives: the pixel can no longer tell it apart.',
+    'electronics.fwcLbls': ['very low (4 ke⁻)','low (8 ke⁻)','medium (15 ke⁻)','high (30 ke⁻)','very high (60 ke⁻)'],
+    'electronics.lightLbls10': ['very low','','low','','medium','','high','','very high','maximum'],
+    'electronics.speedLbls': ['very slow','slow','medium','fast','very fast'],
+    'electronics.optimalSuffix': ' — optimal',
+    'electronics.drLbls': ['40 dB (very low)','55 dB (low)','66 dB (typical)','78 dB (high)','90 dB (very high)'],
+    'electronics.saturated': 'SATURATED!',
+    'electronics.bucketSat': 'OVERFLOW!',
+    'electronics.bucketFilling': 'filling...',
+    'electronics.bucketEmptying': 'emptying',
+    'electronics.bucketAlmostFull': 'almost full',
+    'electronics.bucketEmpty': 'empty',
+    'electronics.bucketCeiling': '← full well capacity (ceiling)',
+    'electronics.bucketNoInfo': 'no information:',
+    'electronics.bucketNoInfo2': 'the pixel no longer',
+    'electronics.bucketNoInfo3': 'distinguishes more light',
+    'electronics.bucketLevel': 'level = signal',
+    'electronics.bucketLevel2': 'measurable',
+    'electronics.satV1': '{pct}% of pixels are saturated — the label text and bright areas have disappeared into pure white. Increase the FWC or reduce illumination.',
+    'electronics.satV2': '{pct}% of pixels saturated. The reflection on the box is starting to lose detail. Increasing the FWC or reducing exposure would improve the image.',
+    'electronics.satV3': 'Mild saturation ({pct}%). Only the brightest reflections burn out — the text is still readable.',
+    'electronics.satV4': 'Pixels at {pct}% capacity. Good signal but close to the limit — any lighting peak can saturate.',
+    'electronics.satV5': 'Pixels at {pct}% capacity. Optimal signal with no saturation — the system has margin against line variations.',
+    'electronics.blurOpt': 'Optimal point ({exp}): brightness {b} with {blur}px blur. Increase exposure → brighter and blurrier. Decrease it → darker and sharper.',
+    'electronics.blurBelow': '{stops} stop{plural} below optimal — image {b}. Sharper ({blur}px), but darker. You would need more lighting to compensate.',
+    'electronics.blurAbove': '{stops} stop{plural} above optimal — image {b} with {blur}px blur. Brightness and blur grow together: you cannot have one without the other just with exposure.',
+    'electronics.blurBrightness': 'brightness',
+    'electronics.blurLabel': 'blur',
+    'electronics.drV1': 'With {db} dB the sensor captures the entire gradient from black to white without losing either extreme.',
+    'electronics.drV2': 'With {db} dB the sensor loses {loL}% of the scene — a bit of black at the bottom and white at the top.',
+    'electronics.drV3': 'With {db} dB {loL}% of the tones are lost — the darkest grays flatten to black and the lightest burn to white.',
+    'electronics.drV4': 'With {db} dB the sensor only captures the central {center}% of the gradient. Everything else is pure black or white — no recoverable information.',
+
+    'shutter.simLabel': 'Simulator — Rolling vs Global Shutter',
+    'shutter.motionType': 'Type of motion',
+    'shutter.rowByRow': 'reads row by row',
+    'shutter.rowByRowShort': 'row by row',
+    'shutter.allAtOnce': 'reads all pixels at once',
+    'shutter.simultaneous': 'simultaneous',
+    'shutter.read': 'Readout',
+    'shutter.distortion': 'Distortion',
+    'shutter.p1': 'The <strong>rolling shutter</strong> reads the sensor row by row. If the object moves while it is being read, each row captures the object in a slightly different position — the result is a distorted image.',
+    'shutter.p2': 'The <strong>global shutter</strong> reads all pixels simultaneously. No matter how much the object moves — all pixels capture the same instant.',
+    'shutter.highlight': 'In industry with fast-moving objects, the global shutter is not a luxury — it is a requirement. Rolling shutter introduces geometry errors that no algorithm can correct afterwards.',
+    'shutter.diagTitle': 'Rolling vs Global — readout process',
+    'shutter.svgDiffInstant': 'each row = different instant',
+    'shutter.svgDistArrow': '→ distortion',
+    'shutter.svgAllPx': 'all pixels',
+    'shutter.svgSameInst': 'at the same instant',
+    'shutter.svgOneInst': 'a single instant',
+    'shutter.svgPerfectGeo': '→ perfect geometry',
+    'shutter.dirLbls': ['horizontal','vertical','rotation'],
+    'shutter.speedLbls': ['very slow','slow','medium','fast','very fast'],
+    'shutter.v1': 'At this speed the rolling shutter introduces {dist}px of distortion. The code is unreadable and the geometry is completely deformed.',
+    'shutter.v2': '{dist}px of distortion from rolling shutter. In dimensional quality control, this deformation would lead to incorrect measurements.',
+    'shutter.v3': 'Minimal distortion ({dist}px) — at this speed the rolling shutter may be enough.',
+
+    'disclaimer.label': 'Important note',
+    'disclaimer.p1': '<strong>This content is an introduction, not a complete manual.</strong>',
+    'disclaimer.p2': 'The concepts explained here are technically correct, but the world of machine vision is enormously broad. The simulators are pedagogical simplifications designed to illustrate key concepts.',
+    'disclaimer.highlight': 'If you are evaluating a real application, consult a specialist. Every project deserves specific analysis.',
+    'disclaimer.treeTitle': 'Types of industrial camera',
+
+    'contact.title': 'Shall we talk?',
+    'contact.desc': 'If you have questions about machine vision, camera selection or want to evaluate a specific project, get in touch with us.',
+    'contact.hectorRole': 'Head of Vision Department<br>Grupo Álava',
+    'contact.evaRole': 'PhD candidate in microelectronics<br>Analog and Mixed-Signal IC design<br>IMB-CNM',
+    'contact.discoverMore': 'Discover more →',
+    'contact.webLabel': 'Corporate website',
+
+    'tree.root': 'Industrial Camera',
+    'tree.byArch': 'By sensor architecture',
+    'tree.ccd': ['CCD','high image quality, higher cost and consumption'],
+    'tree.cmos': ['CMOS','faster, lower cost, dominates today\'s market'],
+    'tree.fsi': ['FSI (front-illuminated)','circuitry on the front, limited fill factor'],
+    'tree.bsi': ['BSI (back-illuminated)','circuitry behind the silicon, fill factor ~100%'],
+    'tree.stacked': ['Stacked CMOS','sensor and processor stacked, very high speed'],
+    'tree.byFilter': 'By filter type',
+    'tree.noFilter': ['No filter','pure monochrome — maximum sensitivity and lowest noise'],
+    'tree.colorFilters': 'Color filters',
+    'tree.bayer': ['Bayer (RGGB)','the most common — 1R, 2G, 1B per 2×2 pixels'],
+    'tree.threeCcd': ['3CCD / 3CMOS','one sensor per RGB channel — no resolution loss'],
+    'tree.spectralFilters': 'Spectral filters',
+    'tree.bandpass': ['Bandpass','only lets a specific wavelength through'],
+    'tree.irCut': ['IR cut filter','blocks infrared — present in almost all color cameras'],
+    'tree.polarizer': ['Polarizer filter','removes reflections on shiny surfaces'],
+    'tree.nir': ['NIR filter','700–1000nm — material inspection, defect detection'],
+    'tree.swir': ['SWIR filter','1000–1700nm — see through plastics and moisture'],
+    'tree.byShutter': 'By shutter',
+    'tree.rolling': ['Rolling shutter','reads row by row — cheaper, distortion in motion'],
+    'tree.global': ['Global shutter','reads all pixels at once — no distortion, higher cost'],
+    'tree.byCapture': 'By capture format',
+    'tree.areaScan': ['Area scan','full image at once — the most common'],
+    'tree.lineScan': ['Line scan','one line at a time — for objects in continuous motion on a conveyor'],
+    'tree.tof': ['Time of Flight (ToF)','measures distance by photon flight time'],
+    'tree.structured': ['Structured light','depth via projected light pattern'],
+    'tree.bySpectrum': 'By spectrum',
+    'tree.visible': ['Visible (380–700nm)','light visible to the human eye'],
+    'tree.nirSp': ['Near IR / NIR (700–1000nm)','material inspection, process control'],
+    'tree.swirSp': ['SWIR (1000–1700nm)','see through plastics, silicon, moisture'],
+    'tree.mwir': ['MWIR (3–5µm)','thermography, temperature control'],
+    'tree.lwir': ['LWIR / Thermal (8–14µm)','thermal imaging — no external lighting'],
+    'tree.xray': ['X-rays','interior inspection of parts and packaging'],
+    'tree.byInterface': 'By data interface',
+    'tree.gige': ['GigE Vision','flexible, long distance, up to 1Gbps'],
+    'tree.gige10': ['10GigE','high speed and long distance, up to 10Gbps'],
+    'tree.usb3': ['USB3 Vision','plug & play, easy integration, up to 5Gbps'],
+    'tree.coax': ['CoaXPress','very high speed, up to 12.5Gbps per channel'],
+  },
+
+  ca: {
+    'header.label': 'Visió Industrial',
+    'header.title.prefix': 'Com funciona',
+    'header.title.strong': 'una càmera',
+    'header.sub': 'simuladors interactius',
+    'tabs.filters': 'Filtres',
+    'tabs.sensor': 'Sensor',
+    'tabs.electronics': 'Electrònica',
+    'tabs.shutter': 'Shutter',
+    'tabs.disclaimer': 'Disclaimer',
+    'tabs.contact': 'Contacte',
+    'common.whatsHappening': 'Què està passant?',
+
+    'filter.simLabel': 'Simulador — Monocrom vs Color',
+    'filter.illum': 'Il·luminació',
+    'filter.noise': 'Soroll electrònic',
+    'filter.res': 'Resolució',
+    'filter.mono': 'Monocrom',
+    'filter.color': 'Color (Bayer)',
+    'filter.photonsPx': 'Fotons/px',
+    'filter.p1': 'El primer que troba un fotó no és el sensor, sinó els <strong>filtres que col·loquem al davant</strong>. L\'exemple més clar és l\'elecció entre càmera de color i monocrom.',
+    'filter.p2': 'Un sensor no mesura color: mesura <strong>intensitat de llum</strong>. En col·locar un filtre de color, cada píxel només deixa passar una banda de l\'espectre — la resta es perd.',
+    'filter.highlight': 'En filtrar perdem informació a propòsit. Allò que el filtre bloqueja no es mesura, no s\'emmagatzema, no existeix per a la càmera.',
+    'filter.p3': 'El filtre Bayer organitza els píxels en un patró de 2×2: 1 vermell, 2 verds i 1 blau. Cada píxel només deixa passar <em>el seu</em> color i bloqueja la resta — així que de mitjana, cada píxel rep aproximadament <strong>1 de cada 3 fotons</strong> que arriben. Menys fotons significa pitjor senyal i més soroll.',
+    'filter.p4': 'Quan l\'aplicació no necessita color — <strong>que en indústria és la majoria de vegades</strong> — escollir color "per si de cas" és regalar senyal.',
+    'filter.spectrumTitle': 'Espectre electromagnètic complet',
+    'filter.svgVisible': 'VISIBLE',
+    'filter.svgIR': 'IR (infraroig)',
+    'filter.svgBayerLabel': 'filtre Bayer',
+    'filter.svgBlock': 'bloq.',
+    'filter.svgPass': 'passa (~33%)',
+    'filter.arrayTitle': 'Array de píxels — amb i sense filtre Bayer',
+    'filter.withBayer': 'Amb filtre Bayer',
+    'filter.withoutBayer': 'Sense filtre Bayer',
+    'filter.lightLbls': ['molt baixa','baixa','mitjana','bona','alta'],
+    'filter.noiseLbls': ['mínim','normal','alt','molt alt','extrem'],
+    'filter.resLbls': ['baixa','mitjana','alta'],
+    'filter.arrayPx': 'array de píxels',
+    'filter.bayerFilter': 'filtre Bayer',
+    'filter.bayerOnDesc': 'El filtre Bayer (capa superior) assigna un color R, G o B a cada píxel. Només deixa passar ~33% de la llum — la resta es bloqueja. El color final es reconstrueix interpolant píxels veïns (demosaicing).',
+    'filter.bayerOffDesc': 'Sense filtre Bayer: el sensor rep tots els fotons de qualsevol longitud d\'ona. 3x més llum per píxel → millor SNR → imatge més neta, especialment amb poca llum.',
+    'filter.vCantRead': 'El sensor de color no pot llegir el codi amb fiabilitat. El monocrom té {ratio}x millor SNR.',
+    'filter.vBetter': 'El monocrom té {ratio}x millor SNR. El codi "2024-A3" es llegeix amb més marge.',
+    'filter.vBoth': 'Amb aquesta il·luminació tots dos sensors llegeixen bé (ràtio {ratio}x). Amb monocrom obtens el mateix resultat amb menys llum.',
+
+    'sensor.simLabel': 'Simulador — Pixel Pitch i Fill Factor',
+    'sensor.pitch': 'Mida de píxel (pitch)',
+    'sensor.pitchShort': 'Pitch',
+    'sensor.ff': 'Fill factor',
+    'sensor.pxStruct': 'Estructura del píxel',
+    'sensor.captured': 'Imatge capturada',
+    'sensor.p1': 'El sensor transforma fotons en electrons. Un paràmetre fonamental és el <strong>pixel pitch</strong>: la mida física de cada píxel.',
+    'sensor.p2': 'Imagineu cada píxel com una <strong>galleda que recull aigua de pluja</strong>: com més diàmetre tingui, més aigua recull en el mateix temps. Un píxel gran capta més fotons — i més fotons significa millor senyal i menys soroll.',
+    'sensor.p3': 'Però no tot el píxel captura llum. Cada píxel té dues zones: la <strong>zona fotosensible</strong> (el fotodíode) i la <strong>zona de circuiteria</strong>. La proporció de superfície útil s\'anomena <strong>fill factor</strong>.',
+    'sensor.highlight': 'En píxels petits, la circuiteria pot ocupar una fracció significativa de l\'àrea. La tecnologia BSI ho resol col·locant la circuiteria darrere del silici.',
+    'sensor.photodiode': 'fotodíode',
+    'sensor.circShort': 'circ.',
+    'sensor.circ': 'circuiteria (darrere)',
+    'sensor.blocked': 'bloquejat',
+    'sensor.allPhotonsPass': 'tots els fotons passen',
+    'sensor.vCritical': 'Amb {photons} fotons/px el SNR és crític. El text no és llegible de manera fiable.',
+    'sensor.vTight': 'SNR ajustat ({photons} fotons/px). Funciona, però sense marge.',
+    'sensor.vGood': 'Amb {photons} fotons/px el sistema té bon marge. El codi és llegible de manera robusta.',
+
+    'electronics.title': 'Electrònica del sensor',
+    'electronics.subSat': 'Saturació / Full Well',
+    'electronics.subMotion': 'Motion Blur',
+    'electronics.subDR': 'Rang Dinàmic',
+    'electronics.sceneIllum': 'Il·luminació de l\'escena',
+    'electronics.fwc': 'Full well capacity',
+    'electronics.wellFill': 'OMPLIMENT DEL PÍXEL (full well capacity)',
+    'electronics.fwLabel': 'Full well',
+    'electronics.satPx': 'Píxels saturats',
+    'electronics.usefulZone': 'Zona útil',
+    'electronics.objSpeed': 'Velocitat de l\'objecte',
+    'electronics.expTime': 'Temps d\'exposició',
+    'electronics.darkSharp': 'fosc / nítid',
+    'electronics.optimal': 'òptim',
+    'electronics.brightBlurry': 'brillant / borrós',
+    'electronics.refHigh': 'Referència — Alt DR (90 dB)',
+    'electronics.dark': 'fosc',
+    'electronics.bright': 'brillant',
+    'electronics.sensorDR': 'Rang dinàmic del sensor',
+    'electronics.sensorPrefix': 'Sensor',
+    'electronics.p1': 'L\'electrònica necessita electrons per funcionar. Cada píxel té una <strong>capacitat màxima d\'electrons</strong> que pot emmagatzemar abans de saturar-se: és la <strong>full well capacity</strong>. Quan s\'omple, el píxel no distingeix entre molta llum i moltíssima — tot es veu blanc.',
+    'electronics.p2': 'El <strong>temps d\'exposició</strong> defineix quant temps acumula càrrega cada píxel. Més exposició significa més senyal (més brillantor), però si la peça es mou apareix el <strong>motion blur</strong>. Brillantor i blur creixen junts — no pots tenir un sense l\'altre només ajustant l\'exposició. La solució industrial és el flaix estroboscòpic.',
+    'electronics.p3': 'La diferència entre el senyal més dèbil i el més fort que el sensor pot capturar <em>alhora</em> és el <strong>rang dinàmic</strong>, mesurat en decibels (dB).',
+    'electronics.highlight': 'El disseny d\'un sistema de visió és sempre un compromís: full well, rang dinàmic i exposició estan lligats. No hi ha configuració perfecta — hi ha configuració adequada per a l\'aplicació.',
+    'electronics.diagTitle': 'Full well capacity i rang dinàmic',
+    'electronics.svgSat': 'SATURACIÓ',
+    'electronics.svgSatSub': 'píxel ple — sense informació',
+    'electronics.svgUseful': 'rang dinàmic útil',
+    'electronics.svgUsefulSub': 'senyal distingible del soroll',
+    'electronics.svgRead': 'SOROLL DE LECTURA',
+    'electronics.svgReadSub': 'senyal massa dèbil',
+    'electronics.simile': 'Símil',
+    'electronics.bucket': 'La galleda d\'aigua',
+    'electronics.bucketP1': 'Imagina que cada píxel és una <strong>galleda que recull pluja</strong> durant l\'exposició. Els fotons són les gotes d\'aigua.',
+    'electronics.bucketP2': 'Mentre la galleda no s\'omple, pots saber exactament quanta pluja ha caigut mirant el nivell de l\'aigua. Però <strong>quan la galleda vessa, tota la informació es perd</strong>: ja no saps si va ploure una mica més o moltíssim més — el resultat és el mateix, la galleda és plena i sobreïx.',
+    'electronics.bucketP3': 'La <strong>full well capacity</strong> és la mida de la galleda. Una galleda més gran tarda més a vessar — pot recollir més pluja abans de perdre informació. La <strong>il·luminació</strong> és la intensitat de la pluja.',
+    'electronics.bucketHighlight': 'Al sensor, "la galleda vessa" es tradueix en píxels blancs purs — sense cap detall. No importa quanta més llum arribi: el píxel ja no la pot distingir.',
+    'electronics.fwcLbls': ['molt baixa (4 ke⁻)','baixa (8 ke⁻)','mitjana (15 ke⁻)','alta (30 ke⁻)','molt alta (60 ke⁻)'],
+    'electronics.lightLbls10': ['molt baixa','','baixa','','mitjana','','alta','','molt alta','màxima'],
+    'electronics.speedLbls': ['molt lenta','lenta','mitjana','ràpida','molt ràpida'],
+    'electronics.optimalSuffix': ' — òptim',
+    'electronics.drLbls': ['40 dB (molt baix)','55 dB (baix)','66 dB (típic)','78 dB (alt)','90 dB (molt alt)'],
+    'electronics.saturated': 'SATURAT!',
+    'electronics.bucketSat': 'VESSA!',
+    'electronics.bucketFilling': 'omplint-se...',
+    'electronics.bucketEmptying': 'buidant-se',
+    'electronics.bucketAlmostFull': 'gairebé ple',
+    'electronics.bucketEmpty': 'buit',
+    'electronics.bucketCeiling': '← full well capacity (sostre)',
+    'electronics.bucketNoInfo': 'sense informació:',
+    'electronics.bucketNoInfo2': 'el píxel ja no',
+    'electronics.bucketNoInfo3': 'distingeix més llum',
+    'electronics.bucketLevel': 'nivell = senyal',
+    'electronics.bucketLevel2': 'mesurable',
+    'electronics.satV1': 'El {pct}% dels píxels estan saturats — el text de l\'etiqueta i les zones brillants han desaparegut en blanc pur. Augmenta la FWC o redueix la il·luminació.',
+    'electronics.satV2': '{pct}% de píxels saturats. El reflex de la caixa comença a perdre detall. Augmentar la FWC o reduir l\'exposició milloraria la imatge.',
+    'electronics.satV3': 'Saturació lleu ({pct}%). Només les zones de màxim reflex es cremen — el text segueix llegible.',
+    'electronics.satV4': 'Píxels al {pct}% de capacitat. Bon senyal però a prop del límit — qualsevol pic d\'il·luminació pot saturar.',
+    'electronics.satV5': 'Píxels al {pct}% de capacitat. Senyal òptim sense saturació — el sistema té marge davant variacions de la línia.',
+    'electronics.blurOpt': 'Punt òptim ({exp}): brillantor {b} amb {blur}px de blur. Puja l\'exposició → més brillant i més borrós. Baixa-la → més fosc i més nítid.',
+    'electronics.blurBelow': '{stops} stop{plural} per sota de l\'òptim — imatge {b}. Més nítida ({blur}px), però més fosca. Necessitaries més il·luminació per compensar.',
+    'electronics.blurAbove': '{stops} stop{plural} per sobre de l\'òptim — imatge {b} amb {blur}px de blur. Brillantor i blur creixen junts: no pots tenir un sense l\'altre només amb l\'exposició.',
+    'electronics.blurBrightness': 'brillantor',
+    'electronics.blurLabel': 'blur',
+    'electronics.drV1': 'Amb {db} dB el sensor captura tot el gradient de negre a blanc sense perdre cap extrem.',
+    'electronics.drV2': 'Amb {db} dB el sensor perd el {loL}% de l\'escena — una mica de negre per sota i de blanc per dalt.',
+    'electronics.drV3': 'Amb {db} dB es perden {loL}% dels tons — els grisos més foscos s\'aplanen en negre i els més clars es cremen en blanc.',
+    'electronics.drV4': 'Amb {db} dB el sensor només captura el {center}% central del gradient. Tota la resta és negre o blanc pur — sense informació recuperable.',
+
+    'shutter.simLabel': 'Simulador — Rolling vs Global Shutter',
+    'shutter.motionType': 'Tipus de moviment',
+    'shutter.rowByRow': 'llegeix fila a fila',
+    'shutter.rowByRowShort': 'fila a fila',
+    'shutter.allAtOnce': 'llegeix tots els píxels alhora',
+    'shutter.simultaneous': 'simultània',
+    'shutter.read': 'Lectura',
+    'shutter.distortion': 'Distorsió',
+    'shutter.p1': 'El <strong>rolling shutter</strong> llegeix el sensor fila a fila. Si l\'objecte es mou mentre s\'està llegint, cada fila captura l\'objecte en una posició lleugerament diferent — el resultat és una imatge distorsionada.',
+    'shutter.p2': 'El <strong>global shutter</strong> llegeix tots els píxels simultàniament. No importa quant es mogui l\'objecte — tots els píxels capturen el mateix instant.',
+    'shutter.highlight': 'En indústria amb objectes en moviment ràpid, el global shutter no és un luxe — és un requisit. El rolling shutter introdueix errors de geometria que cap algorisme pot corregir després.',
+    'shutter.diagTitle': 'Rolling vs Global — procés de lectura',
+    'shutter.svgDiffInstant': 'cada fila = instant diferent',
+    'shutter.svgDistArrow': '→ distorsió',
+    'shutter.svgAllPx': 'tots els píxels',
+    'shutter.svgSameInst': 'al mateix instant',
+    'shutter.svgOneInst': 'un sol instant',
+    'shutter.svgPerfectGeo': '→ geometria perfecta',
+    'shutter.dirLbls': ['horitzontal','vertical','rotació'],
+    'shutter.speedLbls': ['molt lenta','lenta','mitjana','ràpida','molt ràpida'],
+    'shutter.v1': 'Amb aquesta velocitat el rolling shutter introdueix {dist}px de distorsió. El codi és il·legible i la geometria està completament deformada.',
+    'shutter.v2': '{dist}px de distorsió per rolling shutter. En control de qualitat dimensional, aquesta deformació generaria mesures incorrectes.',
+    'shutter.v3': 'Distorsió mínima ({dist}px) — a aquesta velocitat el rolling shutter pot ser suficient.',
+
+    'disclaimer.label': 'Nota important',
+    'disclaimer.p1': '<strong>Aquest contingut és una introducció, no un manual complet.</strong>',
+    'disclaimer.p2': 'Els conceptes explicats aquí són tècnicament correctes, però el món de la visió artificial és enormement ampli. Els simuladors són simplificacions pedagògiques dissenyades per il·lustrar conceptes clau.',
+    'disclaimer.highlight': 'Si estàs avaluant una aplicació real, consulta amb un especialista. Cada projecte mereix una anàlisi específica.',
+    'disclaimer.treeTitle': 'Tipus de càmera industrial',
+
+    'contact.title': 'Parlem?',
+    'contact.desc': 'Si tens dubtes sobre visió artificial, selecció de càmera o vols valorar un projecte concret, contacta amb nosaltres.',
+    'contact.hectorRole': 'Responsable Departament de Visió<br>Grupo Álava',
+    'contact.evaRole': 'Doctoranda en microelectrònica<br>Analog and Mixed-Signal IC design<br>IMB-CNM',
+    'contact.discoverMore': 'Descobrir més →',
+    'contact.webLabel': 'Web corporatiu',
+
+    'tree.root': 'Càmera Industrial',
+    'tree.byArch': 'Per arquitectura del sensor',
+    'tree.ccd': ['CCD','alta qualitat d\'imatge, més cost i consum'],
+    'tree.cmos': ['CMOS','més ràpid, menor cost, domina el mercat actual'],
+    'tree.fsi': ['FSI (front-illuminated)','circuiteria a la part frontal, fill factor limitat'],
+    'tree.bsi': ['BSI (back-illuminated)','circuiteria darrere del silici, fill factor ~100%'],
+    'tree.stacked': ['Stacked CMOS','sensor i processador apilats, altíssima velocitat'],
+    'tree.byFilter': 'Per tipus de filtre',
+    'tree.noFilter': ['Sense filtre','monocrom pur — màxima sensibilitat i menor soroll'],
+    'tree.colorFilters': 'Filtres de color',
+    'tree.bayer': ['Bayer (RGGB)','el més comú — 1R, 2G, 1B per cada 2×2 píxels'],
+    'tree.threeCcd': ['3CCD / 3CMOS','un sensor per canal RGB — sense pèrdua de resolució'],
+    'tree.spectralFilters': 'Filtres espectrals',
+    'tree.bandpass': ['Pas banda (bandpass)','deixa passar només una longitud d\'ona concreta'],
+    'tree.irCut': ['Filtre IR cut','bloqueja l\'infraroig — present a gairebé totes les càmeres de color'],
+    'tree.polarizer': ['Filtre polaritzador','elimina reflexos en superfícies brillants'],
+    'tree.nir': ['Filtre NIR','700–1000nm — inspecció de materials, detecció de defectes'],
+    'tree.swir': ['Filtre SWIR','1000–1700nm — veure a través de plàstics i humitat'],
+    'tree.byShutter': 'Per shutter',
+    'tree.rolling': ['Rolling shutter','llegeix fila a fila — més barat, distorsió en moviment'],
+    'tree.global': ['Global shutter','llegeix tots els píxels alhora — sense distorsió, més cost'],
+    'tree.byCapture': 'Per format de captura',
+    'tree.areaScan': ['Area scan','imatge completa d\'una vegada — el més comú'],
+    'tree.lineScan': ['Line scan','una línia cada vegada — per a objectes en moviment continu en cinta'],
+    'tree.tof': ['Time of Flight (ToF)','mesura distància pel temps de vol del fotó'],
+    'tree.structured': ['Structured light','profunditat per projecció de patró de llum'],
+    'tree.bySpectrum': 'Per espectre',
+    'tree.visible': ['Visible (380–700nm)','llum que veu l\'ull humà'],
+    'tree.nirSp': ['Near IR / NIR (700–1000nm)','inspecció de materials, control de processos'],
+    'tree.swirSp': ['SWIR (1000–1700nm)','veure a través de plàstics, silici, humitat'],
+    'tree.mwir': ['MWIR (3–5µm)','termografia, control de temperatura'],
+    'tree.lwir': ['LWIR / Tèrmica (8–14µm)','imatge tèrmica — sense il·luminació externa'],
+    'tree.xray': ['Raigs X','inspecció interior de peces i packaging'],
+    'tree.byInterface': 'Per interfície de dades',
+    'tree.gige': ['GigE Vision','flexible, llarga distància, fins a 1Gbps'],
+    'tree.gige10': ['10GigE','alta velocitat i llarga distància, fins a 10Gbps'],
+    'tree.usb3': ['USB3 Vision','plug & play, fàcil integració, fins a 5Gbps'],
+    'tree.coax': ['CoaXPress','molt alta velocitat, fins a 12.5Gbps per canal'],
+  }
+};
+
+// Idioma actual — por defecto español. Persistencia en sessionStorage.
+let CURRENT_LANG = 'es';
+try {
+  const saved = sessionStorage.getItem('vi_lang');
+  if (saved && I18N[saved]) CURRENT_LANG = saved;
+} catch(e) { /* sessionStorage puede estar deshabilitado */ }
+
+// Helper: traducir una clave. Devuelve string siempre (o array si la clave es array).
+function t(key) {
+  const dict = I18N[CURRENT_LANG] || I18N.es;
+  if (key in dict) return dict[key];
+  // fallback al español
+  if (key in I18N.es) return I18N.es[key];
+  return key;
+}
+
+// Aplica las traducciones a todos los nodos con data-i18n
+function applyI18n() {
+  // Atributo lang del documento
+  document.documentElement.lang = CURRENT_LANG;
+
+  // Nodos HTML con data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (typeof val !== 'string') return;
+    if (el.hasAttribute('data-i18n-html')) {
+      el.innerHTML = val;
+    } else {
+      el.textContent = val;
+    }
+  });
+
+  // Re-render de simuladores (que tienen textos generados desde JS)
+  if (typeof simFilter      === 'function') simFilter();
+  if (typeof simSensor      === 'function') simSensor();
+  if (typeof simSat         === 'function') simSat();
+  if (typeof simBlur        === 'function') simBlur();
+  if (typeof simDR          === 'function') simDR();
+  if (typeof drawShutter    === 'function') drawShutter();
+  if (typeof drawBayer      === 'function') drawBayer();
+  if (typeof drawFsiBsi     === 'function') drawFsiBsi();
+  if (typeof rebuildTree    === 'function') rebuildTree();
+}
+
+// Conecta los botones del selector de idioma
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const lang = btn.getAttribute('data-lang');
+    if (!I18N[lang]) return;
+    CURRENT_LANG = lang;
+    try { sessionStorage.setItem('vi_lang', lang); } catch(e) {}
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b === btn));
+    applyI18n();
+  });
+});
+// Marca el botón activo según el idioma cargado de sessionStorage
+document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang') === CURRENT_LANG));
+
+// Helper de formateo: reemplaza {key} por valores
+function fmt(str, vars) {
+  return str.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? vars[k] : `{${k}}`));
+}
+
 // ── TABS ─────────────────────────────────────────────────
 document.querySelectorAll('.tab-btn:not(.disabled)').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -738,9 +1487,8 @@ function gArr(a, x, y, W, H) { return a[Math.max(0,Math.min(H-1,y))*W + Math.max
 
 const LIGHT_PH  = [10, 30, 90, 250, 550];
 const NOISE_RD  = [2, 6, 15, 30, 55];
-const LIGHT_LBL = ['muy baja','baja','media','buena','alta'];
-const NOISE_LBL = ['mínimo','normal','alto','muy alto','extremo'];
-const RES       = [{label:'baja',W:160,H:120},{label:'media',W:260,H:200},{label:'alta',W:400,H:308}];
+// Las etiquetas se obtienen ahora vía i18n: t('filter.lightLbls'), t('filter.noiseLbls'), t('filter.resLbls')
+const RES_DIMS  = [{W:160,H:120},{W:260,H:200},{W:400,H:308}];
 
 // ── TAB 01: FILTROS ──────────────────────────────────────
 function buildScene(W, H) {
@@ -775,10 +1523,10 @@ function simFilter() {
   const li=parseInt(document.getElementById('f-light').value)-1;
   const ni=parseInt(document.getElementById('f-enoise').value)-1;
   const ri=parseInt(document.getElementById('f-res').value)-1;
-  document.getElementById('f-lux-val').textContent  =LIGHT_LBL[li];
-  document.getElementById('f-noise-val').textContent=NOISE_LBL[ni];
-  document.getElementById('f-res-val').textContent  =RES[ri].label;
-  const maxPh=LIGHT_PH[li],rN=NOISE_RD[ni],fE=0.33,{W,H}=RES[ri];
+  document.getElementById('f-lux-val').textContent  =t('filter.lightLbls')[li];
+  document.getElementById('f-noise-val').textContent=t('filter.noiseLbls')[ni];
+  document.getElementById('f-res-val').textContent  =t('filter.resLbls')[ri];
+  const maxPh=LIGHT_PH[li],rN=NOISE_RD[ni],fE=0.33,{W,H}=RES_DIMS[ri];
   const mc=document.getElementById('f-mono'); mc.width=W; mc.height=H;
   const cc=document.getElementById('f-col');  cc.width=W; cc.height=H;
   document.getElementById('f-mono-px').textContent=`${W}×${H}px`;
@@ -831,9 +1579,9 @@ function simFilter() {
   cEl.textContent=snrC;cEl.className='stat-val'+(fc>5?' good':fc>2?' warn':' bad');
   const ratio=(fm/Math.max(fc,.01)).toFixed(1);
   let msg;
-  if(fc<1.5) msg=`El sensor de color no puede leer el código con fiabilidad. El monocromo tiene ${ratio}x mejor SNR.`;
-  else if(fm/fc>1.4) msg=`El monocromo tiene ${ratio}x mejor SNR. El código "2024-A3" se lee con más margen.`;
-  else msg=`Con esta iluminación ambos sensores leen bien (ratio ${ratio}x). Con monocromo obtienes el mismo resultado con menos luz.`;
+  if(fc<1.5) msg=fmt(t('filter.vCantRead'), {ratio});
+  else if(fm/fc>1.4) msg=fmt(t('filter.vBetter'), {ratio});
+  else msg=fmt(t('filter.vBoth'), {ratio});
   document.getElementById('f-verdict').textContent=msg;
 }
 ['f-light','f-enoise','f-res'].forEach(id=>document.getElementById(id).addEventListener('input',simFilter));
@@ -879,7 +1627,7 @@ function drawPixel(ff, pitchIdx) {
   // Etiquetas dentro del fotodiodo
   const labelSize=Math.max(9,Math.round(fdSize*0.13));
   ctx.fillStyle='#4ade80';ctx.font=`bold ${labelSize}px monospace`;ctx.textAlign='center';
-  ctx.fillText('fotodiodo',ox+fdOff+fdSize/2,oy+fdOff+fdSize/2-Math.round(labelSize*0.3));
+  ctx.fillText(t('sensor.photodiode'),ox+fdOff+fdSize/2,oy+fdOff+fdSize/2-Math.round(labelSize*0.3));
   ctx.fillStyle='#86efac';ctx.font=`${labelSize}px monospace`;
   ctx.fillText(`${ff}%`,ox+fdOff+fdSize/2,oy+fdOff+fdSize/2+Math.round(labelSize*1.1));
 
@@ -887,7 +1635,7 @@ function drawPixel(ff, pitchIdx) {
   if(ff<88){
     const circFS=Math.max(8,Math.round(pixelSize*0.06));
     ctx.fillStyle='#c4b5fd';ctx.font=`${circFS}px monospace`;
-    ctx.fillText('circ.',ox+pixelSize/2,oy+pixelSize-Math.round(circFS*0.8));
+    ctx.fillText(t('sensor.circShort'),ox+pixelSize/2,oy+pixelSize-Math.round(circFS*0.8));
   }
 
   // Flechas de fotones (solo encima del píxel)
@@ -930,7 +1678,7 @@ function simSensor() {
   const ff=FF_VALS[ffi];
   document.getElementById('s-pitch-val').textContent=PITCH_LBL[pi];
   document.getElementById('s-ff-val').textContent   =FF_LBLS[ffi];
-  document.getElementById('s-lux-val').textContent  =LIGHT_LBL[li];
+  document.getElementById('s-lux-val').textContent  =t('filter.lightLbls')[li];
   document.getElementById('s-pitch-disp').textContent=PITCH_LBL[pi];
   document.getElementById('s-ff-disp').textContent   =FF_LBLS[ffi];
   drawPixel(ff, pi);
@@ -959,9 +1707,9 @@ function simSensor() {
   const fsiP=document.getElementById('d-fsi-photo'),fsiC=document.getElementById('d-fsi-circ'),fsiT=document.getElementById('d-fsi-pct');
   if(fsiP&&fsiC&&fsiT){const tw=130,fw=Math.round(tw*ff/100);fsiP.setAttribute('width',fw);fsiC.setAttribute('x',fw);fsiC.setAttribute('width',tw-fw);fsiT.textContent=ff+'%';}
   let msg;
-  if(photons<10) msg=`Con ${photons} fotones/px el SNR es crítico. El texto no es legible de forma fiable.`;
-  else if(photons<40) msg=`SNR ajustado (${photons} fotones/px). Funciona, pero sin margen.`;
-  else msg=`Con ${photons} fotones/px el sistema tiene buen margen. El código es legible de forma robusta.`;
+  if(photons<10) msg=fmt(t('sensor.vCritical'), {photons});
+  else if(photons<40) msg=fmt(t('sensor.vTight'), {photons});
+  else msg=fmt(t('sensor.vGood'), {photons});
   document.getElementById('s-verdict').textContent=msg;
 }
 ['s-pitch','s-ff','s-light'].forEach(id=>document.getElementById(id).addEventListener('input',simSensor));
@@ -983,9 +1731,7 @@ document.querySelectorAll('.subtab-btn').forEach(btn => {
 
 // ── SATURACIÓN ───────────────────────────────────────────
 const FWC_VALS   = [4000, 8000, 15000, 30000, 60000];
-const FWC_LBLS   = ['muy baja (4 ke⁻)','baja (8 ke⁻)','media (15 ke⁻)','alta (30 ke⁻)','muy alta (60 ke⁻)'];
 const LIGHT_MULT = [0.05,0.1,0.2,0.35,0.55,0.75,1.0,1.4,1.9,2.6];
-const LIGHT_LBLS2= ['muy baja','','baja','','media','','alta','','muy alta','máxima'];
 
 // Escena de saturación: misma caja + etiqueta que el DR
 function satBuildObjects(W,H){
@@ -1029,8 +1775,8 @@ let _satFrame=null, _satFrameW=0, _satFrameH=0;
 function simSat() {
   const li   = parseInt(document.getElementById('e-light').value) - 1;
   const fwci = parseInt(document.getElementById('e-fwc').value) - 1;
-  document.getElementById('e-light-val').textContent = LIGHT_LBLS2[li] || 'media';
-  document.getElementById('e-fwc-val').textContent   = FWC_LBLS[fwci];
+  document.getElementById('e-light-val').textContent = t('electronics.lightLbls10')[li] || t('filter.lightLbls')[2];
+  document.getElementById('e-fwc-val').textContent   = t('electronics.fwcLbls')[fwci];
 
   const lightMult = LIGHT_MULT[li];
   const fwc       = FWC_VALS[fwci];
@@ -1077,7 +1823,7 @@ function simSat() {
   const lblEl   = document.getElementById('e-well-label');
   barEl.style.width      = Math.min(pct,100)+'%';
   barEl.style.background = pct>=100?'#dc2626':pct>75?'#d97706':'#16a34a';
-  lblEl.textContent      = pct>=100?'¡SATURADO!':pct+'%';
+  lblEl.textContent      = pct>=100?t('electronics.saturated'):pct+'%';
 
   // Métricas
   const satPct  = Math.round(satPx/(W*H)*100);
@@ -1091,11 +1837,11 @@ function simSat() {
 
   // Veredicto
   let msg;
-  if(satPct>40) msg=`El ${satPct}% de los píxeles están saturados — el texto de la etiqueta y las zonas brillantes han desaparecido en blanco puro. Aumenta la FWC o reduce la iluminación.`;
-  else if(satPct>10) msg=`${satPct}% de píxeles saturados. El reflejo de la caja empieza a perder detalle. Aumentar la FWC o reducir la exposición mejoraría la imagen.`;
-  else if(satPct>0) msg=`Saturación leve (${satPct}%). Solo las zonas de máximo reflejo se queman — el texto sigue legible.`;
-  else if(pct>80) msg=`Píxeles al ${pct}% de capacidad. Buena señal pero cerca del límite — cualquier pico de iluminación puede saturar.`;
-  else msg=`Píxeles al ${pct}% de capacidad. Señal óptima sin saturación — el sistema tiene margen ante variaciones de la línea.`;
+  if(satPct>40) msg=fmt(t('electronics.satV1'), {pct:satPct});
+  else if(satPct>10) msg=fmt(t('electronics.satV2'), {pct:satPct});
+  else if(satPct>0) msg=fmt(t('electronics.satV3'), {pct:satPct});
+  else if(pct>80) msg=fmt(t('electronics.satV4'), {pct});
+  else msg=fmt(t('electronics.satV5'), {pct});
   document.getElementById('e-sat-verdict').textContent = msg;
 }
 ['e-light','e-fwc'].forEach(id=>document.getElementById(id).addEventListener('input',simSat));
@@ -1103,7 +1849,6 @@ function simSat() {
 // ── MOTION BLUR — versión corregida ──────────────────────
 const EXP_MULT  = [0.0625,0.125,0.25,0.5,1,2,4,8,16];
 const EXP_LABELS= ['1/8000 s','1/4000 s','1/2000 s','1/1000 s','1/500 s','1/250 s','1/125 s','1/60 s','1/30 s'];
-const SPEED_L_B = ['muy lenta','lenta','media','rápida','muy rápida'];
 const SPEED_PX  = [0.15,0.6,2.5,6,15]; // px de blur en el punto óptimo (mult=1)
 
 function buildBlurFrame(W, H) {
@@ -1134,8 +1879,8 @@ function buildBlurFrame(W, H) {
 function simBlur() {
   const si  = parseInt(document.getElementById('e-speed').value) - 1;
   const ei  = parseInt(document.getElementById('e-exp').value) - 1;
-  document.getElementById('e-speed-val').textContent = SPEED_L_B[si];
-  const centerLabel = ei === 4 ? ' — óptimo' : '';
+  document.getElementById('e-speed-val').textContent = t('electronics.speedLbls')[si];
+  const centerLabel = ei === 4 ? t('electronics.optimalSuffix') : '';
   document.getElementById('e-exp-val').textContent = EXP_LABELS[ei] + centerLabel;
 
   const mult      = EXP_MULT[ei];
@@ -1188,18 +1933,18 @@ function simBlur() {
   const col = blurR>8?'#f87171':blurR>2?'#fbbf24':'#4ade80';
   ctx.fillStyle=col; ctx.font='8px monospace'; ctx.textAlign='left';
   const bStr = brightness>=10?Math.round(brightness)+'×':brightness.toFixed(brightness<0.1?3:brightness<1?2:1)+'×';
-  ctx.fillText(`brillo: ${bStr}  |  blur: ${blurR}px`, 5, H-6);
+  ctx.fillText(`${t('electronics.blurBrightness')}: ${bStr}  |  ${t('electronics.blurLabel')}: ${blurR}px`, 5, H-6);
 
   // Veredicto
   let msg;
   if(ei===4)
-    msg=`Punto óptimo (${EXP_LABELS[4]}): brillo ${bStr} con ${blurR}px de blur. Sube la exposición → más brillante y más borroso. Bájala → más oscuro y más nítido.`;
+    msg=fmt(t('electronics.blurOpt'), {exp:EXP_LABELS[4], b:bStr, blur:blurR});
   else if(ei<4){
     const stops=4-ei;
-    msg=`${stops} stop${stops>1?'s':''} por debajo del óptimo — imagen ${bStr}. Más nítida (${blurR}px), pero más oscura. Necesitarías más iluminación para compensar.`;
+    msg=fmt(t('electronics.blurBelow'), {stops, plural:stops>1?'s':'', b:bStr, blur:blurR});
   } else {
     const stops=ei-4;
-    msg=`${stops} stop${stops>1?'s':''} por encima del óptimo — imagen ${bStr} con ${blurR}px de blur. Brillo y blur crecen juntos: no puedes tener uno sin el otro solo con la exposición.`;
+    msg=fmt(t('electronics.blurAbove'), {stops, plural:stops>1?'s':'', b:bStr, blur:blurR});
   }
   document.getElementById('e-blur-verdict').textContent = msg;
 }
@@ -1271,23 +2016,23 @@ function drRenderSensor(canvasId,drDB){
 
 // DR vals para el slider del sensor
 const DR_SLIDER_V=[40,55,66,78,90];
-const DR_SLIDER_L=['40 dB (muy bajo)','55 dB (bajo)','66 dB (típico)','78 dB (alto)','90 dB (muy alto)'];
 
 function simDR(){
   const di=parseInt(document.getElementById('e-dr-slider').value)-1;
   const drDB=DR_SLIDER_V[di];
-  document.getElementById('e-dr-val').textContent=DR_SLIDER_L[di];
+  document.getElementById('e-dr-val').textContent=t('electronics.drLbls')[di];
   const titleEl=document.getElementById('e-dr-lo-title');
-  titleEl.textContent=`Sensor — ${drDB} dB`;
+  titleEl.textContent=`${t('electronics.sensorPrefix')} — ${drDB} dB`;
   titleEl.style.color=drDB>=78?'var(--good)':drDB>=55?'var(--warn)':'var(--danger)';
   drRenderSensor('e-dr-hi',90);
   const lo=drRenderSensor('e-dr-lo',drDB);
   const loL=Math.round((lo.satF+lo.darkF)*100);
+  const center=100-loL;
   let msg;
-  if(drDB>=86) msg=`Con ${drDB} dB el sensor captura todo el gradiente de negro a blanco sin perder ningún extremo.`;
-  else if(drDB>=70) msg=`Con ${drDB} dB el sensor pierde el ${loL}% de la escena — un poco de negro por abajo y de blanco por arriba.`;
-  else if(drDB>=55) msg=`Con ${drDB} dB se pierden ${loL}% de los tonos — los grises más oscuros se aplanan en negro y los más claros se queman en blanco.`;
-  else msg=`Con ${drDB} dB el sensor solo captura el ${100-loL}% central del gradiente. Todo lo demás es negro o blanco puro — sin información recuperable.`;
+  if(drDB>=86) msg=fmt(t('electronics.drV1'), {db:drDB});
+  else if(drDB>=70) msg=fmt(t('electronics.drV2'), {db:drDB, loL});
+  else if(drDB>=55) msg=fmt(t('electronics.drV3'), {db:drDB, loL});
+  else msg=fmt(t('electronics.drV4'), {db:drDB, center});
   document.getElementById('e-dr-verdict').textContent=msg;
 }
 document.getElementById('e-dr-slider').addEventListener('input',simDR);
@@ -1357,12 +2102,12 @@ function drawBayer() {
   ctx.font='bold 13px monospace'; ctx.fillStyle='#222';
   const sp=iso(0,Math.round(ROWS*0.5),sensorThick);
   const slx=Math.round(W*0.06),sly=sp.y+Math.round(H*0.1);
-  ctx.textAlign='left'; ctx.fillText('array de píxeles',slx,sly);
+  ctx.textAlign='left'; ctx.fillText(t('filter.arrayPx'),slx,sly);
   if (bayerMode) {
     const fZ=sensorThick+filterGap+filterThick;
     const fp=iso(Math.round(COLS*0.5),ROWS,fZ);
     const flx=Math.round(W*0.5),fly=Math.round(H*0.05);
-    ctx.textAlign='center'; ctx.fillText('filtro Bayer',flx,fly);
+    ctx.textAlign='center'; ctx.fillText(t('filter.bayerFilter'),flx,fly);
   }
   ctx.font='12px monospace'; ctx.textAlign='left';
   const ly=H-18;
@@ -1376,22 +2121,20 @@ function drawBayer() {
   const desc=document.getElementById('bayer-desc');
   if (desc) {
     desc.textContent = bayerMode
-      ? 'El filtro Bayer (capa superior) asigna un color R, G o B a cada píxel. Solo deja pasar ~33% de la luz — el resto se bloquea. El color final se reconstruye interpolando píxeles vecinos (demosaicing).'
-      : 'Sin filtro Bayer: el sensor recibe todos los fotones de cualquier longitud de onda. 3x más luz por píxel → mejor SNR → imagen más limpia, especialmente con poca luz.';
+      ? t('filter.bayerOnDesc')
+      : t('filter.bayerOffDesc');
   }
 }
 
 
 // ── SHUTTER SIMULATOR ────────────────────────────────────
 const SH_SPEEDS  = [0.5, 2, 5, 10, 20];
-const SH_SPEED_LBL = ['muy lenta','lenta','media','rápida','muy rápida'];
-const SH_DIR_LBL = ['horizontal','vertical','rotación'];
 
 function drawShutter() {
   const si = parseInt(document.getElementById('sh-speed').value) - 1;
   const di = parseInt(document.getElementById('sh-dir').value) - 1;
-  document.getElementById('sh-speed-val').textContent = SH_SPEED_LBL[si];
-  document.getElementById('sh-dir-val').textContent   = SH_DIR_LBL[di];
+  document.getElementById('sh-speed-val').textContent = t('shutter.speedLbls')[si];
+  document.getElementById('sh-dir-val').textContent   = t('shutter.dirLbls')[di];
   const speed = SH_SPEEDS[si];
   const W = 280, H = 200;
   ['sh-rolling','sh-global'].forEach(id => {
@@ -1446,66 +2189,75 @@ function drawShutter() {
   });
   const distPx = Math.round(39 * SH_SPEEDS[si] * 0.3);
   let msg;
-  if (distPx > 40) msg = `Con esta velocidad el rolling shutter introduce ${distPx}px de distorsión. El código es ilegible y la geometría está completamente deformada.`;
-  else if (distPx > 10) msg = `${distPx}px de distorsión por rolling shutter. En control de calidad dimensional, esta deformación generaría medidas incorrectas.`;
-  else msg = `Distorsión mínima (${distPx}px) — a esta velocidad el rolling shutter puede ser suficiente.`;
+  if (distPx > 40) msg = fmt(t('shutter.v1'), {dist:distPx});
+  else if (distPx > 10) msg = fmt(t('shutter.v2'), {dist:distPx});
+  else msg = fmt(t('shutter.v3'), {dist:distPx});
   document.getElementById('sh-verdict').textContent = msg;
 }
 ['sh-speed','sh-dir'].forEach(id => document.getElementById(id).addEventListener('input', drawShutter));
 
 
 // ── ÁRBOL DE TIPOS DE CÁMARA ──────────────────────────────
-const CAMERA_TREE = {
-  label: 'Cámara Industrial',
-  children: [
-    { label: 'Por arquitectura del sensor', children: [
-      { label: 'CCD', desc: 'alta calidad de imagen, mayor coste y consumo' },
-      { label: 'CMOS', desc: 'más rápido, menor coste, domina el mercado actual', children: [
-        { label: 'FSI (front-illuminated)', desc: 'circuitería en la parte frontal, fill factor limitado' },
-        { label: 'BSI (back-illuminated)', desc: 'circuitería detrás del silicio, fill factor ~100%' },
-        { label: 'Stacked CMOS', desc: 'sensor y procesador apilados, altísima velocidad' },
+// El árbol se construye dinámicamente en cada cambio de idioma.
+// Los nodos hoja tienen tuplas [label, desc] en i18n.
+function _leaf(key) {
+  const v = t(key);
+  if (Array.isArray(v)) return { label: v[0], desc: v[1] };
+  return { label: v };
+}
+function buildCameraTree() {
+  return {
+    label: t('tree.root'),
+    children: [
+      { label: t('tree.byArch'), children: [
+        _leaf('tree.ccd'),
+        Object.assign(_leaf('tree.cmos'), { children: [
+          _leaf('tree.fsi'),
+          _leaf('tree.bsi'),
+          _leaf('tree.stacked'),
+        ]}),
       ]},
-    ]},
-    { label: 'Por tipo de filtro', children: [
-      { label: 'Sin filtro', desc: 'monocromo puro — máxima sensibilidad y menor ruido' },
-      { label: 'Filtros de color', children: [
-        { label: 'Bayer (RGGB)', desc: 'el más común — 1R, 2G, 1B por cada 2×2 píxeles' },
-        { label: '3CCD / 3CMOS', desc: 'un sensor por canal RGB — sin pérdida de resolución' },
+      { label: t('tree.byFilter'), children: [
+        _leaf('tree.noFilter'),
+        { label: t('tree.colorFilters'), children: [
+          _leaf('tree.bayer'),
+          _leaf('tree.threeCcd'),
+        ]},
+        { label: t('tree.spectralFilters'), children: [
+          _leaf('tree.bandpass'),
+          _leaf('tree.irCut'),
+          _leaf('tree.polarizer'),
+          _leaf('tree.nir'),
+          _leaf('tree.swir'),
+        ]},
       ]},
-      { label: 'Filtros espectrales', children: [
-        { label: 'Paso banda (bandpass)', desc: 'deja pasar solo una longitud de onda concreta' },
-        { label: 'Filtro IR cut', desc: 'bloquea infrarrojo — presente en casi todas las cámaras de color' },
-        { label: 'Filtro polarizador', desc: 'elimina reflejos en superficies brillantes' },
-        { label: 'Filtro NIR', desc: '700–1000nm — inspección de materiales, detección de defectos' },
-        { label: 'Filtro SWIR', desc: '1000–1700nm — ver a través de plásticos y humedad' },
+      { label: t('tree.byShutter'), children: [
+        _leaf('tree.rolling'),
+        _leaf('tree.global'),
       ]},
-    ]},
-    { label: 'Por shutter', children: [
-      { label: 'Rolling shutter', desc: 'lee fila a fila — más barato, distorsión en movimiento' },
-      { label: 'Global shutter', desc: 'lee todos los píxeles a la vez — sin distorsión, mayor coste' },
-    ]},
-    { label: 'Por formato de captura', children: [
-      { label: 'Area scan', desc: 'imagen completa de una vez — el más común' },
-      { label: 'Line scan', desc: 'una línea cada vez — para objetos en movimiento continuo en cinta' },
-      { label: 'Time of Flight (ToF)', desc: 'mide distancia por tiempo de vuelo del fotón' },
-      { label: 'Structured light', desc: 'profundidad por proyección de patrón de luz' },
-    ]},
-    { label: 'Por espectro', children: [
-      { label: 'Visible (380–700nm)', desc: 'luz que ve el ojo humano' },
-      { label: 'Near IR / NIR (700–1000nm)', desc: 'inspección de materiales, control de procesos' },
-      { label: 'SWIR (1000–1700nm)', desc: 'ver a través de plásticos, silicio, humedad' },
-      { label: 'MWIR (3–5µm)', desc: 'termografía, control de temperatura' },
-      { label: 'LWIR / Térmica (8–14µm)', desc: 'imagen térmica — sin iluminación externa' },
-      { label: 'Rayos X', desc: 'inspección interior de piezas y packaging' },
-    ]},
-    { label: 'Por interfaz de datos', children: [
-      { label: 'GigE Vision', desc: 'flexible, larga distancia, hasta 1Gbps' },
-      { label: '10GigE', desc: 'alta velocidad y larga distancia, hasta 10Gbps' },
-      { label: 'USB3 Vision', desc: 'plug & play, fácil integración, hasta 5Gbps' },
-      { label: 'CoaXPress', desc: 'muy alta velocidad, hasta 12.5Gbps por canal' },
-    ]},
-  ]
-};
+      { label: t('tree.byCapture'), children: [
+        _leaf('tree.areaScan'),
+        _leaf('tree.lineScan'),
+        _leaf('tree.tof'),
+        _leaf('tree.structured'),
+      ]},
+      { label: t('tree.bySpectrum'), children: [
+        _leaf('tree.visible'),
+        _leaf('tree.nirSp'),
+        _leaf('tree.swirSp'),
+        _leaf('tree.mwir'),
+        _leaf('tree.lwir'),
+        _leaf('tree.xray'),
+      ]},
+      { label: t('tree.byInterface'), children: [
+        _leaf('tree.gige'),
+        _leaf('tree.gige10'),
+        _leaf('tree.usb3'),
+        _leaf('tree.coax'),
+      ]},
+    ]
+  };
+}
 
 function buildTree(node, level) {
   const div = document.createElement('div');
@@ -1529,8 +2281,15 @@ function buildTree(node, level) {
   return div;
 }
 
-const treeRoot = document.getElementById('tree-root');
-if (treeRoot) CAMERA_TREE.children.forEach(node => treeRoot.appendChild(buildTree(node, 0)));
+function rebuildTree() {
+  const root = document.getElementById('tree-root');
+  if (!root) return;
+  root.innerHTML = '';
+  const tree = buildCameraTree();
+  tree.children.forEach(node => root.appendChild(buildTree(node, 0)));
+}
+
+rebuildTree();
 
 // ── SÍMIL CUBO DE AGUA ───────────────────────────────────
 (function(){
@@ -1550,7 +2309,7 @@ if (treeRoot) CAMERA_TREE.children.forEach(node => treeRoot.appendChild(buildTre
   const BRIM_Y=BY;
   const TX=BX+BW+Math.round(DW*0.08); // inicio zona de texto
 
-  let phase=0, fillLevel=0, t=0;
+  let phase=0, fillLevel=0, tk=0;
   let drops=[], splashes=[];
 
   function spawnDrop(){
@@ -1593,7 +2352,7 @@ if (treeRoot) CAMERA_TREE.children.forEach(node => treeRoot.appendChild(buildTre
       ctx.fillStyle=ov?'rgba(239,68,68,0.75)':'rgba(59,130,246,0.75)';
       ctx.beginPath();ctx.moveTo(bx,waterY);
       for(let wx=0;wx<=botW;wx+=4){
-        ctx.lineTo(bx+wx,waterY+Math.sin((wx/botW)*Math.PI*2+t*0.08)*(ov?2.5:1.5));
+        ctx.lineTo(bx+wx,waterY+Math.sin((wx/botW)*Math.PI*2+tk*0.08)*(ov?2.5:1.5));
       }
       ctx.lineTo(bx+botW,waterY+waterH);ctx.lineTo(bx,waterY+waterH);
       ctx.closePath();ctx.fill();
@@ -1643,7 +2402,7 @@ if (treeRoot) CAMERA_TREE.children.forEach(node => treeRoot.appendChild(buildTre
     // Estado
     ctx.font=`${Math.round(DH*0.075)}px monospace`;
     ctx.fillStyle=col;
-    const estado=ov?'¡REBOSA!':fill>0.75?'casi lleno':fill>0.1?'llenando...':'vacío';
+    const estado=ov?t('electronics.bucketSat'):fill>0.75?t('electronics.bucketAlmostFull'):fill>0.1?t('electronics.bucketFilling'):t('electronics.bucketEmpty');
     ctx.fillText(estado,TX,cy+Math.round(DH*0.13));
 
     // Línea horizontal de nivel dentro del cubo
@@ -1660,31 +2419,31 @@ if (treeRoot) CAMERA_TREE.children.forEach(node => treeRoot.appendChild(buildTre
 
     // Etiqueta FWC (borde superior del cubo)
     ctx.fillStyle='#9ca3af';ctx.font=`7px monospace`;ctx.textAlign='left';
-    ctx.fillText('← full well capacity (techo)',BX+BW+6,BY+8);
+    ctx.fillText(t('electronics.bucketCeiling'),BX+BW+6,BY+8);
 
     // Texto explicativo abajo
     const small=Math.round(DH*0.063);
     ctx.font=`${small}px monospace`;ctx.fillStyle='#6b7280';
     if(ov){
       ctx.fillStyle='rgba(220,38,38,0.85)';
-      ctx.fillText('sin información:',TX,cy+Math.round(DH*0.32));
+      ctx.fillText(t('electronics.bucketNoInfo'),TX,cy+Math.round(DH*0.32));
       ctx.fillStyle='#6b7280';
-      ctx.fillText('el píxel ya no',TX,cy+Math.round(DH*0.32)+small+2);
-      ctx.fillText('distingue más luz',TX,cy+Math.round(DH*0.32)+small*2+4);
+      ctx.fillText(t('electronics.bucketNoInfo2'),TX,cy+Math.round(DH*0.32)+small+2);
+      ctx.fillText(t('electronics.bucketNoInfo3'),TX,cy+Math.round(DH*0.32)+small*2+4);
     } else {
-      ctx.fillText('nivel = señal',TX,cy+Math.round(DH*0.32));
-      ctx.fillText('medible',TX,cy+Math.round(DH*0.32)+small+2);
+      ctx.fillText(t('electronics.bucketLevel'),TX,cy+Math.round(DH*0.32));
+      ctx.fillText(t('electronics.bucketLevel2'),TX,cy+Math.round(DH*0.32)+small+2);
     }
   }
 
   function frame(){
-    t++;
+    tk++;
     ctx.clearRect(0,0,DW,DH);
     ctx.fillStyle='#f8f8f8';ctx.fillRect(0,0,DW,DH);
     const ov=fillLevel>=1;
-    if(phase===0){fillLevel+=0.003;if(t%8===0)spawnDrop();if(fillLevel>=1){fillLevel=1;phase=1;}}
-    else if(phase===1){if(t%6===0)spawnDrop();if(t%3===0)spawnSplash(BX+Math.random()*BW,BRIM_Y);if(t>280)phase=2;}
-    else if(phase===2){fillLevel=Math.max(0,fillLevel-0.016);if(fillLevel<=0){fillLevel=0;phase=0;t=0;drops=[];splashes=[];}}
+    if(phase===0){fillLevel+=0.003;if(tk%8===0)spawnDrop();if(fillLevel>=1){fillLevel=1;phase=1;}}
+    else if(phase===1){if(tk%6===0)spawnDrop();if(tk%3===0)spawnSplash(BX+Math.random()*BW,BRIM_Y);if(tk>280)phase=2;}
+    else if(phase===2){fillLevel=Math.max(0,fillLevel-0.016);if(fillLevel<=0){fillLevel=0;phase=0;tk=0;drops=[];splashes=[];}}
     drawRain(phase===0?1:phase===1?1.5:0.2);
     drawBucket(fillLevel);
     drops.forEach(d=>{
@@ -1767,22 +2526,22 @@ function drawFsiBsi(){
   // Etiquetas FSI
   const fm=iso(photoW/2,ROWS/2,LH+4,fO.x,fO.y);
   ctx.fillStyle='#bbf7d0';ctx.font='bold 20px monospace';ctx.textAlign='center';
-  ctx.fillText('fotodiodo',fm.x,fm.y);
+  ctx.fillText(t('sensor.photodiode'),fm.x,fm.y);
   ctx.fillStyle='#4ade80';ctx.font='bold 22px monospace';
   ctx.fillText('60%',fm.x,fm.y+28);
   const cm=iso(photoW+circW/2,ROWS/2,LH+4,fO.x,fO.y);
   ctx.fillStyle='#c4b5fd';ctx.font='18px monospace';
-  ctx.fillText('circ.',cm.x,cm.y+8);
+  ctx.fillText(t('sensor.circShort'),cm.x,cm.y+8);
 
   // Flechas FSI
   for(let a=0;a<5;a++){
     const col=a*0.9+0.3;
-    const t=iso(col,ROWS/2,LH+130,fO.x,fO.y),b=iso(col,ROWS/2,LH+20,fO.x,fO.y);
-    arrow(t.x,t.y,b.x,b.y,col<photoW?'#d97706':'#dc2626',col>=photoW);
+    const tp=iso(col,ROWS/2,LH+130,fO.x,fO.y),bp2=iso(col,ROWS/2,LH+20,fO.x,fO.y);
+    arrow(tp.x,tp.y,bp2.x,bp2.y,col<photoW?'#d97706':'#dc2626',col>=photoW);
   }
   const bp=iso(COLS*0.78,ROWS/2,LH+148,fO.x,fO.y);
   ctx.fillStyle='#dc2626';ctx.font='18px monospace';ctx.textAlign='center';
-  ctx.fillText('bloqueado',bp.x,bp.y);
+  ctx.fillText(t('sensor.blocked'),bp.x,bp.y);
 
   // ═══ BSI (derecha) ═══
   const bO={x:840,y:480};
@@ -1816,22 +2575,22 @@ function drawFsiBsi(){
   // Etiquetas BSI
   const bm=iso(COLS/2,ROWS/2,LH+4,bO.x,bO.y);
   ctx.fillStyle='#bbf7d0';ctx.font='bold 20px monospace';ctx.textAlign='center';
-  ctx.fillText('fotodiodo',bm.x,bm.y);
+  ctx.fillText(t('sensor.photodiode'),bm.x,bm.y);
   ctx.fillStyle='#4ade80';ctx.font='bold 22px monospace';
   ctx.fillText('~100%',bm.x,bm.y+28);
   const bcm=iso(COLS/2,ROWS/2,co-80,bO.x,bO.y);
   ctx.fillStyle='#4c1d95';ctx.font='bold 20px monospace';
-  ctx.fillText('circuitería (detrás)',bcm.x,bcm.y+8);
+  ctx.fillText(t('sensor.circ'),bcm.x,bcm.y+8);
 
   // Flechas BSI — todos pasan
   for(let a=0;a<5;a++){
     const col=a*0.9+0.3;
-    const t=iso(col,ROWS/2,LH+130,bO.x,bO.y),b=iso(col,ROWS/2,LH+20,bO.x,bO.y);
-    arrow(t.x,t.y,b.x,b.y,'#d97706',false);
+    const tp=iso(col,ROWS/2,LH+130,bO.x,bO.y),bp2=iso(col,ROWS/2,LH+20,bO.x,bO.y);
+    arrow(tp.x,tp.y,bp2.x,bp2.y,'#d97706',false);
   }
   const pp=iso(COLS/2,ROWS/2,LH+148,bO.x,bO.y);
   ctx.fillStyle='#16a34a';ctx.font='18px monospace';ctx.textAlign='center';
-  ctx.fillText('todos los fotones pasan',pp.x,pp.y);
+  ctx.fillText(t('sensor.allPhotonsPass'),pp.x,pp.y);
 }
 
 setTimeout(drawBayer, 100);
@@ -1842,6 +2601,8 @@ simSat();
 simBlur();
 simDR();
 drawShutter();
+// Aplicar idioma guardado al cargar (re-renderiza simuladores y árbol)
+applyI18n();
 // eliminar variables obsoletas que ya no se usan
 // (DR_VALS y CONTRAST_LBLS se definen arriba pero no se usan en simDR nuevo)
 </script>
