@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- ════════════════════════════════════════════════════════════════ -->
-    <!-- SECURITY HEADERS (versión meta-tag, válida para GitHub Pages)    -->
-    <!-- ════════════════════════════════════════════════════════════════ -->
-
-    <!-- Content Security Policy: controla qué recursos se pueden cargar.
-         Esto bloquea scripts externos no autorizados, evita XSS y restringe
-         a qué dominios se pueden hacer fetch/POST. -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         script-src 'self' 'unsafe-inline';
@@ -23,14 +16,8 @@
         base-uri 'self';
         upgrade-insecure-requests;
     ">
-
-    <!-- Bloquea sniffing de tipo MIME (impide que un .txt se ejecute como JS) -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-
-    <!-- Limita la información que se manda a otros dominios al hacer click en enlaces externos -->
     <meta name="referrer" content="strict-origin-when-cross-origin">
-
-    <!-- Restringe acceso a APIs sensibles del navegador (cámara, micro, geo, etc.) -->
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
 
     <title>Eva Deltor</title>
@@ -87,27 +74,12 @@
         }
 
         .logo:hover { opacity: 0.8; }
-
         .logo-img { width: 50px; height: auto; object-fit: contain; }
+        .logo-text { font-size: 1.2rem; font-weight: 600; color: var(--dark); letter-spacing: 0.5px; }
 
-        .logo-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--dark);
-            letter-spacing: 0.5px;
-        }
+        .header-right { display: flex; align-items: center; gap: 30px; }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 40px;
-        }
+        nav ul { display: flex; list-style: none; gap: 40px; }
 
         nav a {
             text-decoration: none;
@@ -131,7 +103,7 @@
 
         nav a:hover::after { width: 100%; }
 
-        /* ── Language Switcher (header) ── */
+        /* ── Language Switcher ── */
         .lang-switcher {
             display: flex;
             gap: 4px;
@@ -156,12 +128,28 @@
         }
 
         .lang-switcher button:last-child { border-right: none; }
-
         .lang-switcher button:hover { color: var(--primary); background: #FDF5EC; }
+        .lang-switcher button.active { background: var(--primary); color: white; }
 
-        .lang-switcher button.active {
-            background: var(--primary);
-            color: white;
+        /* ── Hamburger menu (mobile only) ── */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 7px 10px;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: var(--dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
         }
 
         /* ── Hero ── */
@@ -184,7 +172,6 @@
         }
 
         .hero-content p { font-size: 1.1rem; color: #666; margin-bottom: 35px; line-height: 1.8; }
-
         .cta-buttons { display: flex; gap: 20px; }
 
         .btn {
@@ -258,9 +245,7 @@
 
         .about-content h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 25px; color: var(--dark); line-height: 1.2; }
         .about-content p { font-size: 1rem; color: #666; margin-bottom: 20px; line-height: 1.8; }
-
         .about-highlights { margin-top: 40px; display: flex; flex-direction: column; gap: 25px; }
-
         .highlight { display: flex; gap: 20px; align-items: flex-start; }
 
         .highlight-icon {
@@ -332,18 +317,15 @@
             font-size: 0.88rem; color: #bbb;
             font-style: italic; letter-spacing: 0.03em;
         }
-        .contacto-section { padding: 100px 0; border-top: 1px solid var(--border); }
 
+        /* ── Contacto ── */
+        .contacto-section { padding: 100px 0; border-top: 1px solid var(--border); }
         .contacto-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; color: var(--dark); text-align: center; }
         .contacto-section .section-subtitle { text-align: center; color: #888; font-size: 0.95rem; margin-bottom: 60px; }
-
         .contacto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; max-width: 900px; margin: 0 auto; align-items: start; }
-
         .contacto-info h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 15px; color: var(--dark); }
         .contacto-info p { font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 30px; }
-
         .contacto-links { display: flex; flex-direction: column; gap: 12px; }
-
         .contacto-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); font-size: 0.92rem; font-weight: 500; transition: color 0.2s; }
         .contacto-link:hover { color: var(--primary); }
 
@@ -357,201 +339,76 @@
         .contacto-link-icon img { width: 18px; height: 18px; object-fit: contain; }
 
         .discover-btn {
-            display: block;
-            padding: 12px 22px;
-            background: var(--primary);
-            color: white;
-            text-decoration: none;
-            font-size: 0.88rem;
-            font-weight: 500;
-            border: 1px solid var(--primary);
-            border-radius: 2px;
-            transition: all 0.2s ease;
-            margin-top: 20px;
-            text-align: center;
-            width: 100%;
-            box-sizing: border-box;
+            display: block; padding: 12px 22px; background: var(--primary); color: white;
+            text-decoration: none; font-size: 0.88rem; font-weight: 500;
+            border: 1px solid var(--primary); border-radius: 2px;
+            transition: all 0.2s ease; margin-top: 20px; text-align: center;
+            width: 100%; box-sizing: border-box;
         }
 
-        .discover-btn:hover {
-            background: transparent;
-            color: var(--primary);
-        }
+        .discover-btn:hover { background: transparent; color: var(--primary); }
 
         .discover-btn-card {
-            display: inline-block;
-            padding: 8px 16px;
-            background: var(--primary);
-            color: white;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border: 1px solid var(--primary);
-            border-radius: 2px;
-            transition: all 0.2s ease;
-            margin-top: 15px;
+            display: inline-block; padding: 8px 16px; background: var(--primary); color: white;
+            text-decoration: none; font-size: 0.8rem; font-weight: 500;
+            border: 1px solid var(--primary); border-radius: 2px;
+            transition: all 0.2s ease; margin-top: 15px;
         }
 
-        .discover-btn-card:hover {
-            background: transparent;
-            color: var(--primary);
-        }
+        .discover-btn-card:hover { background: transparent; color: var(--primary); }
 
-        /* ── Hablamos Section ── */
-        .hablamos-section {
-            padding: 100px 0;
-            border-top: 1px solid var(--border);
-            background: var(--light);
-        }
+        /* ── Hablamos ── */
+        .hablamos-section { padding: 100px 0; border-top: 1px solid var(--border); background: var(--light); }
 
-        .hablamos-section h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--dark);
-            text-align: center;
-        }
+        .hablamos-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; color: var(--dark); text-align: center; }
 
         .hablamos-section .section-subtitle {
-            text-align: center;
-            color: #888;
-            font-size: 0.95rem;
-            margin-bottom: 60px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.8;
+            text-align: center; color: #888; font-size: 0.95rem; margin-bottom: 60px;
+            max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.8;
         }
 
         .hablamos-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            max-width: 900px;
-            margin: 0 auto 60px;
-            align-items: stretch;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+            max-width: 900px; margin: 0 auto 60px; align-items: stretch;
         }
 
         .hablamos-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 15px;
-            transition: all 0.3s ease;
+            background: white; border: 1px solid var(--border); border-radius: 8px;
+            padding: 40px; text-align: center; display: flex; flex-direction: column;
+            justify-content: center; gap: 15px; transition: all 0.3s ease;
         }
 
-        .hablamos-card:hover {
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transform: translateY(-5px);
-        }
-
-        .hablamos-card-initial {
-            font-size: 2rem;
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .hablamos-card-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-
-        .hablamos-card-title {
-            font-size: 0.9rem;
-            color: #666;
-            font-weight: 500;
-            margin-bottom: 15px;
-        }
-
-        .hablamos-card-company {
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 5px;
-        }
-
-        .hablamos-card-contact {
-            font-size: 0.88rem;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            margin-top: 10px;
-            transition: color 0.2s;
-        }
-
-        .hablamos-card-contact:hover {
-            color: var(--accent);
-        }
-
-        .hablamos-card-phone {
-            font-size: 0.88rem;
-            color: var(--text2);
-            font-weight: 500;
-        }
+        .hablamos-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.1); transform: translateY(-5px); }
+        .hablamos-card-initial { font-size: 2rem; color: var(--primary); font-weight: 700; margin-bottom: 10px; }
+        .hablamos-card-name { font-size: 1.3rem; font-weight: 600; color: var(--dark); margin-bottom: 5px; }
+        .hablamos-card-title { font-size: 0.9rem; color: #666; font-weight: 500; margin-bottom: 15px; }
+        .hablamos-card-company { font-size: 0.85rem; color: #888; margin-bottom: 5px; }
+        .hablamos-card-contact { font-size: 0.88rem; color: var(--primary); text-decoration: none; font-weight: 500; margin-top: 10px; transition: color 0.2s; }
+        .hablamos-card-contact:hover { color: var(--accent); }
+        .hablamos-card-phone { font-size: 0.88rem; font-weight: 500; }
 
         .hablamos-card-signature {
-            width: 80px;
-            height: 40px;
-            margin: 20px auto 0;
-            border: 2px solid #ff6b35;
-            border-radius: 4px;
-            opacity: 0.6;
+            width: 80px; height: 40px; margin: 20px auto 0;
+            border: 2px solid #ff6b35; border-radius: 4px; opacity: 0.6;
         }
 
         .hablamos-corporate {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
+            background: white; border: 1px solid var(--border); border-radius: 8px;
+            padding: 40px; text-align: center; max-width: 900px; margin: 0 auto;
         }
 
         .hablamos-corporate-label {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.75rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #999;
-            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif; font-size: 0.75rem;
+            letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-bottom: 15px;
         }
 
-        .hablamos-corporate-link {
-            font-size: 1.5rem;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-
-        .hablamos-corporate-link:hover {
-            color: var(--accent);
-        }
-
-        @media (max-width: 768px) {
-            .hablamos-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .hablamos-section h2 {
-                font-size: 2rem;
-            }
-        }
+        .hablamos-corporate-link { font-size: 1.5rem; color: var(--primary); text-decoration: none; font-weight: 600; transition: color 0.2s; }
+        .hablamos-corporate-link:hover { color: var(--accent); }
 
         /* ── Newsletter ── */
         .newsletter-box { background: var(--dark); border-radius: 8px; padding: 40px; color: white; }
         .newsletter-box h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 10px; color: white; }
         .newsletter-box p { font-size: 0.9rem; opacity: 0.7; margin-bottom: 25px; line-height: 1.7; }
-
         .newsletter-form { display: flex; flex-direction: column; gap: 12px; }
 
         .newsletter-input {
@@ -573,7 +430,6 @@
         .newsletter-note { font-size: 0.75rem; opacity: 0.5; margin-top: 5px; }
         .newsletter-success { display: none; text-align: center; padding: 20px 0; }
         .newsletter-success p { opacity: 1; font-size: 1rem; margin: 0; }
-
         .contacto-form-inner { display: flex; flex-direction: column; gap: 12px; }
         .form-field { display: flex; flex-direction: column; gap: 6px; }
         .form-label { font-size: 0.82rem; font-weight: 600; color: var(--dark); letter-spacing: 0.3px; }
@@ -588,7 +444,6 @@
 
         .footer-info h3 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 600; letter-spacing: 0.5px; }
         .footer-info p { font-size: 0.9rem; opacity: 0.8; }
-
         .footer-social { display: flex; gap: 20px; }
 
         .footer-social a {
@@ -624,7 +479,6 @@
         .lang-popup-logo { width: 60px; height: auto; margin: 0 auto 20px; display: block; }
         .lang-popup h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--dark); margin-bottom: 8px; }
         .lang-popup p { font-size: 0.9rem; color: #999; margin-bottom: 35px; }
-
         .lang-buttons { display: flex; gap: 15px; justify-content: center; }
 
         .lang-btn {
@@ -640,29 +494,174 @@
         .lang-btn-name { font-size: 0.9rem; font-weight: 600; color: var(--dark); }
         .lang-btn-sub { font-size: 0.75rem; color: #aaa; }
 
-        /* ── Responsive ── */
+        /* ══════════════════════════════════════════
+           RESPONSIVE — MOBILE OPTIMISATIONS
+           ══════════════════════════════════════════ */
+
+        /* ── 768px: tablet / small mobile ── */
         @media (max-width: 768px) {
             .container { padding: 0 20px; }
-            header .container { flex-wrap: wrap; gap: 15px; }
-            .header-right { flex-wrap: wrap; gap: 15px; }
-            nav ul { gap: 15px; }
-            nav a { font-size: 0.85rem; }
-            .hero { grid-template-columns: 1fr; padding: 60px 0; gap: 40px; }
-            .hero-content h1 { font-size: 2.5rem; }
-            .hero-image-wrapper { width: 250px; height: 250px; }
-            .social-grid { grid-template-columns: repeat(2,1fr); gap: 20px; }
-            .about-section { grid-template-columns: 1fr; gap: 40px; }
-            .about-image { height: 300px; }
-            footer .container { flex-direction: column; gap: 30px; align-items: flex-start; }
-            .social-section h2, .about-content h2, .hero-content h1 { font-size: 2rem; }
-            .contacto-grid { grid-template-columns: 1fr; gap: 40px; }
-            .accordion-body-inner { flex-direction: column; align-items: flex-start; }
+
+            /* Header: logo left, lang switcher right, nav below */
+            header { padding: 16px 0; }
+
+            header .container {
+                flex-wrap: wrap;
+                gap: 0;
+                row-gap: 0;
+            }
+
+            .logo { flex: 1; }
+
+            .header-right {
+                /* On mobile the header-right shows only lang switcher + hamburger */
+                gap: 10px;
+                align-items: center;
+            }
+
+            /* Hide desktop nav by default on mobile */
+            header nav {
+                display: none;
+                width: 100%;
+                order: 3;
+                padding: 12px 0 4px;
+                border-top: 1px solid var(--border);
+                margin-top: 12px;
+            }
+
+            header nav.open { display: block; }
+
+            nav ul {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            nav ul li a {
+                display: block;
+                padding: 11px 0;
+                font-size: 0.95rem;
+                border-bottom: 1px solid var(--border);
+            }
+
+            nav ul li:last-child a { border-bottom: none; }
+
+            /* Show hamburger */
+            .nav-toggle { display: flex; }
+
+            /* Hero */
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 40px 0 50px;
+                gap: 32px;
+            }
+
+            .hero-content { text-align: center; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .hero-content p { font-size: 1rem; }
+
+            .cta-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .hero-image { order: -1; }
+
+            .hero-image-wrapper {
+                width: 200px;
+                height: 200px;
+            }
+
+            /* Social */
+            .social-section { padding: 60px 0; }
+            .social-section h2 { font-size: 2rem; margin-bottom: 36px; }
+            .social-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
+            .social-card { padding: 28px 18px; }
+
+            /* About */
+            .about-section {
+                grid-template-columns: 1fr;
+                padding: 60px 0;
+                gap: 36px;
+            }
+
+            .about-content h2 { font-size: 2rem; }
+            .about-image { height: 280px; }
+
+            /* Infografías */
+            .infografias-section { padding: 60px 0; }
+            .infografias-section h2 { font-size: 2rem; }
+            .accordion-header { padding: 18px 20px; }
+            .accordion-body-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 18px 20px;
+                gap: 16px;
+            }
+
+            .accordion-link,
+            .accordion-soon { align-self: flex-start; }
+
+            /* Hablamos */
+            .hablamos-section { padding: 60px 0; }
+            .hablamos-section h2 { font-size: 2rem; }
+            .hablamos-grid { grid-template-columns: 1fr; gap: 24px; }
+            .hablamos-card { padding: 28px 24px; }
+            .hablamos-corporate { padding: 28px 24px; }
+
+            /* Contacto */
+            .contacto-section { padding: 60px 0; }
+            .contacto-section h2 { font-size: 2rem; }
+            .contacto-grid { grid-template-columns: 1fr; gap: 36px; }
+
+            /* Newsletter box */
+            .newsletter-box { padding: 28px 24px; }
+
+            /* Footer */
+            footer .container {
+                flex-direction: column;
+                gap: 24px;
+                align-items: flex-start;
+            }
+
+            /* Section headings */
+            .social-section h2,
+            .about-content h2,
+            .hero-content h1 { font-size: 2rem; }
         }
 
+        /* ── 480px: small phones ── */
         @media (max-width: 480px) {
+            .hero-content h1 { font-size: 1.85rem; }
             .social-grid { grid-template-columns: 1fr; }
-            .cta-buttons { flex-direction: column; }
-            nav ul { flex-direction: column; gap: 15px; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .cta-buttons .btn { width: 100%; max-width: 280px; text-align: center; }
+
+            /* Language popup: tighter on very small screens */
+            .lang-popup { padding: 32px 20px; }
+            .lang-popup h2 { font-size: 1.3rem; }
+            .lang-popup p { font-size: 0.82rem; margin-bottom: 24px; }
+            .lang-buttons { gap: 8px; }
+            .lang-btn { padding: 14px 12px; gap: 5px; }
+            .lang-btn-flag { font-size: 1.2rem; min-height: 1.5rem; }
+            .lang-btn-name { font-size: 0.82rem; }
+            .lang-btn-sub { display: none; }
+
+            /* Accordion tighter */
+            .accordion-header { padding: 15px 16px; }
+            .accordion-header-text h3 { font-size: 0.9rem; }
+            .accordion-body-inner { padding: 14px 16px; }
+
+            /* Hablamos email wrapping */
+            .hablamos-card-contact { font-size: 0.78rem; word-break: break-all; }
+        }
+
+        /* ── Touch targets ── */
+        @media (max-width: 768px) {
+            .btn { min-height: 44px; display: flex; align-items: center; justify-content: center; }
+            .accordion-header { min-height: 56px; }
+            .lang-switcher button { padding: 8px 12px; min-height: 36px; }
+            .nav-toggle { min-height: 40px; }
         }
     </style>
 </head>
@@ -702,12 +701,12 @@
                 <span class="logo-text">Eva Deltor</span>
             </a>
             <div class="header-right">
-                <nav>
+                <nav id="mainNav">
                     <ul>
-                        <li><a href="#redes" id="nav_redes">Redes Sociales</a></li>
-                        <li><a href="#infografias" id="nav_infografias">Infografías</a></li>
-                        <li><a href="#sobre" id="nav_sobre">Sobre Mí</a></li>
-                        <li><a href="#contacto" id="nav_contacto">Contacto</a></li>
+                        <li><a href="#redes" id="nav_redes" onclick="closeNav()">Redes Sociales</a></li>
+                        <li><a href="#infografias" id="nav_infografias" onclick="closeNav()">Infografías</a></li>
+                        <li><a href="#sobre" id="nav_sobre" onclick="closeNav()">Sobre Mí</a></li>
+                        <li><a href="#contacto" id="nav_contacto" onclick="closeNav()">Contacto</a></li>
                     </ul>
                 </nav>
                 <div class="lang-switcher">
@@ -715,6 +714,11 @@
                     <button id="sw_es" onclick="setLang('es')">ES</button>
                     <button id="sw_en" onclick="setLang('en')">ENG</button>
                 </div>
+                <button class="nav-toggle" id="navToggle" onclick="toggleNav()" aria-label="Menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
@@ -818,7 +822,7 @@
                     <div class="accordion-body">
                         <div class="accordion-body-inner">
                             <p id="yield_desc">Una visualización interactiva sobre el rendimiento de fabricación de obleas de silicio: defectos, modelos de yield y su impacto en la producción de chips.</p>
-                            <a href="infografias/wafer-yield.html" class="accordion-link" id="yield_btn" onclick="passLang(event, this)">Ver Infografía →</a> 
+                            <span class="accordion-soon" id="yield_btn">Próximamente...</span>
                         </div>
                     </div>
                 </div>
@@ -901,7 +905,6 @@
                                 <label class="form-label" id="label_mensaje">Mensaje</label>
                                 <textarea class="newsletter-input" id="contactoMensaje" placeholder="Cuéntame en qué puedo ayudarte..." rows="4" style="background:white;color:var(--text);border-color:var(--border);resize:vertical;font-family:'Poppins',sans-serif;font-size:0.9rem;"></textarea>
                             </div>
-                            <!-- Honeypot anti-bots: invisible para humanos, pero los bots lo rellenan -->
                             <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
                                 <label>No rellenes este campo: <input type="text" id="contactoWebsite" name="website" tabindex="-1" autocomplete="off"></label>
                             </div>
@@ -928,7 +931,6 @@
                     <div class="newsletter-form" id="newsletterForm">
                         <input type="text" class="newsletter-input" id="newsletterName" placeholder="Tu nombre">
                         <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="Tu email">
-                        <!-- Honeypot anti-bots -->
                         <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
                             <label>No rellenes: <input type="text" id="newsletterWebsite" name="website" tabindex="-1" autocomplete="off"></label>
                         </div>
@@ -939,6 +941,40 @@
                         <p id="newsletter_ok">¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ¿Hablamos? -->
+    <section class="hablamos-section">
+        <div class="container">
+            <h2>¿Hablamos?</h2>
+            <p class="section-subtitle">Si tienes dudas sobre visión artificial, selección de cámara o quieres valorar un proyecto concreto, contacta con nosotros.</p>
+            <div class="hablamos-grid">
+                <div class="hablamos-card">
+                    <div class="hablamos-card-initial">H</div>
+                    <h3 class="hablamos-card-name">Héctor Cordal</h3>
+                    <p class="hablamos-card-title">Responsable Departamento de Visión</p>
+                    <p class="hablamos-card-company">Grupo Álava</p>
+                    <a href="mailto:hcordal@grupoalava.com" class="hablamos-card-contact">hcordal@grupoalava.com</a>
+                    <p class="hablamos-card-phone">+34 607 969 410</p>
+                </div>
+                <div class="hablamos-card">
+                    <div class="hablamos-card-initial">E</div>
+                    <h3 class="hablamos-card-name">Eva Deltor</h3>
+                    <p class="hablamos-card-title">Doctoranda en microelectrónica</p>
+                    <p class="hablamos-card-company">Analog and Mixed-Signal IC design</p>
+                    <p class="hablamos-card-company">IMB-CNM</p>
+                    <a href="mailto:eva.deltor@imb-cnm.csic.es" class="hablamos-card-contact">eva.deltor@imb-cnm.csic.es</a>
+                    <div class="hablamos-card-signature"></div>
+                    <a href="infografias/vision-industrial.html" class="discover-btn-card" onclick="passLang(event, this)">
+                        Descubrir más divulgación →
+                    </a>
+                </div>
+            </div>
+            <div class="hablamos-corporate">
+                <p class="hablamos-corporate-label">Web Corporativa</p>
+                <a href="https://www.grupoalava.com" target="_blank" class="hablamos-corporate-link">www.grupoalava.com</a>
             </div>
         </div>
     </section>
@@ -965,6 +1001,20 @@
     </footer>
 
     <script>
+        /* ── Nav toggle (hamburger) ── */
+        function toggleNav() {
+            const nav = document.getElementById('mainNav');
+            const btn = document.getElementById('navToggle');
+            nav.classList.toggle('open');
+            btn.classList.toggle('open');
+        }
+
+        function closeNav() {
+            document.getElementById('mainNav').classList.remove('open');
+            document.getElementById('navToggle').classList.remove('open');
+        }
+
+        /* ── Accordion ── */
         function toggleAccordion(header) {
             const item = header.parentElement;
             const isOpen = item.classList.contains('open');
@@ -972,6 +1022,7 @@
             if (!isOpen) item.classList.add('open');
         }
 
+        /* ── Translations ── */
         const translations = {
             es: {
                 nav_redes: "Redes Sociales", nav_infografias: "Infografías", nav_sobre: "Sobre Mí", nav_contacto: "Contacto",
@@ -990,7 +1041,7 @@
                 eda_btn: "Ver Infografía →",
                 yield_title: "¿Qué es el yield de un wafer?", yield_meta: "Microelectrónica · Infografía interactiva",
                 yield_desc: "Una visualización interactiva sobre el rendimiento de fabricación de obleas de silicio: defectos, modelos de yield y su impacto en la producción de chips.",
-                yield_btn: "Próximamente´...",
+                yield_btn: "Próximamente...",
                 vi_title: "¿Cómo funciona una cámara?", vi_meta: "Visión Industrial · Infografía interactiva",
                 vi_desc: "Simuladores interactivos sobre cómo capturan luz las cámaras digitales: filtros, sensores, electrónica, obturador y procesamiento de imagen.",
                 vi_btn: "Ver Infografía →",
@@ -1010,7 +1061,7 @@
                 newsletter_p: "Apúntate y te aviso cuando publique nuevas infografías interactivas, herramientas educativas o contenido especial.",
                 newsletter_btn: "Quiero estar al tanto →", newsletter_note: "Sin spam. Solo contenido que vale la pena.",
                 newsletter_ok: "¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.",
-                footer_sub: "Doctoranda en Microelectrónica", footer_copy: "© 2024 Eva Deltor. Todos los derechos reservados."
+                footer_sub: "Doctoranda en Microelectrónica", footer_copy: "© 2026 Eva Deltor. Todos los derechos reservados."
             },
             ca: {
                 nav_redes: "Xarxes Socials", nav_infografias: "Infografies", nav_sobre: "Sobre Mi", nav_contacto: "Contacte",
@@ -1049,7 +1100,7 @@
                 newsletter_p: "Apunta't i t'aviso quan publiqui noves infografies interactives, eines educatives o contingut especial.",
                 newsletter_btn: "Vull estar al dia →", newsletter_note: "Sense spam. Només contingut que val la pena.",
                 newsletter_ok: "Perfecte! ✓<br>T'avisaré quan hi hagi alguna cosa nova.",
-                footer_sub: "Doctoranda en Microelectrònica", footer_copy: "© 2024 Eva Deltor. Tots els drets reservats."
+                footer_sub: "Doctoranda en Microelectrònica", footer_copy: "© 2026 Eva Deltor. Tots els drets reservats."
             },
             en: {
                 nav_redes: "Social Media", nav_infografias: "Infographics", nav_sobre: "About Me", nav_contacto: "Contact",
@@ -1088,29 +1139,24 @@
                 newsletter_p: "Sign up and I will notify you when I publish new interactive infographics, educational tools or special content.",
                 newsletter_btn: "Keep me posted →", newsletter_note: "No spam. Only content worth reading.",
                 newsletter_ok: "Perfect! ✓<br>I will let you know when there is something new.",
-                footer_sub: "PhD Student in Microelectronics", footer_copy: "© 2024 Eva Deltor. All rights reserved."
+                footer_sub: "PhD Student in Microelectronics", footer_copy: "© 2026 Eva Deltor. All rights reserved."
             }
         };
 
-        // Helpers tolerantes a IDs inexistentes (no rompen setLang si falta un elemento)
         function setText(id, val) {
             const el = document.getElementById(id);
             if (el && val !== undefined) el.textContent = val;
         }
-        // Versión segura: solo permite el tag <br> que es lo único que necesitamos
-        // para newsletter_ok. Cualquier otro HTML se escapa.
+
         function setSafeHTML(id, val) {
             const el = document.getElementById(id);
             if (!el || val === undefined) return;
-            // Escapa todo y luego restaura solo <br>
             const escaped = val
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             el.innerHTML = escaped.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
         }
+
         function setPlaceholder(id, val) {
             const el = document.getElementById(id);
             if (el && val !== undefined) el.placeholder = val;
@@ -1119,236 +1165,110 @@
         function setLang(lang) {
             const t = translations[lang];
             if (!t) return;
-
             document.getElementById('langOverlay').classList.remove('visible');
             sessionStorage.setItem('eva_lang', lang);
-
-            // Update active button in switcher
             ['ca','es','en'].forEach(l => {
                 const btn = document.getElementById('sw_' + l);
                 if (btn) btn.classList.toggle('active', l === lang);
             });
-
-            // Navegación
-            setText('nav_redes', t.nav_redes);
-            setText('nav_infografias', t.nav_infografias);
-            setText('nav_sobre', t.nav_sobre);
-            setText('nav_contacto', t.nav_contacto);
-
-            // Hero
-            setText('hero_title', t.hero_title);
-            setText('hero_text', t.hero_text);
-            setText('hero_btn1', t.hero_btn1);
-            setText('hero_btn2', t.hero_btn2);
-
-            // Social
+            setText('nav_redes', t.nav_redes); setText('nav_infografias', t.nav_infografias);
+            setText('nav_sobre', t.nav_sobre); setText('nav_contacto', t.nav_contacto);
+            setText('hero_title', t.hero_title); setText('hero_text', t.hero_text);
+            setText('hero_btn1', t.hero_btn1); setText('hero_btn2', t.hero_btn2);
             setText('social_title', t.social_title);
-            setText('ig_desc', t.ig_desc);
-            setText('tt_desc', t.tt_desc);
-            setText('yt_desc', t.yt_desc);
-            setText('li_desc', t.li_desc);
-
-            // Infografías
-            setText('infografias_title', t.infografias_title);
-            setText('infografias_sub', t.infografias_sub);
-            setText('wire_title', t.wire_title);
-            setText('wire_meta', t.wire_meta);
-            setText('wire_desc', t.wire_desc);
-            setText('wire_btn', t.wire_btn);
-            setText('eda_title', t.eda_title);
-            setText('eda_meta', t.eda_meta);
-            setText('eda_desc', t.eda_desc);
-            setText('eda_btn', t.eda_btn);
-            setText('yield_title', t.yield_title);
-            setText('yield_meta', t.yield_meta);
-            setText('yield_desc', t.yield_desc);
-            setText('yield_btn', t.yield_btn);
-            setText('vi_title', t.vi_title);
-            setText('vi_meta', t.vi_meta);
-            setText('vi_desc', t.vi_desc);
-            setText('vi_btn', t.vi_btn);
+            setText('ig_desc', t.ig_desc); setText('tt_desc', t.tt_desc);
+            setText('yt_desc', t.yt_desc); setText('li_desc', t.li_desc);
+            setText('infografias_title', t.infografias_title); setText('infografias_sub', t.infografias_sub);
+            setText('wire_title', t.wire_title); setText('wire_meta', t.wire_meta);
+            setText('wire_desc', t.wire_desc); setText('wire_btn', t.wire_btn);
+            setText('eda_title', t.eda_title); setText('eda_meta', t.eda_meta);
+            setText('eda_desc', t.eda_desc); setText('eda_btn', t.eda_btn);
+            setText('yield_title', t.yield_title); setText('yield_meta', t.yield_meta);
+            setText('yield_desc', t.yield_desc); setText('yield_btn', t.yield_btn);
+            setText('vi_title', t.vi_title); setText('vi_meta', t.vi_meta);
+            setText('vi_desc', t.vi_desc); setText('vi_btn', t.vi_btn);
             setText('infografias_more', t.infografias_more);
-
-            // Sobre mí
-            setText('sobre_title', t.sobre_title);
-            setText('sobre_p1', t.sobre_p1);
-            setText('sobre_p2', t.sobre_p2);
-            setText('hl1_title', t.hl1_title);
-            setText('hl1_text', t.hl1_text);
-            setText('hl2_title', t.hl2_title);
-            setText('hl2_text', t.hl2_text);
-            setText('hl3_title', t.hl3_title);
-            setText('hl3_text', t.hl3_text);
-
-            // Contacto
-            setText('contacto_title', t.contacto_title);
-            setText('contacto_sub', t.contacto_sub);
-            setText('contacto_h3', t.contacto_h3);
-            setText('contacto_p', t.contacto_p);
-            setText('label_nombre', t.label_nombre);
-            setText('label_email', t.label_email);
+            setText('sobre_title', t.sobre_title); setText('sobre_p1', t.sobre_p1); setText('sobre_p2', t.sobre_p2);
+            setText('hl1_title', t.hl1_title); setText('hl1_text', t.hl1_text);
+            setText('hl2_title', t.hl2_title); setText('hl2_text', t.hl2_text);
+            setText('hl3_title', t.hl3_title); setText('hl3_text', t.hl3_text);
+            setText('contacto_title', t.contacto_title); setText('contacto_sub', t.contacto_sub);
+            setText('contacto_h3', t.contacto_h3); setText('contacto_p', t.contacto_p);
+            setText('label_nombre', t.label_nombre); setText('label_email', t.label_email);
             setText('label_mensaje', t.label_mensaje);
-            setPlaceholder('contactoNombre', t.ph_nombre);
-            setPlaceholder('contactoEmail', t.ph_email);
+            setPlaceholder('contactoNombre', t.ph_nombre); setPlaceholder('contactoEmail', t.ph_email);
             setPlaceholder('contactoMensaje', t.ph_mensaje);
-            setText('contactoBtn', t.contacto_btn);
-            setText('contacto_ok', t.contacto_ok);
-
-            // Newsletter
-            setText('newsletter_h3', t.newsletter_h3);
-            setText('newsletter_p', t.newsletter_p);
-            setText('newsletter_btn', t.newsletter_btn);
-            setText('newsletter_note', t.newsletter_note);
+            setText('contactoBtn', t.contacto_btn); setText('contacto_ok', t.contacto_ok);
+            setText('newsletter_h3', t.newsletter_h3); setText('newsletter_p', t.newsletter_p);
+            setText('newsletter_btn', t.newsletter_btn); setText('newsletter_note', t.newsletter_note);
             setSafeHTML('newsletter_ok', t.newsletter_ok);
-
-            // Footer
-            setText('footer_sub', t.footer_sub);
-            setText('footer_copy', t.footer_copy);
-
-            // Atributo lang del documento
+            setText('footer_sub', t.footer_sub); setText('footer_copy', t.footer_copy);
             document.documentElement.lang = lang;
         }
 
         window.addEventListener('load', () => {
             const saved = sessionStorage.getItem('eva_lang');
-            if (saved) {
-                setLang(saved);
-            } else {
-                document.getElementById('langOverlay').classList.add('visible');
-            }
+            if (saved) { setLang(saved); }
+            else { document.getElementById('langOverlay').classList.add('visible'); }
         });
 
-        // Pass language to infographic pages via URL param
         function passLang(e, el) {
             e.preventDefault();
             const lang = sessionStorage.getItem('eva_lang') || 'es';
-            const base = el.getAttribute('href');
-            window.location.href = base + '?lang=' + lang;
+            window.location.href = el.getAttribute('href') + '?lang=' + lang;
         }
 
-        // ──────────────────────────────────────────────────────────────
-        // VALIDACIONES Y ENVÍO DE FORMULARIOS (versión endurecida)
-        // ──────────────────────────────────────────────────────────────
-
-        // Marca el momento en que se cargó la página (para detectar bots que
-        // envían el form en menos de 2 segundos)
+        /* ── Forms ── */
         const __pageLoadTime = Date.now();
-
-        // Regex realista para emails (no perfecto, pero rechaza basura como "a@")
         const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-        // Límites de longitud para evitar payloads abusivos
         const LIMITS = { nombre: 100, email: 150, mensaje: 2000 };
-
-        function clip(str, max) {
-            return String(str || '').slice(0, max);
-        }
+        function clip(str, max) { return String(str || '').slice(0, max); }
 
         function submitContacto() {
-            // 1) Honeypot: si está relleno, es un bot. Fingimos éxito y salimos.
             const hp = document.getElementById('contactoWebsite');
-            if (hp && hp.value) {
-                document.getElementById('contactoForm').style.display = 'none';
-                document.getElementById('contactoSuccess').style.display = 'block';
-                return;
-            }
-
-            // 2) Tiempo mínimo: los bots envían en <2s
-            if (Date.now() - __pageLoadTime < 2000) {
-                alert('Por favor espera un momento antes de enviar.');
-                return;
-            }
-
-            // 3) Recoger y limitar longitud
+            if (hp && hp.value) { document.getElementById('contactoForm').style.display = 'none'; document.getElementById('contactoSuccess').style.display = 'block'; return; }
+            if (Date.now() - __pageLoadTime < 2000) { alert('Por favor espera un momento antes de enviar.'); return; }
             const nombre  = clip(document.getElementById('contactoNombre').value.trim(),  LIMITS.nombre);
             const email   = clip(document.getElementById('contactoEmail').value.trim(),   LIMITS.email);
             const mensaje = clip(document.getElementById('contactoMensaje').value.trim(), LIMITS.mensaje);
-
-            // 4) Validación
-            if (!nombre || !email || !mensaje) {
-                alert('Por favor rellena todos los campos.');
-                return;
-            }
-            if (!EMAIL_REGEX.test(email)) {
-                alert('Por favor introduce un email válido.');
-                return;
-            }
-            if (mensaje.length < 5) {
-                alert('El mensaje es demasiado corto.');
-                return;
-            }
-
-            // 5) Envío
+            if (!nombre || !email || !mensaje) { alert('Por favor rellena todos los campos.'); return; }
+            if (!EMAIL_REGEX.test(email)) { alert('Por favor introduce un email válido.'); return; }
+            if (mensaje.length < 5) { alert('El mensaje es demasiado corto.'); return; }
             const btn = document.getElementById('contactoBtn');
-            btn.textContent = 'Enviando...';
-            btn.disabled = true;
-
+            btn.textContent = 'Enviando...'; btn.disabled = true;
             const formData = new FormData();
-            formData.append('nombre', nombre);
-            formData.append('email', email);
-            formData.append('mensaje', mensaje);
-            formData.append('origin', window.location.origin);
-
+            formData.append('nombre', nombre); formData.append('email', email);
+            formData.append('mensaje', mensaje); formData.append('origin', window.location.origin);
             fetch('https://script.google.com/macros/s/AKfycbzPM_MfFm82iDLg8XDlEwmnzXKd-2Qbtg4lLtOhS6wZdzlB1I7VNfYKqmQ90MEmHjdT/exec', {
-                method: 'POST',
-                body: formData,
-                referrerPolicy: 'strict-origin-when-cross-origin'
-            })
-            .then(() => {
+                method: 'POST', body: formData, referrerPolicy: 'strict-origin-when-cross-origin'
+            }).then(() => {
                 document.getElementById('contactoForm').style.display = 'none';
                 document.getElementById('contactoSuccess').style.display = 'block';
-            })
-            .catch(() => {
+            }).catch(() => {
                 document.getElementById('contactoForm').style.display = 'none';
                 document.getElementById('contactoSuccess').style.display = 'block';
             });
         }
 
         function submitNewsletter() {
-            // Honeypot
             const hp = document.getElementById('newsletterWebsite');
-            if (hp && hp.value) {
-                document.getElementById('newsletterForm').style.display = 'none';
-                document.getElementById('newsletterSuccess').style.display = 'block';
-                return;
-            }
-
-            if (Date.now() - __pageLoadTime < 2000) {
-                alert('Por favor espera un momento antes de enviar.');
-                return;
-            }
-
+            if (hp && hp.value) { document.getElementById('newsletterForm').style.display = 'none'; document.getElementById('newsletterSuccess').style.display = 'block'; return; }
+            if (Date.now() - __pageLoadTime < 2000) { alert('Por favor espera un momento antes de enviar.'); return; }
             const name  = clip(document.getElementById('newsletterName').value.trim(),  LIMITS.nombre);
             const email = clip(document.getElementById('newsletterEmail').value.trim(), LIMITS.email);
-
-            if (!name || !email) {
-                alert('Por favor rellena tu nombre y email.');
-                return;
-            }
-            if (!EMAIL_REGEX.test(email)) {
-                alert('Por favor introduce un email válido.');
-                return;
-            }
-
+            if (!name || !email) { alert('Por favor rellena tu nombre y email.'); return; }
+            if (!EMAIL_REGEX.test(email)) { alert('Por favor introduce un email válido.'); return; }
             const btn = document.querySelector('.newsletter-btn');
-            btn.textContent = 'Enviando...';
-            btn.disabled = true;
-
+            btn.textContent = 'Enviando...'; btn.disabled = true;
             const formData = new FormData();
-            formData.append('nombre', name);
-            formData.append('email', email);
+            formData.append('nombre', name); formData.append('email', email);
             formData.append('origin', window.location.origin);
-
             fetch('https://script.google.com/macros/s/AKfycbzzBI12f_LID0PJ-fdPba6PODkwy3oSvN2fynqZ31q3PhSbSzWtGx6pw_Kkgpc3RGcl/exec', {
-                method: 'POST',
-                body: formData,
-                referrerPolicy: 'strict-origin-when-cross-origin'
-            })
-            .then(() => {
+                method: 'POST', body: formData, referrerPolicy: 'strict-origin-when-cross-origin'
+            }).then(() => {
                 document.getElementById('newsletterForm').style.display = 'none';
                 document.getElementById('newsletterSuccess').style.display = 'block';
-            })
-            .catch(() => {
+            }).catch(() => {
                 document.getElementById('newsletterForm').style.display = 'none';
                 document.getElementById('newsletterSuccess').style.display = 'block';
             });
