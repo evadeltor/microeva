@@ -158,6 +158,108 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
 .bond-log{max-height:180px;overflow-y:auto;font-family:'DM Mono',monospace;font-size:.6rem;line-height:1.9;border:1px solid #E0E0E0;border-radius:4px;padding:.5rem .7rem;background:#FAFAF7;}
 .bond-log .ok{color:var(--green);}
 .bond-log .fail-entry{color:var(--red);}
+
+/* ══════════════════════════════════════════
+   MOBILE OPTIMISATIONS
+   ══════════════════════════════════════════ */
+
+/* ── Top bar: stack on very small screens ── */
+@media(max-width:480px){
+  .top-bar{padding:.35rem 1rem;}
+  .back-btn{font-size:.58rem;}
+  .author-credit{font-size:.55rem;}
+}
+
+/* ── Header: hide subtitle + badge on mobile ── */
+@media(max-width:600px){
+  header{padding:.8rem 1rem .7rem;gap:.6rem;}
+  header h1{font-size:1.1rem;}
+  header .sub{display:none;}
+  header .badge{display:none;}
+  .lang-toggle{margin-left:0;}
+}
+
+/* ── Tabs: scrollable single row ── */
+@media(max-width:700px){
+  .tabs{padding:0 .5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{font-size:.6rem;padding:.55rem .65rem;letter-spacing:.06em;white-space:nowrap;}
+}
+
+/* ── Panels: reduce horizontal padding ── */
+@media(max-width:600px){
+  .panel{padding:.9rem 1rem;}
+}
+
+/* ── Why tab: 3-col grid → 1 col on phones ── */
+@media(max-width:560px){
+  #tab-why [style*="grid-template-columns:repeat(3,1fr)"]{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+  }
+  #tab-why [style*="grid-template-columns:1fr 1fr"]{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+  }
+  /* daily life icons grid: 2 cols instead of auto */
+  #tab-why [style*="minmax(140px"]{
+    grid-template-columns:1fr 1fr !important;
+  }
+}
+
+/* ── Risk bar row: stack vertically ── */
+@media(max-width:540px){
+  #tab-params .card > div[style*="display:flex;align-items:center"]{
+    flex-direction:column !important;
+    align-items:flex-start !important;
+  }
+  #tab-params .card > div > div[style*="display:flex;gap:1.5rem"]{
+    margin-top:.5rem;
+  }
+}
+
+/* ── PVC grid: single column on phones ── */
+@media(max-width:400px){
+  #pvcGrid{grid-template-columns:1fr !important;}
+}
+
+/* ── Capillar tab: stack canvas + cards ── */
+@media(max-width:700px){
+  #cap-grid{
+    grid-template-columns:1fr !important;
+  }
+  /* Step buttons: 3 per row */
+  .cap-step-btns{
+    display:grid !important;
+    grid-template-columns:repeat(3,1fr) !important;
+    gap:.4rem !important;
+  }
+  #tab-capillar .btn{
+    font-size:.6rem;
+    padding:.32rem .4rem;
+    text-align:center;
+  }
+}
+
+/* ── Stats tab two-col → single ── */
+@media(max-width:600px){
+  .two-col{grid-template-columns:1fr;}
+  .sidebar{margin-top:.5rem;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ── US effect mini-grid → stacked ── */
+@media(max-width:480px){
+  #pvc-us [style*="grid-template-columns:1fr 1fr"]{
+    grid-template-columns:1fr !important;
+  }
+}
+
+/* ── General touch targets ── */
+@media(max-width:700px){
+  .btn{min-height:36px;}
+  input[type=range]{height:20px;}
+}
 </style>
 </head>
 <body>
@@ -2988,14 +3090,14 @@ setTimeout(()=>applyLang(),50);
 </script>
 <!-- ══ TAB: CAPILLAR ══ -->
 <div class="panel" id="tab-capillar">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;max-width:900px;">
+  <div id="cap-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;max-width:900px;">
 
     <!-- Left: animated canvas -->
     <div>
       <div class="card" style="padding:0;overflow:hidden;">
         <canvas id="cCap" width="400" height="420" style="display:block;width:100%;background:#FAFAF7;"></canvas>
       </div>
-      <div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap;">
+      <div class="cap-step-btns" style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap;">
         <button class="btn active" id="capBtnFAB" onclick="capSetMode('fab')">1. FAB</button>
         <button class="btn" id="capBtnApproach" onclick="capSetMode('approach')">2. Aproximación</button>
         <button class="btn" id="capBtnBond" onclick="capSetMode('bond')">3. 1st Bond</button>
