@@ -309,17 +309,17 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
     <!-- 3 columns: the problem visualized -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.2rem;">
       <div class="card" style="text-align:center;">
-        <canvas id="cWhyChip" width="200" height="130" style="display:block;width:100%;"></canvas>
+        <canvas id="cWhyChip" width="400" height="260" style="display:block;width:100%;"></canvas>
         <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--accent);margin-top:.5rem;letter-spacing:.1em;" data-i18n="why_c1_title">EL CHIP</div>
         <p style="font-size:.75rem;color:#555;margin-top:.3rem;" data-i18n="why_c1">Circuitos de silicio a escala nanométrica. Los pads de conexión son cuadrados de ~80 µm — más fino que un cabello humano.</p>
       </div>
       <div class="card" style="text-align:center;">
-        <canvas id="cWhyGap" width="200" height="130" style="display:block;width:100%;"></canvas>
+        <canvas id="cWhyGap" width="400" height="260" style="display:block;width:100%;"></canvas>
         <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-top:.5rem;letter-spacing:.1em;" data-i18n="why_c2_title">EL PROBLEMA</div>
         <p style="font-size:.75rem;color:#555;margin-top:.3rem;" data-i18n="why_c2">Entre el pad del chip y el lead frame hay un gap de 1–3 mm. No se pueden soldar directamente — el chip se destruiría con el calor de una soldadura normal.</p>
       </div>
       <div class="card" style="text-align:center;">
-        <canvas id="cWhySolution" width="200" height="130" style="display:block;width:100%;"></canvas>
+        <canvas id="cWhySolution" width="400" height="260" style="display:block;width:100%;"></canvas>
         <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--green);margin-top:.5rem;letter-spacing:.1em;" data-i18n="why_c3_title">LA SOLUCIÓN</div>
         <p style="font-size:.75rem;color:#555;margin-top:.3rem;" data-i18n="why_c3">Un hilo de oro o cobre de 25 µm — más fino que un cabello — conecta el pad con el lead. Termosónico: calor suave + vibración ultrasónica. Sin dañar el chip.</p>
       </div>
@@ -340,7 +340,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
     <!-- Scale comparison -->
     <div class="card" style="margin-bottom:1.2rem;">
       <h3 data-i18n="why_h_scale">Escala — para hacerse una idea</h3>
-      <canvas id="cWhyScale" width="760" height="80" style="display:block;width:100%;margin-top:.5rem;border-radius:4px;"></canvas>
+      <canvas id="cWhyScale" width="1520" height="160" style="display:block;width:100%;margin-top:.5rem;border-radius:4px;"></canvas>
     </div>
 
     <!-- Where is it used -->
@@ -412,7 +412,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
         </div>
         <div class="pvc-status" id="ps-temp">●</div>
       </div>
-      <canvas class="pvc-canvas" id="pc-temp" width="260" height="90"></canvas>
+      <canvas class="pvc-canvas" id="pc-temp" width="520" height="180"></canvas>
       <input type="range" class="pvc-slider" data-sync="sl-temp" min="80" max="320" value="200">
       <div class="pvc-msg" id="pm-temp"></div>
     </div>
@@ -426,7 +426,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
         </div>
         <div class="pvc-status" id="ps-force">●</div>
       </div>
-      <canvas class="pvc-canvas" id="pc-force" width="260" height="90"></canvas>
+      <canvas class="pvc-canvas" id="pc-force" width="520" height="180"></canvas>
       <input type="range" class="pvc-slider" data-sync="sl-force" min="10" max="200" value="80">
       <div class="pvc-msg" id="pm-force"></div>
     </div>
@@ -440,7 +440,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
         </div>
         <div class="pvc-status" id="ps-us">●</div>
       </div>
-      <canvas class="pvc-canvas" id="pc-us" width="260" height="90"></canvas>
+      <canvas class="pvc-canvas" id="pc-us" width="520" height="180"></canvas>
       <input type="range" class="pvc-slider" data-sync="sl-us" min="10" max="80" value="40">
       <div class="pvc-msg" id="pm-us"></div>
       <div style="margin-top:.5rem;padding:.6rem .7rem;background:#F5F2EC;border-radius:5px;display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
@@ -464,7 +464,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
         </div>
         <div class="pvc-status" id="ps-dist">●</div>
       </div>
-      <canvas class="pvc-canvas" id="pc-dist" width="260" height="90"></canvas>
+      <canvas class="pvc-canvas" id="pc-dist" width="520" height="180"></canvas>
       <input type="range" class="pvc-slider" data-sync="sl-dist" min="400" max="5000" value="1800">
       <div class="pvc-msg" id="pm-dist"></div>
     </div>
@@ -478,7 +478,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
         </div>
         <div class="pvc-status" id="ps-speed">●</div>
       </div>
-      <canvas class="pvc-canvas" id="pc-speed" width="260" height="90"></canvas>
+      <canvas class="pvc-canvas" id="pc-speed" width="520" height="180"></canvas>
       <input type="range" class="pvc-slider" data-sync="sl-speed" min="1" max="25" value="12">
       <div class="pvc-msg" id="pm-speed"></div>
     </div>
@@ -492,7 +492,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
         </div>
         <div class="pvc-status" id="ps-diam">●</div>
       </div>
-      <canvas class="pvc-canvas" id="pc-diam" width="260" height="90"></canvas>
+      <canvas class="pvc-canvas" id="pc-diam" width="520" height="180"></canvas>
       <input type="range" class="pvc-slider" data-sync="sl-diam" min="15" max="75" value="25">
       <div class="pvc-msg" id="pm-diam"></div>
     </div>
@@ -533,7 +533,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
       </div>
       <div class="card">
         <h3 data-i18n="h_fail_dist">Distribución de fallos</h3>
-        <canvas id="cChart" width="180" height="140"></canvas>
+        <canvas id="cChart" width="360" height="280"></canvas>
       </div>
       <div class="card">
         <h3 data-i18n="h_rec">Recomendación</h3>
@@ -544,6 +544,22 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════
+//  HiDPI / RETINA HELPER
+// ═══════════════════════════════════════════════════════
+function setupHiDPI(canvas){
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.width  / 2;
+  const H = canvas.height / 2;
+  canvas.width  = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return {ctx, W, H};
+}
+
 // ═══════════════════════════════════════════════════════
 //  INTERNATIONALISATION — ES / EN
 // ═══════════════════════════════════════════════════════
@@ -2008,9 +2024,17 @@ function pvcLoop(){
   keys.forEach(k=>{
     const cv=document.getElementById('pc-'+k);
     if(!cv||cv.offsetParent===null) return; // skip if tab hidden
-    const ctx2=cv.getContext('2d');
+    // HiDPI: init once, store logical size on element
+    let ctx2, lW, lH;
+    if(!cv._hidpi){
+      const r=setupHiDPI(cv);
+      cv._hidpi=true; cv._lW=r.W; cv._lH=r.H; ctx2=r.ctx;
+    } else {
+      ctx2=cv.getContext('2d'); lW=cv._lW; lH=cv._lH;
+    }
+    lW=cv._lW; lH=cv._lH;
     const d=PVC_DEFS[k]; if(!d||!d.draw) return;
-    d.draw(ctx2, cv.width, cv.height, vals[k], pvcT);
+    d.draw(ctx2, lW, lH, vals[k], pvcT);
     // Status dot + card border
     const st=getStatus(k,vals[k]);
     const dotEl=document.getElementById('ps-'+k);
@@ -2063,8 +2087,11 @@ function updateStats(){
 }
 
 function drawChart(){
-  const c=document.getElementById('cChart'),ctx2=c.getContext('2d');
-  const W2=c.width,H2=c.height;
+  const c=document.getElementById('cChart');
+  let ctx2, W2, H2;
+  if(!c._hidpi){const r=setupHiDPI(c);c._hidpi=true;c._lW=r.W;c._lH=r.H;ctx2=r.ctx;}
+  else{ctx2=c.getContext('2d');}
+  W2=c._lW; H2=c._lH;
   ctx2.clearRect(0,0,W2,H2);ctx2.fillStyle='#FAFAF7';ctx2.fillRect(0,0,W2,H2);
   const labels=['Rotura','Crater','Lifted','Sweep','Plague'];
   const colors=['#CC2222','#CC6600','#DD8800','#5580CC','#8844AA'];
@@ -2144,8 +2171,7 @@ function initCapTab(){
   if(_capInited) return; _capInited=true;
   const cv=document.getElementById('cCap');
   if(!cv) return;
-  const ctx=cv.getContext('2d');
-  const W=cv.width, H=cv.height;
+  const {ctx, W, H} = setupHiDPI(cv);
 
   // Colour palette (flat, no gradients)
   const COL={
@@ -2839,7 +2865,8 @@ function initCapTab(){
 
   function drawWhyChip(){
     const cv=document.getElementById('cWhyChip'); if(!cv) return;
-    const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+    if(!cv._hidpi){const r=setupHiDPI(cv);cv._hidpi=true;cv._lW=r.W;cv._lH=r.H;}
+    const ctx=cv.getContext('2d'), W=cv._lW, H=cv._lH;
     ctx.clearRect(0,0,W,H); ctx.fillStyle='#FAFAF7'; ctx.fillRect(0,0,W,H);
     // Oblique die
     const ox=W/2-10, oy=H-12, U=16, dx2=0.52, dy2=-0.30;
@@ -2876,7 +2903,8 @@ function initCapTab(){
 
   function drawWhyGap(){
     const cv=document.getElementById('cWhyGap'); if(!cv) return;
-    const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+    if(!cv._hidpi){const r=setupHiDPI(cv);cv._hidpi=true;cv._lW=r.W;cv._lH=r.H;}
+    const ctx=cv.getContext('2d'), W=cv._lW, H=cv._lH;
     ctx.clearRect(0,0,W,H); ctx.fillStyle='#FAFAF7'; ctx.fillRect(0,0,W,H);
 
     // Shared oblique die helper
@@ -2934,7 +2962,8 @@ function initCapTab(){
 
   function drawWhySolution(){
     const cv=document.getElementById('cWhySolution'); if(!cv) return;
-    const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+    if(!cv._hidpi){const r=setupHiDPI(cv);cv._hidpi=true;cv._lW=r.W;cv._lH=r.H;}
+    const ctx=cv.getContext('2d'), W=cv._lW, H=cv._lH;
     ctx.clearRect(0,0,W,H);
 
     // Warm radial background
@@ -3054,7 +3083,8 @@ function initCapTab(){
 
   function drawWhyScale(){
     const cv=document.getElementById('cWhyScale'); if(!cv) return;
-    const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+    if(!cv._hidpi){const r=setupHiDPI(cv);cv._hidpi=true;cv._lW=r.W;cv._lH=r.H;}
+    const ctx=cv.getContext('2d'), W=cv._lW, H=cv._lH;
     ctx.clearRect(0,0,W,H); ctx.fillStyle='#F5F2EC'; ctx.fillRect(0,0,W,H);
     const items=[
       {label:LANG==='en'?'Human hair':LANG==='ca'?'Cabell humà':'Cabello humano', size:70,  col:'#AAAAAA'},
@@ -3095,7 +3125,7 @@ setTimeout(()=>applyLang(),50);
     <!-- Left: animated canvas -->
     <div>
       <div class="card" style="padding:0;overflow:hidden;">
-        <canvas id="cCap" width="400" height="420" style="display:block;width:100%;background:#FAFAF7;"></canvas>
+        <canvas id="cCap" width="800" height="840" style="display:block;width:100%;background:#FAFAF7;"></canvas>
       </div>
       <div class="cap-step-btns" style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap;">
         <button class="btn active" id="capBtnFAB" onclick="capSetMode('fab')">1. FAB</button>
