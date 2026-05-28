@@ -8,7 +8,7 @@
 <style>
 /* ── CREDIT BAR ── */
 .credit-bar {
-  background: #020508;
+  background: #d8dde6;
   border-bottom: 1px solid var(--border);
   padding: 6px 32px;
   display: flex;
@@ -27,17 +27,17 @@
 }
 .credit-bar a:hover { opacity: 0.7; }
 :root {
-  --bg: #ffffff;
-  --surface: #0a1020;
-  --surface2: #0e1828;
-  --border: #1a2840;
-  --accent: #4fc3f7;
-  --good: #69f0ae;
-  --bad: #ff5252;
-  --warn: #ffca28;
-  --text: #cdd6e8;
-  --muted: #4a6080;
-  --grid: #0d1a2a;
+  --bg: #f0f2f5;
+  --surface: #e2e6ed;
+  --surface2: #d8dde6;
+  --border: #b0bcd0;
+  --accent: #1a8fc1;
+  --good: #1a9e5c;
+  --bad: #d32f2f;
+  --warn: #c68a00;
+  --text: #1a2335;
+  --muted: #5a7090;
+  --grid: #c8d0dc;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -174,7 +174,7 @@ canvas#waferCanvas {
   transition: color 0.5s;
 }
 .yield-track {
-  background: #0a1428;
+  background: #c8d0dc;
   border-radius: 2px;
   height: 8px;
   overflow: hidden;
@@ -248,7 +248,7 @@ input[type=range] {
   -webkit-appearance: none;
   width: 100%;
   height: 4px;
-  background: #0f1e30;
+  background: #c0cad6;
   border-radius: 2px;
   outline: none;
 }
@@ -361,7 +361,7 @@ input[type=range]::-webkit-slider-thumb:hover {
   letter-spacing: 1px;
 }
 .defect-prob-track {
-  background: #080e1c;
+  background: #c8d0dc;
   border-radius: 2px;
   height: 5px;
   overflow: hidden;
@@ -464,7 +464,7 @@ input[type=range]::-webkit-slider-thumb:hover {
 /* Tooltip */
 #tooltip {
   position: fixed;
-  background: #0a1828ee;
+  background: #dde2eaee;
   border: 1px solid var(--accent);
   border-radius: 4px;
   padding: 8px 12px;
@@ -547,7 +547,7 @@ input[type=range]::-webkit-slider-thumb:hover {
       </div>
 
       <div style="display:flex;gap:14px;flex-wrap:wrap;max-width:460px;width:100%;">
-        <div style="display:flex;align-items:center;gap:6px;font-size:0.62rem;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#1a6642;flex-shrink:0"></div> <span data-i18n="legendGood">Top bin</span></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.62rem;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#2a9e62;flex-shrink:0"></div> <span data-i18n="legendGood">Top bin</span></div>
         <div style="display:flex;align-items:center;gap:6px;font-size:0.62rem;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#7a5a10;flex-shrink:0"></div> <span data-i18n="legendDeg">Degradat (bin inferior)</span></div>
         <div style="display:flex;align-items:center;gap:6px;font-size:0.62rem;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#7a1515;flex-shrink:0"></div> <span data-i18n="legendFailed">Fallit</span></div>
       </div>
@@ -934,16 +934,16 @@ function draw(dies, revealAll = true) {
   ctx.save();
   ctx.beginPath();
   ctx.arc(R, R, R - 2, 0, Math.PI * 2);
-  ctx.fillStyle = '#080e1c';
+  ctx.fillStyle = '#c8d2de';
   ctx.fill();
-  ctx.strokeStyle = '#1a3050';
+  ctx.strokeStyle = '#7a9ab8';
   ctx.lineWidth = 2;
   ctx.stroke();
   ctx.restore();
 
   // Flat (notch) at bottom
   ctx.save();
-  ctx.fillStyle = '#050a14';
+  ctx.fillStyle = '#b8c2ce';
   ctx.beginPath();
   ctx.arc(R, R + R - 8, 10, 0, Math.PI * 2);
   ctx.fill();
@@ -969,16 +969,16 @@ function draw(dies, revealAll = true) {
     total++;
     const margin = 1;
     if (!d.good) {
-      ctx.fillStyle = '#3a0a0a';
-      ctx.strokeStyle = '#7a1515';
+      ctx.fillStyle = '#f5c0c0';
+      ctx.strokeStyle = '#c03030';
     } else if (d.degraded) {
       degraded++;
-      ctx.fillStyle = '#2a1f04';
-      ctx.strokeStyle = '#7a5a10';
+      ctx.fillStyle = '#f5e8b0';
+      ctx.strokeStyle = '#c09020';
     } else {
       good++;
-      ctx.fillStyle = '#0d3d2e';
-      ctx.strokeStyle = '#1a6642';
+      ctx.fillStyle = '#b8dfd0';
+      ctx.strokeStyle = '#2a9e62';
     }
     ctx.fillRect(d.cx + margin, d.cy + margin, d.w - margin*2, d.h - margin*2);
     ctx.strokeRect(d.cx + margin, d.cy + margin, d.w - margin*2, d.h - margin*2);
