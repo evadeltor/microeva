@@ -76,8 +76,10 @@ body::before {
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
   text-transform: uppercase; color: var(--blue);
   display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+  flex-wrap: wrap; row-gap: 10px;
 }
-.eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blue); }
+.eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blue); flex-shrink: 0; }
+.eyebrow > span { flex: 1; min-width: 0; }
 h1 {
   font-family: var(--serif); font-size: clamp(42px, 6vw, 68px);
   font-weight: 700; line-height: 1.05; color: var(--ink); margin-bottom: 8px;
@@ -583,7 +585,7 @@ button.active { background: var(--blue); color: #fff; }
 .lang-popup-btn:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-2px); }
 
 .lang-switcher {
-  position: absolute; top: 0; right: 0; display: flex; gap: 4px;
+  display: flex; gap: 4px; flex-shrink: 0;
   border: 1px solid var(--rule); border-radius: 4px; overflow: hidden;
 }
 .lang-switcher button {
@@ -594,7 +596,6 @@ button.active { background: var(--blue); color: #fff; }
 .lang-switcher button:last-child { border-right: none; }
 .lang-switcher button:hover { color: var(--blue); background: var(--blue-l); }
 .lang-switcher button.active { background: var(--ink); color: var(--paper); }
-.eyebrow { position: relative; }
 
 .dsgn-update-btn {
   flex-shrink: 0; padding: 6px 12px; border: 1px solid var(--rule); border-radius: 4px;
@@ -1019,11 +1020,11 @@ function capT(key) {
   <!-- ═══════════════════════════════════════════════════════════ -->
   <div id="tab-ic" class="tab-panel">
     <section class="section in" style="margin-top:36px">
-      <div class="section-tag">IC — Estructuras integradas</div>
-      <h2>Condensadores en chip</h2>
-      <p>En un circuito integrado los condensadores no son componentes físicos soldados: son <strong>estructuras geométricas construidas en las capas del proceso CMOS</strong>. Su capacidad, linealidad y densidad dependen completamente del stack tecnológico — no hay catálogo, se diseñan litográficamente.</p>
+      <div class="section-tag" data-i18n="ic_tag">IC — Estructuras integradas</div>
+      <h2 data-i18n="ic_h1">Condensadores en chip</h2>
+      <p data-i18n-html="ic_p1">En un circuito integrado los condensadores no son componentes físicos soldados: son <strong>estructuras geométricas construidas en las capas del proceso CMOS</strong>. Su capacidad, linealidad y densidad dependen completamente del stack tecnológico — no hay catálogo, se diseñan litográficamente.</p>
       <div class="callout">
-        <p>Modelos 3D de las estructuras integradas tal como se construyen en el proceso CMOS. Arrastra para rotar, scroll para zoom. El botón <strong>✂ Ver interior</strong> activa el corte transversal animado.</p>
+        <p data-i18n-html="ic_callout">Modelos 3D de las estructuras integradas tal como se construyen en el proceso CMOS. Arrastra para rotar, scroll para zoom. El botón <strong>✂ Ver interior</strong> activa el corte transversal animado.</p>
       </div>
 
       <nav class="subtabs" style="margin-top:32px">
@@ -1037,17 +1038,17 @@ function capT(key) {
         <div class="ic-card">
           <div class="ic-card-left">
             <div class="ic-layout-header">
-              <span class="ic-layout-label">3D interactivo — MIM</span>
+              <span class="ic-layout-label" data-i18n="ic_3d_mim">3D interactivo — MIM</span>
             </div>
             <div class="three-container" id="three-ic-mim" data-three="ic-mim"></div>
             <div class="ic-3d-legend">
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#ff3d8b"></span>M2 — routing</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#00e5c0"></span>M3 — placa inferior</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#b14dff"></span>Dieléctrico SiN</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#ffc400"></span>M4 — placa superior
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#ff3d8b"></span><span data-i18n="ic_mim_leg1">M2 — routing</span></div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#00e5c0"></span><span data-i18n="ic_mim_leg2">M3 — placa inferior</span></div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#b14dff"></span><span data-i18n="ic_mim_leg3">Dieléctrico SiN</span></div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#ffc400"></span><span data-i18n="ic_mim_leg4">M4 — placa superior</span>
                 <span class="acdc-info-wrap">
                   <button class="acdc-info-btn" onclick="toggleTip(this)">!</button>
-                  <span class="acdc-info-tip">
+                  <span class="acdc-info-tip" data-i18n-html="ic_mim_tip">
                     <strong>¿Por qué M4 es más pequeña?</strong><br><br>
                     Las dos placas se dibujan con máscaras distintas, y dos máscaras nunca caen perfectamente alineadas: siempre hay unas decenas de nm de desplazamiento, y además varía de una oblea a otra.<br><br>
                     Si las dos placas fueran del mismo tamaño, ese desplazamiento recortaría una tira del solape y la capacidad cambiaría con él. Tendrías un condensador distinto en cada esquina de la oblea.<br><br>
@@ -1056,29 +1057,29 @@ function capT(key) {
                   </span>
                 </span>
               </div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#00b0ff"></span>M5 — routing</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#e8e8ee"></span>Vías</div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#00b0ff"></span><span data-i18n="ic_mim_leg5">M5 — routing</span></div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#e8e8ee"></span><span data-i18n="ic_leg_vias">Vías</span></div>
             </div>
           </div>
           <div class="ic-card-right">
             <div class="ic-type-tag">Metal–Insulator–Metal</div>
-            <h3 class="ic-name">Condensador MIM</h3>
-            <p class="ic-desc">Dos placas de metal separadas por un dieléctrico de alta permitividad (SiN, HfO₂, Ta₂O₅) insertado entre capas de metal del back-end (BEOL). Alta densidad, excelente linealidad, bajo voltage coefficient.</p>
+            <h3 class="ic-name" data-i18n="ic_mim_name">Condensador MIM</h3>
+            <p class="ic-desc" data-i18n="ic_mim_desc">Dos placas de metal separadas por un dieléctrico de alta permitividad (SiN, HfO₂, Ta₂O₅) insertado entre capas de metal del back-end (BEOL). Alta densidad, excelente linealidad, bajo voltage coefficient.</p>
             <div class="ic-specs-grid">
-              <div class="ic-spec"><span class="ic-spec-k">Densidad</span><span class="ic-spec-v">1–10 fF/µm²</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Linealidad</span><span class="ic-spec-v">Muy alta</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_densidad">Densidad</span><span class="ic-spec-v">1–10 fF/µm²</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_linealidad">Linealidad</span><span class="ic-spec-v" data-i18n="ic_mim_lin">Muy alta</span></div>
               <div class="ic-spec"><span class="ic-spec-k">VCC</span><span class="ic-spec-v">< 10 ppm/V²</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Tensión max</span><span class="ic-spec-v">VDD del proceso</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Dieléctrico</span><span class="ic-spec-v">SiN · HfO₂ · Ta₂O₅</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Posición stack</span><span class="ic-spec-v">BEOL (Mx – Mx+1)</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_vmax">Tensión max</span><span class="ic-spec-v" data-i18n="ic_mim_vmax">VDD del proceso</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_diel">Dieléctrico</span><span class="ic-spec-v">SiN · HfO₂ · Ta₂O₅</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_stack">Posición stack</span><span class="ic-spec-v" data-i18n="ic_mim_stack">BEOL (Mx – Mx+1)</span></div>
             </div>
             <div class="ic-uses">
-              <strong>Cuándo usarlo</strong>
-              Desacoplo de precisión, sample-and-hold, DAC/ADC de alta resolución. Es el condensador de referencia en diseño analógico cuando el proceso lo ofrece. Su coste: requiere máscaras adicionales.
+              <strong data-i18n="ic_cuando_usarlo">Cuándo usarlo</strong>
+              <span data-i18n="ic_mim_uses">Desacoplo de precisión, sample-and-hold, DAC/ADC de alta resolución. Es el condensador de referencia en diseño analógico cuando el proceso lo ofrece. Su coste: requiere máscaras adicionales.</span>
             </div>
             <div class="ic-matching-note">
-              <span class="ic-match-tag">Matching</span>
-              El mismatch de capacidad escala con 1/√A. Para maximizar matching: usar geometría cuadrada, común centroid, y guardar distancia a bordes de pista.
+              <span class="ic-match-tag" data-i18n="ic_matching">Matching</span>
+              <span data-i18n="ic_mim_match">El mismatch de capacidad escala con 1/√A. Para maximizar matching: usar geometría cuadrada, común centroid, y guardar distancia a bordes de pista.</span>
             </div>
           </div>
         </div>
@@ -1089,38 +1090,38 @@ function capT(key) {
         <div class="ic-card">
           <div class="ic-card-left">
             <div class="ic-layout-header">
-              <span class="ic-layout-label">3D interactivo — MOS</span>
+              <span class="ic-layout-label" data-i18n="ic_3d_mos">3D interactivo — MOS</span>
             </div>
             <div class="three-container" id="three-ic-mos" data-three="ic-mos"></div>
             <div class="ic-3d-legend">
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#2a2a6a"></span>Substrato p</div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#2a2a6a"></span><span data-i18n="ic_mos_leg1">Substrato p</span></div>
               <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#9d4dff"></span>N-well</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#22e05a"></span>p+ (S y D)</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#00d5f0"></span>n+ tap (body)</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#ffe600"></span>Gate oxide</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#ff7a1a"></span>Gate poly</div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#22e05a"></span><span data-i18n="ic_mos_leg3">p+ (S y D)</span></div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#00d5f0"></span><span data-i18n="ic_mos_leg4">n+ tap (body)</span></div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#ffe600"></span><span data-i18n="ic_mos_leg5">Gate oxide</span></div>
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#ff7a1a"></span><span data-i18n="ic_mos_leg6">Gate poly</span></div>
               <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#00b0ff"></span>M1</div>
             </div>
           </div>
           <div class="ic-card-right">
             <div class="ic-type-tag">Metal–Oxide–Semiconductor</div>
-            <h3 class="ic-name">Condensador MOS</h3>
-            <p class="ic-desc">Usa el óxido de gate como dieléctrico y el canal del transistor como placa inferior. La densidad es muy alta gracias al SiO₂ ultra-delgado del gate, pero la capacidad <strong>depende fuertemente de la tensión aplicada</strong> — no lineal.</p>
+            <h3 class="ic-name" data-i18n="ic_mos_name">Condensador MOS</h3>
+            <p class="ic-desc" data-i18n-html="ic_mos_desc">Usa el óxido de gate como dieléctrico y el canal del transistor como placa inferior. La densidad es muy alta gracias al SiO₂ ultra-delgado del gate, pero la capacidad <strong>depende fuertemente de la tensión aplicada</strong> — no lineal.</p>
             <div class="ic-specs-grid">
-              <div class="ic-spec"><span class="ic-spec-k">Densidad</span><span class="ic-spec-v">5–30 fF/µm²</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Linealidad</span><span class="ic-spec-v">Baja (VCC alto)</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_densidad">Densidad</span><span class="ic-spec-v">5–30 fF/µm²</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_linealidad">Linealidad</span><span class="ic-spec-v" data-i18n="ic_mos_lin">Baja (VCC alto)</span></div>
               <div class="ic-spec"><span class="ic-spec-k">VCC</span><span class="ic-spec-v">100–1000 ppm/V²</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Tensión max</span><span class="ic-spec-v">VGS_max del proceso</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Dieléctrico</span><span class="ic-spec-v">SiO₂ · SiON · High-k</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Posición stack</span><span class="ic-spec-v">FEOL (gate oxide)</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_vmax">Tensión max</span><span class="ic-spec-v" data-i18n="ic_mos_vmax">VGS_max del proceso</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_diel">Dieléctrico</span><span class="ic-spec-v">SiO₂ · SiON · High-k</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_stack">Posición stack</span><span class="ic-spec-v" data-i18n="ic_mos_stack">FEOL (gate oxide)</span></div>
             </div>
             <div class="ic-uses">
-              <strong>Cuándo usarlo</strong>
-              Desacoplo de alimentación (VDD–GND), osciladores de relajación, donde la capacidad no necesita ser lineal con V. Evitar en señal analógica de precisión por su VCC elevado.
+              <strong data-i18n="ic_cuando_usarlo">Cuándo usarlo</strong>
+              <span data-i18n="ic_mos_uses">Desacoplo de alimentación (VDD–GND), osciladores de relajación, donde la capacidad no necesita ser lineal con V. Evitar en señal analógica de precisión por su VCC elevado.</span>
             </div>
             <div class="ic-matching-note">
-              <span class="ic-match-tag">Cuidado</span>
-              En acumulación la capacidad es estable. En depleción cae bruscamente — asegúrate de que el nodo esté siempre en acumulación o usa NMOS con N-well para PMOS equivalente.
+              <span class="ic-match-tag" data-i18n="ic_cuidado">Cuidado</span>
+              <span data-i18n="ic_mos_match">En acumulación la capacidad es estable. En depleción cae bruscamente — asegúrate de que el nodo esté siempre en acumulación o usa NMOS con N-well para PMOS equivalente.</span>
             </div>
           </div>
         </div>
@@ -1131,7 +1132,7 @@ function capT(key) {
         <div class="ic-card">
           <div class="ic-card-left">
             <div class="ic-layout-header">
-              <span class="ic-layout-label">3D interactivo — MOM</span>
+              <span class="ic-layout-label" data-i18n="ic_3d_mom">3D interactivo — MOM</span>
             </div>
             <div class="three-container" id="three-ic-mom" data-three="ic-mom"></div>
             <div class="ic-3d-legend">
@@ -1139,10 +1140,10 @@ function capT(key) {
               <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#c44dff"></span>M2</div>
               <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#7d6dff"></span>M3</div>
               <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#2fb8ff"></span>M4</div>
-              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#e8e8ee"></span>Vías
+              <div class="ic-3d-legend-item"><span class="ic-3d-legend-swatch" style="background:#e8e8ee"></span><span data-i18n="ic_leg_vias">Vías</span>
                 <span class="acdc-info-wrap">
                   <button class="acdc-info-btn" onclick="toggleTip(this)">!</button>
-                  <span class="acdc-info-tip">
+                  <span class="acdc-info-tip" data-i18n-html="ic_mom_tip">
                     <strong>Cómo se lee este dibujo</strong><br><br>
                     Cada capa de metal es el mismo patrón repetido: dos <em>peines</em> enfrentados, uno por nodo. La espina izquierda alimenta los dedos pares y la derecha los impares, y los dedos se entrelazan sin llegar a tocarse.<br><br>
                     La capacidad sale del campo lateral entre dedos vecinos — no de un área de solape como en el MIM.<br><br>
@@ -1154,23 +1155,23 @@ function capT(key) {
           </div>
           <div class="ic-card-right">
             <div class="ic-type-tag">Metal–Oxide–Metal (fringe)</div>
-            <h3 class="ic-name">Condensador MOM</h3>
-            <p class="ic-desc">Explota la capacidad <strong>lateral (fringe)</strong> entre dedos interdigitados en la misma capa de metal o en múltiples capas del BEOL. No requiere máscaras extra — se construye con las capas estándar del proceso. Excelente para tecnologías sub-90 nm donde la altura del metal es mayor que el pitch.</p>
+            <h3 class="ic-name" data-i18n="ic_mom_name">Condensador MOM</h3>
+            <p class="ic-desc" data-i18n-html="ic_mom_desc">Explota la capacidad <strong>lateral (fringe)</strong> entre dedos interdigitados en la misma capa de metal o en múltiples capas del BEOL. No requiere máscaras extra — se construye con las capas estándar del proceso. Excelente para tecnologías sub-90 nm donde la altura del metal es mayor que el pitch.</p>
             <div class="ic-specs-grid">
-              <div class="ic-spec"><span class="ic-spec-k">Densidad</span><span class="ic-spec-v">0.5–3 fF/µm²</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Linealidad</span><span class="ic-spec-v">Alta</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_densidad">Densidad</span><span class="ic-spec-v">0.5–3 fF/µm²</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_linealidad">Linealidad</span><span class="ic-spec-v" data-i18n="ic_mom_lin">Alta</span></div>
               <div class="ic-spec"><span class="ic-spec-k">VCC</span><span class="ic-spec-v">< 50 ppm/V²</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Tensión max</span><span class="ic-spec-v">Sin límite especial</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Dieléctrico</span><span class="ic-spec-v">Óxido inter-metal (IMD)</span></div>
-              <div class="ic-spec"><span class="ic-spec-k">Posición stack</span><span class="ic-spec-v">BEOL — capas estándar</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_vmax">Tensión max</span><span class="ic-spec-v" data-i18n="ic_mom_vmax">Sin límite especial</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_diel">Dieléctrico</span><span class="ic-spec-v" data-i18n="ic_mom_diel">Óxido inter-metal (IMD)</span></div>
+              <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_stack">Posición stack</span><span class="ic-spec-v" data-i18n="ic_mom_stack">BEOL — capas estándar</span></div>
             </div>
             <div class="ic-uses">
-              <strong>Cuándo usarlo</strong>
-              Proceso sin opción MIM, o cuando el área lo permite. Muy popular en FinFET y procesos avanzados. Fácil de escalar añadiendo capas. Compatible con flujo de diseño estándar sin coste de proceso extra.
+              <strong data-i18n="ic_cuando_usarlo">Cuándo usarlo</strong>
+              <span data-i18n="ic_mom_uses">Proceso sin opción MIM, o cuando el área lo permite. Muy popular en FinFET y procesos avanzados. Fácil de escalar añadiendo capas. Compatible con flujo de diseño estándar sin coste de proceso extra.</span>
             </div>
             <div class="ic-matching-note">
-              <span class="ic-match-tag">Matching</span>
-              Muy sensible a variaciones de pitch litográfico. Usar fill de metal homogéneo alrededor, y apilar siempre el mismo número de capas en los dos condensadores a emparejar.
+              <span class="ic-match-tag" data-i18n="ic_matching">Matching</span>
+              <span data-i18n="ic_mom_match">Muy sensible a variaciones de pitch litográfico. Usar fill de metal homogéneo alrededor, y apilar siempre el mismo número de capas en los dos condensadores a emparejar.</span>
             </div>
           </div>
         </div>
@@ -1648,11 +1649,16 @@ let _dpr = 1;
 function computeGeo() {
   const W  = canvas.width  / (_dpr || 1);
   const H  = canvas.height / (_dpr || 1);
-  const d  = +document.getElementById('sliderD').value;  // px separación
-  const a  = +document.getElementById('sliderA').value;  // px ancho placa
-  const pH = 28;                                         // altura placa
-  // Desplazado a la derecha: la caja "electrónica" ocupa la franja izquierda
-  const cx = 78 + (W - 78) / 2;
+  const dRaw = +document.getElementById('sliderD').value;  // px separación
+  const aRaw = +document.getElementById('sliderA').value;  // px ancho placa
+  const pHRaw = 28;                                        // altura placa
+  const leftBox = 78, rightMargin = 20;
+  const availW = Math.max(80, W - leftBox - rightMargin);
+  // Escala responsive: si el canvas es estrecho (movil) el condensador se
+  // encoge para no solaparse con la caja "electrónica" de la izquierda.
+  const k = Math.min(1, availW / 320);   // 320 = valor maximo del slider de area
+  const d = dRaw * k, a = aRaw * k, pH = pHRaw * k;
+  const cx = leftBox + availW / 2;
   const cy = H / 2;
   const plateY_A = cy - d / 2 - pH;
   const plateY_B = cy + d / 2;
@@ -6282,6 +6288,35 @@ Object.assign(window.CAP_I18N.es, {
     p_tht_uses_radial: 'Componentes grandes (altas tensiones, alta corriente), donde la fuerza mecánica importa, o donde es necesaria reparación manual. El <strong>radial</strong> es la geometría THT más común hoy: ocupa poco espacio horizontal y es fácil de insertar a máquina.',
     d_view_label: 'Layout real · 3D interactivo — arrastra para rotar, scroll para zoom',
     d_update_btn: '↻ Actualizar 3D',
+    /* ── IC ── */
+    ic_tag: 'IC — Estructuras integradas',
+    ic_h1: 'Condensadores en chip',
+    ic_p1: 'En un circuito integrado los condensadores no son componentes físicos soldados: son <strong>estructuras geométricas construidas en las capas del proceso CMOS</strong>. Su capacidad, linealidad y densidad dependen completamente del stack tecnológico — no hay catálogo, se diseñan litográficamente.',
+    ic_callout: 'Modelos 3D de las estructuras integradas tal como se construyen en el proceso CMOS. Arrastra para rotar, scroll para zoom. El botón <strong>✂ Ver interior</strong> activa el corte transversal animado.',
+    ic_3d_mim: '3D interactivo — MIM', ic_3d_mos: '3D interactivo — MOS', ic_3d_mom: '3D interactivo — MOM',
+    ic_leg_vias: 'Vías',
+    ic_cuando_usarlo: 'Cuándo usarlo', ic_cuidado: 'Cuidado', ic_matching: 'Matching',
+    ic_k_densidad: 'Densidad', ic_k_linealidad: 'Linealidad', ic_k_vmax: 'Tensión max',
+    ic_k_diel: 'Dieléctrico', ic_k_stack: 'Posición stack',
+    ic_mim_leg1: 'M2 — routing', ic_mim_leg2: 'M3 — placa inferior', ic_mim_leg3: 'Dieléctrico SiN', ic_mim_leg4: 'M4 — placa superior', ic_mim_leg5: 'M5 — routing',
+    ic_mim_tip: '<strong>¿Por qué M4 es más pequeña?</strong><br><br>Las dos placas se dibujan con máscaras distintas, y dos máscaras nunca caen perfectamente alineadas: siempre hay unas decenas de nm de desplazamiento, y además varía de una oblea a otra.<br><br>Si las dos placas fueran del mismo tamaño, ese desplazamiento recortaría una tira del solape y la capacidad cambiaría con él. Tendrías un condensador distinto en cada esquina de la oblea.<br><br>Metiendo M4 holgadamente dentro de M3, el truco funciona solo: por mucho que M4 se mueva, sigue estando entera encima de M3, así que el solape es siempre el área de M4 y nada más. La capacidad la define <em>una única máscara</em> y el desalineamiento deja de importar.<br><br>Pagas un poco de área a cambio de un condensador que se repite igual en toda la oblea. De propina, M3 apantalla M4 del substrato.',
+    ic_mim_name: 'Condensador MIM',
+    ic_mim_desc: 'Dos placas de metal separadas por un dieléctrico de alta permitividad (SiN, HfO₂, Ta₂O₅) insertado entre capas de metal del back-end (BEOL). Alta densidad, excelente linealidad, bajo voltage coefficient.',
+    ic_mim_lin: 'Muy alta', ic_mim_vmax: 'VDD del proceso', ic_mim_stack: 'BEOL (Mx – Mx+1)',
+    ic_mim_uses: 'Desacoplo de precisión, sample-and-hold, DAC/ADC de alta resolución. Es el condensador de referencia en diseño analógico cuando el proceso lo ofrece. Su coste: requiere máscaras adicionales.',
+    ic_mim_match: 'El mismatch de capacidad escala con 1/√A. Para maximizar matching: usar geometría cuadrada, común centroid, y guardar distancia a bordes de pista.',
+    ic_mos_leg1: 'Substrato p', ic_mos_leg3: 'p+ (S y D)', ic_mos_leg4: 'n+ tap (body)', ic_mos_leg5: 'Gate oxide', ic_mos_leg6: 'Gate poly',
+    ic_mos_name: 'Condensador MOS',
+    ic_mos_desc: 'Usa el óxido de gate como dieléctrico y el canal del transistor como placa inferior. La densidad es muy alta gracias al SiO₂ ultra-delgado del gate, pero la capacidad <strong>depende fuertemente de la tensión aplicada</strong> — no lineal.',
+    ic_mos_lin: 'Baja (VCC alto)', ic_mos_vmax: 'VGS_max del proceso', ic_mos_stack: 'FEOL (gate oxide)',
+    ic_mos_uses: 'Desacoplo de alimentación (VDD–GND), osciladores de relajación, donde la capacidad no necesita ser lineal con V. Evitar en señal analógica de precisión por su VCC elevado.',
+    ic_mos_match: 'En acumulación la capacidad es estable. En depleción cae bruscamente — asegúrate de que el nodo esté siempre en acumulación o usa NMOS con N-well para PMOS equivalente.',
+    ic_mom_name: 'Condensador MOM',
+    ic_mom_tip: '<strong>Cómo se lee este dibujo</strong><br><br>Cada capa de metal es el mismo patrón repetido: dos <em>peines</em> enfrentados, uno por nodo. La espina izquierda alimenta los dedos pares y la derecha los impares, y los dedos se entrelazan sin llegar a tocarse.<br><br>La capacidad sale del campo lateral entre dedos vecinos — no de un área de solape como en el MIM.<br><br>Las vías de las espinas apilan las capas en vertical. Cuatro capas ≈ cuatro veces la capacidad en la misma superficie, y sin ninguna máscara extra.',
+    ic_mom_desc: 'Explota la capacidad <strong>lateral (fringe)</strong> entre dedos interdigitados en la misma capa de metal o en múltiples capas del BEOL. No requiere máscaras extra — se construye con las capas estándar del proceso. Excelente para tecnologías sub-90 nm donde la altura del metal es mayor que el pitch.',
+    ic_mom_lin: 'Alta', ic_mom_vmax: 'Sin límite especial', ic_mom_diel: 'Óxido inter-metal (IMD)', ic_mom_stack: 'BEOL — capas estándar',
+    ic_mom_uses: 'Proceso sin opción MIM, o cuando el área lo permite. Muy popular en FinFET y procesos avanzados. Fácil de escalar añadiendo capas. Compatible con flujo de diseño estándar sin coste de proceso extra.',
+    ic_mom_match: 'Muy sensible a variaciones de pitch litográfico. Usar fill de metal homogéneo alrededor, y apilar siempre el mismo número de capas en los dos condensadores a emparejar.',
   });
 Object.assign(window.CAP_I18N.ca, {
     eyebrow: 'Microelectrònica · Disseny de CI',
@@ -6376,6 +6411,35 @@ Object.assign(window.CAP_I18N.ca, {
     p_tht_uses_radial: 'Components grans (altes tensions, alt corrent), on la força mecànica importa, o on cal reparació manual. El <strong>radial</strong> és la geometria THT més comuna avui: ocupa poc espai horitzontal i és fàcil d\'inserir a màquina.',
     d_view_label: 'Layout real · 3D interactiu — arrossega per rotar, scroll per fer zoom',
     d_update_btn: '↻ Actualitzar 3D',
+    /* ── IC ── */
+    ic_tag: 'IC — Estructures integrades',
+    ic_h1: 'Condensadors en xip',
+    ic_p1: 'En un circuit integrat els condensadors no són components físics soldats: són <strong>estructures geomètriques construïdes a les capes del procés CMOS</strong>. La seva capacitat, linealitat i densitat depenen completament de l\'stack tecnològic — no hi ha catàleg, es dissenyen litogràficament.',
+    ic_callout: 'Models 3D de les estructures integrades tal com es construeixen al procés CMOS. Arrossega per rotar, scroll per fer zoom. El botó <strong>✂ Veure interior</strong> activa el tall transversal animat.',
+    ic_3d_mim: '3D interactiu — MIM', ic_3d_mos: '3D interactiu — MOS', ic_3d_mom: '3D interactiu — MOM',
+    ic_leg_vias: 'Vies',
+    ic_cuando_usarlo: 'Quan usar-lo', ic_cuidado: 'Compte', ic_matching: 'Matching',
+    ic_k_densidad: 'Densitat', ic_k_linealidad: 'Linealitat', ic_k_vmax: 'Tensió max',
+    ic_k_diel: 'Dielèctric', ic_k_stack: 'Posició stack',
+    ic_mim_leg1: 'M2 — routing', ic_mim_leg2: 'M3 — placa inferior', ic_mim_leg3: 'Dielèctric SiN', ic_mim_leg4: 'M4 — placa superior', ic_mim_leg5: 'M5 — routing',
+    ic_mim_tip: '<strong>Per què M4 és més petita?</strong><br><br>Les dues plaques es dibuixen amb màscares diferents, i dues màscares mai cauen perfectament alineades: sempre hi ha unes desenes de nm de desplaçament, i a més varia d\'una oblia a una altra.<br><br>Si les dues plaques fossin de la mateixa mida, aquest desplaçament retallaria una tira del solapament i la capacitat canviaria amb ell. Tindries un condensador diferent a cada cantonada de l\'oblia.<br><br>Ficant M4 folgadament dins de M3, el truc funciona sol: per molt que M4 es mogui, segueix estant sencera sobre M3, així que el solapament és sempre l\'àrea de M4 i res més. La capacitat la defineix <em>una única màscara</em> i el desalineament deixa d\'importar.<br><br>Pagues una mica d\'àrea a canvi d\'un condensador que es repeteix igual a tota l\'oblia. De propina, M3 apantalla M4 del substrat.',
+    ic_mim_name: 'Condensador MIM',
+    ic_mim_desc: 'Dues plaques de metall separades per un dielèctric d\'alta permitivitat (SiN, HfO₂, Ta₂O₅) inserit entre capes de metall del back-end (BEOL). Alta densitat, excel·lent linealitat, baix voltage coefficient.',
+    ic_mim_lin: 'Molt alta', ic_mim_vmax: 'VDD del procés', ic_mim_stack: 'BEOL (Mx – Mx+1)',
+    ic_mim_uses: 'Desacoblament de precisió, sample-and-hold, DAC/ADC d\'alta resolució. És el condensador de referència en disseny analògic quan el procés l\'ofereix. El seu cost: requereix màscares addicionals.',
+    ic_mim_match: 'El mismatch de capacitat escala amb 1/√A. Per maximitzar el matching: usar geometria quadrada, común centroid, i guardar distància a vores de pista.',
+    ic_mos_leg1: 'Substrat p', ic_mos_leg3: 'p+ (S i D)', ic_mos_leg4: 'n+ tap (body)', ic_mos_leg5: 'Gate oxide', ic_mos_leg6: 'Gate poly',
+    ic_mos_name: 'Condensador MOS',
+    ic_mos_desc: 'Usa l\'òxid de gate com a dielèctric i el canal del transistor com a placa inferior. La densitat és molt alta gràcies al SiO₂ ultra-prim del gate, però la capacitat <strong>depèn fortament de la tensió aplicada</strong> — no lineal.',
+    ic_mos_lin: 'Baixa (VCC alt)', ic_mos_vmax: 'VGS_max del procés', ic_mos_stack: 'FEOL (gate oxide)',
+    ic_mos_uses: 'Desacoblament d\'alimentació (VDD–GND), osciŀladors de relaxació, on la capacitat no necessita ser lineal amb V. Evitar en senyal analògic de precisió pel seu VCC elevat.',
+    ic_mos_match: 'En acumulació la capacitat és estable. En depleció cau bruscament — assegura\'t que el node estigui sempre en acumulació o usa NMOS amb N-well per a PMOS equivalent.',
+    ic_mom_name: 'Condensador MOM',
+    ic_mom_tip: '<strong>Com es llegeix aquest dibuix</strong><br><br>Cada capa de metall és el mateix patró repetit: dues <em>pintes</em> enfrontades, una per node. L\'espina esquerra alimenta els dits parells i la dreta els senars, i els dits s\'entrellacen sense arribar a tocar-se.<br><br>La capacitat surt del camp lateral entre dits veïns — no d\'una àrea de solapament com al MIM.<br><br>Les vies de les espines apilen les capes en vertical. Quatre capes ≈ quatre vegades la capacitat a la mateixa superfície, i sense cap màscara extra.',
+    ic_mom_desc: 'Explota la capacitat <strong>lateral (fringe)</strong> entre dits interdigitats a la mateixa capa de metall o en múltiples capes del BEOL. No requereix màscares extra — es construeix amb les capes estàndard del procés. Excel·lent per a tecnologies sub-90 nm on l\'alçada del metall és més gran que el pitch.',
+    ic_mom_lin: 'Alta', ic_mom_vmax: 'Sense límit especial', ic_mom_diel: 'Òxid inter-metall (IMD)', ic_mom_stack: 'BEOL — capes estàndard',
+    ic_mom_uses: 'Procés sense opció MIM, o quan l\'àrea ho permet. Molt popular en FinFET i processos avançats. Fàcil d\'escalar afegint capes. Compatible amb flux de disseny estàndard sense cost de procés extra.',
+    ic_mom_match: 'Molt sensible a variacions de pitch litogràfic. Usar fill de metall homogeni al voltant, i apilar sempre el mateix nombre de capes en els dos condensadors a aparellar.',
   });
 Object.assign(window.CAP_I18N.en, {
     eyebrow: 'Microelectronics · IC Design',
@@ -6470,6 +6534,35 @@ Object.assign(window.CAP_I18N.en, {
     p_tht_uses_radial: 'Large components (high voltage, high current), where mechanical strength matters, or where manual repair is needed. <strong>Radial</strong> is the most common THT geometry today: it takes up little horizontal space and is easy to machine-insert.',
     d_view_label: 'Real layout · Interactive 3D — drag to rotate, scroll to zoom',
     d_update_btn: '↻ Update 3D',
+    /* ── IC ── */
+    ic_tag: 'IC — Integrated structures',
+    ic_h1: 'Capacitors on chip',
+    ic_p1: 'In an integrated circuit, capacitors are not soldered physical components: they are <strong>geometric structures built into the layers of the CMOS process</strong>. Their capacitance, linearity and density depend entirely on the technology stack — there is no catalog, they are designed lithographically.',
+    ic_callout: '3D models of the integrated structures exactly as built in the CMOS process. Drag to rotate, scroll to zoom. The <strong>✂ View interior</strong> button triggers the animated cross-section.',
+    ic_3d_mim: 'Interactive 3D — MIM', ic_3d_mos: 'Interactive 3D — MOS', ic_3d_mom: 'Interactive 3D — MOM',
+    ic_leg_vias: 'Vias',
+    ic_cuando_usarlo: 'When to use it', ic_cuidado: 'Caution', ic_matching: 'Matching',
+    ic_k_densidad: 'Density', ic_k_linealidad: 'Linearity', ic_k_vmax: 'Max voltage',
+    ic_k_diel: 'Dielectric', ic_k_stack: 'Stack position',
+    ic_mim_leg1: 'M2 — routing', ic_mim_leg2: 'M3 — bottom plate', ic_mim_leg3: 'SiN dielectric', ic_mim_leg4: 'M4 — top plate', ic_mim_leg5: 'M5 — routing',
+    ic_mim_tip: '<strong>Why is M4 smaller?</strong><br><br>The two plates are drawn with different masks, and two masks never fall perfectly aligned: there are always tens of nm of offset, and it also varies from wafer to wafer.<br><br>If both plates were the same size, that offset would trim a strip off the overlap and the capacitance would change with it. You would get a different capacitor at every corner of the wafer.<br><br>By fitting M4 loosely inside M3, the trick works on its own: however much M4 shifts, it stays entirely on top of M3, so the overlap is always the area of M4 and nothing more. Capacitance is defined by <em>a single mask</em>, and misalignment stops mattering.<br><br>You pay some area in exchange for a capacitor that repeats identically across the whole wafer. As a bonus, M3 shields M4 from the substrate.',
+    ic_mim_name: 'MIM capacitor',
+    ic_mim_desc: 'Two metal plates separated by a high-permittivity dielectric (SiN, HfO₂, Ta₂O₅) inserted between back-end (BEOL) metal layers. High density, excellent linearity, low voltage coefficient.',
+    ic_mim_lin: 'Very high', ic_mim_vmax: 'Process VDD', ic_mim_stack: 'BEOL (Mx – Mx+1)',
+    ic_mim_uses: 'Precision decoupling, sample-and-hold, high-resolution DAC/ADC. It is the reference capacitor in analog design when the process offers it. Its cost: requires additional masks.',
+    ic_mim_match: 'Capacitance mismatch scales with 1/√A. To maximize matching: use square geometry, common-centroid layout, and keep distance from routing edges.',
+    ic_mos_leg1: 'p substrate', ic_mos_leg3: 'p+ (S and D)', ic_mos_leg4: 'n+ tap (body)', ic_mos_leg5: 'Gate oxide', ic_mos_leg6: 'Gate poly',
+    ic_mos_name: 'MOS capacitor',
+    ic_mos_desc: 'Uses the gate oxide as the dielectric and the transistor channel as the bottom plate. Density is very high thanks to the ultra-thin gate SiO₂, but capacitance <strong>strongly depends on the applied voltage</strong> — nonlinear.',
+    ic_mos_lin: 'Low (high VCC)', ic_mos_vmax: 'Process VGS_max', ic_mos_stack: 'FEOL (gate oxide)',
+    ic_mos_uses: 'Supply decoupling (VDD–GND), relaxation oscillators, wherever capacitance need not be linear with V. Avoid in precision analog signal paths due to its high VCC.',
+    ic_mos_match: 'In accumulation, capacitance is stable. In depletion it drops sharply — make sure the node always stays in accumulation, or use an NMOS with N-well for the equivalent PMOS.',
+    ic_mom_name: 'MOM capacitor',
+    ic_mom_tip: '<strong>How to read this drawing</strong><br><br>Each metal layer is the same repeated pattern: two facing <em>combs</em>, one per node. The left spine feeds the even fingers and the right one the odd fingers, interleaved without ever touching.<br><br>Capacitance comes from the lateral field between neighboring fingers — not from an overlap area like in the MIM.<br><br>The vias on the spines stack the layers vertically. Four layers ≈ four times the capacitance in the same footprint, with no extra mask.',
+    ic_mom_desc: 'Exploits the <strong>lateral (fringe)</strong> capacitance between interdigitated fingers on the same metal layer or across multiple BEOL layers. Requires no extra masks — built with the process\'s standard layers. Excellent for sub-90 nm technologies where metal height exceeds pitch.',
+    ic_mom_lin: 'High', ic_mom_vmax: 'No special limit', ic_mom_diel: 'Inter-metal oxide (IMD)', ic_mom_stack: 'BEOL — standard layers',
+    ic_mom_uses: 'Process with no MIM option, or when area allows it. Very popular in FinFET and advanced processes. Easy to scale by adding layers. Compatible with a standard design flow at no extra process cost.',
+    ic_mom_match: 'Very sensitive to lithographic pitch variations. Use homogeneous metal fill around it, and always stack the same number of layers in the two capacitors being matched.',
   });
 
 function applyCapI18n() {
