@@ -595,6 +595,19 @@ button.active { background: var(--blue); color: #fff; }
 .lang-switcher button.active { background: var(--ink); color: var(--paper); }
 .eyebrow { position: relative; }
 
+.dsgn-update-btn {
+  flex-shrink: 0; padding: 6px 12px; border: 1px solid var(--rule); border-radius: 4px;
+  background: var(--paper); color: var(--ink2); cursor: pointer;
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em;
+  transition: all 0.15s ease;
+}
+.dsgn-update-btn:hover { border-color: var(--blue); color: var(--blue); }
+.dsgn-update-btn.pending {
+  background: var(--orange); color: #fff; border-color: var(--orange);
+  animation: dsgnPendingPulse 1.4s ease-in-out infinite;
+}
+@keyframes dsgnPendingPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.68; } }
+
 </style>
 <script type="importmap">
 {
@@ -1247,7 +1260,10 @@ function capT(key) {
         </div>
         <!-- Vista -->
         <div class="dsgn-preview-wrap">
-          <div class="dsgn-view-label">Layout real · 3D interactivo — arrastra para rotar, scroll para zoom</div>
+          <div class="dsgn-view-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <div class="dsgn-view-label" data-i18n="d_view_label">Layout real · 3D interactivo — arrastra para rotar, scroll para zoom</div>
+            <button id="dsgn-update-3d-btn" class="dsgn-update-btn" data-i18n="d_update_btn">↻ Actualizar 3D</button>
+          </div>
           <svg id="dsgn-svg" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:200px;display:none;background:#1a1a2a;border-radius:4px;">
             <text x="170" y="105" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="#666">configura los parámetros →</text>
           </svg>
@@ -4926,21 +4942,21 @@ document.querySelectorAll('.tht-toggle-btn').forEach(btn => {
 const SKY130_DEVICES = {
   mim:  { name:'sky130_fd_pr__cap_mim_m3_1', label:'MIM — cap_mim_m3_1', cArea:2.0, cPerim:0.19, wMin:2, lMin:2, wMax:30, lMax:30, fixedSize:false, color:'#26a040',
     info:{diel:'SiN (M3 a cap-top)', densidad:'~2 fF/µm²', vcc:'< 10 ppm/V²', wlMin:'2 × 2 µm', wlMax:'~30 × 30 µm', parasito:'C_bottom ≈ 1–2% al substrato'},
-    matchNote:'Matching MIM: σ(ΔC/C) = A_C/√(W·L). Geometría cuadrada, común-centroide. Placa inferior al nodo de baja impedancia. Dummies de metal para uniformar entorno litográfico.' },
+    matchNote:'Matching MIM: σ(ΔC/C) = A_C/√(W·L). Geometría cuadrada, común-centroide. Placa inferior al nodo de baja impedancia. Dummies de metal para uniformar entorno litográfico. El bloque de metal separado a un lado no es parte del condensador: es el contacto que saca la placa inferior (M3) fuera del área activa, para no tener que atravesar la placa superior.' },
   vpp:  { name:'sky130_fd_pr__cap_vpp_04p4x04p6_m1m2_noshield', label:'VPP/MOM — cap_vpp', cUnit:0.084, cellW:4.4, cellH:4.6, fixedSize:true, color:'#7fd0ff',
     info:{diel:'IMD SiO₂ (fringe M1‖M2)', densidad:'~0.5 fF/µm²', vcc:'< 50 ppm/V²', wlMin:'Fijo: 4.4 × 4.6 µm/celda', wlMax:'Apilar multiplicando M', parasito:'Routing encima sin shield no extraído'},
     matchNote:'El dibujo es el layout REAL: los 140 polígonos del GDS de la PDK (met1, via, met2), replicados tantas veces como celdas haga falta. Matching: fill de metal idéntico alrededor de cada par y misma orientación de dedos.' },
   var:  { name:'sky130_fd_pr__cap_var_lvt', label:'Varactor — cap_var_lvt', cArea:6.5, cPerim:0.3, wMin:1.0, lMin:0.18, wMax:10, lMax:10, fixedSize:false, color:'#ffb060',
     info:{diel:'Gate oxide LVT PMOS (N-well)', densidad:'~6–7 fF/µm² (acumulación)', vcc:'Tuneable ±30% con VGS', wlMin:'W ≥ 0.42 µm, L ≥ 0.15 µm', wlMax:'~10 × 10 µm', parasito:'Fuga de gate — no usar como hold cap'},
-    matchNote:'Varactor: S, D y body (N-well) a vctrl; gate al nodo RF. cap_var_hvt: umbral más alto, más rango de tuning pero menor C total.' },
+    matchNote:'Varactor: S, D y body (N-well) van todos al mismo nodo vctrl — contactos a ambos lados del canal + un unico tap de nwell (con uno basta), unidos por una pletina de metal local. El gate tiene su propio contacto y va al nodo RF, nodo aparte. cap_var_hvt: umbral más alto, más rango de tuning pero menor C total.\n\n¿Por qué no usar cualquier MOSFET? Todo MOSFET tiene capacidad gate-canal dependiente de V (curva C-V: acumulación → deplexión → inversión), así que en el fondo es el mismo fenómeno. La diferencia es de diseño: aquí S y D están cortocircuitados entre sí y con el body — no hay corriente de canal, es una topología de 2 terminales (gate/body), no un transistor "reutilizado". El threshold es LVT a propósito, para que el rango útil de C(V) caiga en un rango de control cómodo (0–1.8 V). Y el layout (fingers, pitch) está optimizado para minimizar la resistencia serie y maximizar el factor de calidad Q a la frecuencia de interés — cosas que a una celda digital estándar no le importan.' },
 };
 const GF180_DEVICES = {
   mim_2p0: { name:'gf180mcu_fd_pr__cap_mim_2p0fF', label:'MIM 2.0 fF/µm²', cArea:2.0, cPerim:0, wMin:5, lMin:5, wMax:100, lMax:100, fixedSize:false, color:'#26a040',
     info:{diel:'SiN entre metales superiores', densidad:'2.0 fF/µm²', vcc:'< 30 ppm/V²', wlMin:'5 × 5 µm', wlMax:'100 × 100 µm', parasito:'C_bottom al substrato · máscara extra'},
-    matchNote:'Es el unico MIM que trae la PDK abierta de GF180 (cap_mim_2p0fF). Minimo 5x5 µm por DRC, maximo 100x100. Comun-centroide para ratios precisos.' },
+    matchNote:'Es el unico MIM que trae la PDK abierta de GF180 (cap_mim_2p0fF). Minimo 5x5 µm por DRC, maximo 100x100. Comun-centroide para ratios precisos. El bloque de metal separado a un lado no es parte del condensador: es el contacto que saca la placa inferior (M3) fuera del área activa, para no tener que atravesar la placa superior.' },
   mos: { name:'gf180mcu_fd_pr__cap_nmos', label:'MOSCAP — cap_mos', cArea:4.8, cPerim:0, wMin:0.42, lMin:0.28, wMax:100, lMax:100, fixedSize:false, color:'#ff7a1a',
     info:{diel:'Óxido de gate (poly2 sobre canal)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Voltage-dependent (acumulación/inversión)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrato · requiere polarizar el pozo'},
-    matchNote:'Celda parametrica (equivalente a gf180.cap_mos, deepnwell=True): placa superior = poly2 (gate) con su propio contacto en M1. Placa inferior = fuente + drenador + tap del pozo, TODOS al mismo nodo (S=D=bulk) — contactos en ambos lados subidos por via1 a una unica pletina en METAL2. Solo dos terminales: gate y body. Geometria propia con reglas de escala 180 nm — no viene de la PDK GDS, a diferencia del MIM.' },
+    matchNote:'Celda parametrica (equivalente a gf180.cap_mos, deepnwell=True): placa superior = poly2 (gate) con su propio contacto en M1. Placa inferior = fuente + drenador (contactos a ambos lados del canal) + un unico tap de pozo (bulk, basta con uno para polarizarlo) — todo al mismo nodo (S=D=bulk), subido por via1 a una unica pletina en METAL2. Solo dos terminales: gate y body. Geometria propia con reglas de escala 180 nm — no viene de la PDK GDS, a diferencia del MIM.' },
 };
 const IHP_DEVICES = {
   mim: { name:'cmim', label:'MIM — cmim', cArea:1.5, cPerim:0, wMin:1.14, lMin:1.14, wMax:1000, lMax:1000, fixedSize:false, color:'#268c6b',
@@ -5032,7 +5048,7 @@ function setNote(note, units, cMin, dev) {
     warnTip.textContent = `Objetivo por debajo del mínimo físico. La unidad mínima (${dev.wMin}×${dev.lMin} µm) da ${fmtC(cMin)}. C obtenida = mínimo posible.`;
   }
   let text = '';
-  if (units > 1 && cMin == null) text += `⚠ La capacidad objetivo supera el tamaño máximo de una sola unidad — se necesitan ${units} condensadores en paralelo.\n\n`;
+  if (units > 1 && cMin == null) text += `⚠ La capacidad objetivo supera el tamaño máximo de una sola unidad — se necesitan ${units} condensadores en paralelo. El visor 3D solo dibuja una muestra representativa (hasta 4 celdas, por rendimiento) y NO el metal que las uniría en un mismo nodo: el resto de unidades y ese bus de rutado son de nivel superior (los coloca el layout del array, no la celda de la PDK).\n\n`;
   text += note;
   el.style.whiteSpace = 'pre-line'; el.textContent = text; el.classList.add('show');
 }
@@ -5412,13 +5428,34 @@ function dsgnBuild3D(units, cols, rows) {
 
   const hidden = units - showC * showR;
   const note = document.getElementById('dsgn-3d-note');
-  note.innerHTML = `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center">
+  const vppOrder = VPP_CELL.layers.map(L => L.n);
+  const vppColorMap = Object.fromEntries(VPP_CELL.layers.map(L => [L.n, L.c]));
+  note.innerHTML = `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
       ${showC * showR} de ${units} celdas · ${(showC * showR * 140)} polígonos reales del GDS
       ${hidden > 0 ? `· +${hidden} no mostradas` : ''} · arrastra para rotar
+      ${dsgnArrayNote(showC * showR, units)}
+      <div style="margin-top:4px">${dsgnLegendHTML(vppOrder, vppColorMap)}</div>
     </div>`;
 }
 
 /* Construye el MIM 3D generado con las reglas del PDK para W x L */
+/* Aviso reutilizable cuando el visor solo muestra una parte del array */
+function dsgnArrayNote(shown, total) {
+  if (shown >= total) return '';
+  return `<div style="margin-top:5px;padding:4px 8px;background:rgba(217,48,37,0.08);border-radius:3px;display:inline-block">
+    <span style="color:#d93025;font-weight:700">!</span>
+    <span style="opacity:.85">mostrando ${shown} de ${total} por rendimiento — sin el metal de rutado que las uniría (bus de nivel superior, no de la celda)</span>
+  </div>`;
+}
+
+/* Leyenda de colores reutilizable para cualquier vista 3D */
+function dsgnLegendHTML(order, colorMap, labelMap) {
+  return order.map(layer =>
+    `<span style="display:inline-flex;align-items:center;gap:3px;margin:0 6px 2px 0">
+      <span style="width:8px;height:8px;border-radius:2px;background:${colorMap[layer]};display:inline-block"></span>${(labelMap && labelMap[layer]) || layer}
+    </span>`).join('');
+}
+
 function dsgnBuildMIM3D(W, L, units, RULES = MIM_RULES) {
   const d = dsgnInit3D();
   if (!d) return;
@@ -5458,10 +5495,13 @@ function dsgnBuildMIM3D(W, L, units, RULES = MIM_RULES) {
   d.schedule();
 
   const C = mimCval(W, L);
+  const MIM_LABEL = { m3:'Metal3 (placa inf.)', mimcap:'dieléctrico MIM', mimcc:'contacto MIM', via3:'via3', m4:'Metal4 (placa sup.)' };
   document.getElementById('dsgn-3d-note').innerHTML =
-    `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.5">
+    `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
       ${showN} de ${units} ${units > 1 ? 'unidades' : 'unidad'} · W=${W.toFixed(2)} L=${L.toFixed(2)} µm · C=${C.toFixed(2)} fF/unidad<br>
-      <span style="color:var(--blue)">layout generado con las reglas de sky130.tcl</span> — m3 · mimcap · mimcc · via3 · m4
+      <span style="color:var(--blue)">layout generado con las reglas de sky130.tcl</span>
+      ${dsgnArrayNote(showN, units)}
+      <div style="margin-top:4px">${dsgnLegendHTML(ORDER, MIM_COL, MIM_LABEL)}</div>
     </div>`;
 }
 
@@ -5471,35 +5511,55 @@ function dsgnBuildMIM3D(W, L, units, RULES = MIM_RULES) {
    No incluye guard ring ni multi-finger.
    ═══════════════════════════════════════════════════════════════════ */
 const VAR_RULES = {
-  dev_sub_dist: 0.14, dev_sub_space: 1.27,
   gate_to_diffcont: 0.34, diff_extension: 0.485,
-  diff_surround: 0.06, gate_extension: 0.13,
-  contact_size: 0.17, metal_surround: 0.08, sub_surround: 0.18,
+  diff_surround: 0.06, gate_extension: 0.13, gate_pad_len: 0.35,
+  contact_size: 0.17, metal_surround: 0.08,
+  tap_gap: 0.20, tap_width: 0.30, tap_margin: 0.20,
 };
 const VAR_COL = { nwell:'#9d4dff', tap_ring:'#00d5f0', diff:'#22e05a',
                   poly:'#ff7a1a', licon:'#e8e8ee', li:'#00b0ff' };
-const VAR_Z = { nwell:[0.0,0.60], tap_ring:[0.42,0.18], diff:[0.42,0.18],
-                poly:[0.66,0.18], licon:[0.60,0.34], li:[0.94,0.10] };
+const VAR_Z = { nwell:[0.0,0.60], tap_ring:[0.43,0.18], diff:[0.43,0.18],
+                poly:[0.44,0.18], licon:[0.60,0.34], li:[0.94,0.10] };
 
 function varGenerate(w, l) {
   const R = VAR_RULES, P = [];
   const add = (x0,y0,x1,y1,layer) => P.push({layer,x0,y0,x1,y1});
   const hw = w/2, hl = l/2;
+  const cs = R.contact_size/2, ms = R.metal_surround, vw = cs + ms;
+
+  // Difusion: S=D, una sola pieza continua bajo el gate (mismo nodo por construccion)
   const dx = hl + R.diff_extension;
-  const wx = dx + R.sub_surround + R.dev_sub_dist;
-  const wy = hw + R.sub_surround + R.dev_sub_dist;
-  add(-wx, -wy, wx, wy, 'nwell');
-  const tx = wx + R.dev_sub_space, ty = wy + R.dev_sub_space;
-  add(-tx, -ty, tx, ty, 'tap_ring');
   add(-dx, -hw, dx, hw, 'diff');
+
+  // Poly = gate, con pad propio arriba para su contacto (terminal RF, nodo aparte)
   add(-hl, -hw - R.gate_extension, hl, hw + R.gate_extension, 'poly');
-  const cc = hl + R.gate_to_diffcont, cs = R.contact_size/2;
-  const cw = Math.max(R.contact_size/2, hw - R.diff_surround);
+  const padHalf = vw + 0.05;
+  const padY0 = hw + R.gate_extension, padY1 = padY0 + R.gate_pad_len;
+  add(-padHalf, padY0, padHalf, padY1, 'poly');
+  const gcy = (padY0 + padY1) / 2;
+  add(-cs, gcy - cs, cs, gcy + cs, 'licon');
+  add(-vw, gcy - vw, vw, gcy + vw, 'li');
+
+  // Cuerpo = S = D = bulk (nwell), todo el mismo nodo -> vctrl.
+  // Contactos de difusion a ambos lados del canal + UN tap de nwell (con uno
+  // basta para polarizarlo) -- todo subido a la misma pletina "li", conectado.
+  const cc = hl + R.gate_to_diffcont;
   [-1, 1].forEach(sg => {
-    add(sg*cc - cs, -cw, sg*cc + cs, cw, 'licon');
-    add(sg*cc - cs - R.metal_surround, -cw - R.metal_surround,
-        sg*cc + cs + R.metal_surround, cw + R.metal_surround, 'li');
+    add(sg*cc - cs, -cs, sg*cc + cs, cs, 'licon');
+    add(sg*cc - vw, -vw, sg*cc + vw, vw, 'li');
   });
+  const t0 = dx + R.tap_gap, t1 = t0 + R.tap_width, ty = Math.max(cs, hw);
+  add(t0, -ty, t1, ty, 'tap_ring');
+  const tcx = (t0 + t1) / 2;
+  add(tcx - cs, -cs, tcx + cs, cs, 'licon');
+  add(tcx - vw, -vw, tcx + vw, vw, 'li');
+  add(-cc - vw, -vw, t1 + vw, vw, 'li');   // pletina que une los dos S/D + el tap
+
+  // Pozo: el nwell tiene que envolver el canal, el tap Y el pad de gate
+  // (si no, el gate se sale por arriba del nwell)
+  const wx = t1 + R.tap_margin, wy = Math.max(ty, padY1) + R.tap_margin;
+  add(-wx, -wy, wx, wy, 'nwell');
+
   return P;
 }
 
@@ -5512,7 +5572,7 @@ function dsgnBuildVAR3D(W, L, units) {
   const ext = Math.max(...polys.map(p => Math.max(p.x1-p.x0, p.y1-p.y0)));
   const SC = Math.max(0.5, Math.min(4.5, 20 / ext));
   const GAP = 0.8;
-  const ring = polys.find(p => p.layer === 'tap_ring');
+  const ring = polys.find(p => p.layer === 'nwell');
   const cw = ring.x1 - ring.x0;
   const totW = showN * cw + (showN - 1) * GAP;
   const ORDER = ['nwell','tap_ring','diff','licon','poly','li'];
@@ -5536,10 +5596,13 @@ function dsgnBuildVAR3D(W, L, units) {
   d.controls.target.set(0, 0.5*SC, 0);
   d.camera.position.set(span*0.7, span*0.6 + 2, span*0.8);
   d.controls.update(); d.schedule();
+  const VAR_LABEL = { nwell:'nwell', tap_ring:'tap (bulk)', diff:'diff (S/D)', poly:'poly2 (gate)', licon:'contacto', li:'metal local' };
   document.getElementById('dsgn-3d-note').innerHTML =
-    `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.5">
+    `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
       ${showN} de ${units} ${units>1?'unidades':'unidad'} · W=${W.toFixed(2)} L=${L.toFixed(2)} um<br>
-      <span style="color:var(--blue)">geometria generada con las reglas de sky130.tcl</span> — nwell · tap · diff · poly · licon · li
+      <span style="color:var(--blue)">geometria generada con las reglas de sky130.tcl</span>
+      ${dsgnArrayNote(showN, units)}
+      <div style="margin-top:4px">${dsgnLegendHTML(ORDER, VAR_COL, VAR_LABEL)}</div>
     </div>`;
 }
 
@@ -5568,8 +5631,8 @@ const GF180_MOS_COL = {
   via1:    '#b8b8c8', metal2:'#2fb8ff',
 };
 const GF180_MOS_Z = {
-  dnwell:  [-1.00, 1.40], nwell: [0.00, 0.60], diff: [0.42, 0.19], tap: [0.42, 0.19],
-  poly:    [0.42, 0.19],  contact:[0.60, 0.34], metal1:[0.96, 0.12],
+  dnwell:  [-1.00, 1.60], nwell: [0.00, 0.60], diff: [0.43, 0.19], tap: [0.43, 0.19],
+  poly:    [0.44, 0.19],  contact:[0.60, 0.34], metal1:[0.96, 0.12],
   via1:    [1.08, 0.10],  metal2:[1.20, 0.16],
 };
 
@@ -5594,26 +5657,26 @@ function gf180CapMosGenerate(w, l) {
   add(-vw, gcy - vw, vw, gcy + vw, 'metal1');
 
   // Cuerpo del MOSCAP = placa inferior: S = D = bulk, todo el mismo nodo.
-  // Contactos de difusion (canal) + contactos de tap del pozo, todos subidos
-  // por via1 a UNA sola pletina horizontal en METAL2.
+  // Contactos de difusion a ambos lados del canal (S=D) + UN solo tap de
+  // pozo (bulk) -- con uno basta para polarizar el nwell, no hace falta
+  // duplicarlo a los dos lados. Todo sube por via1 a la misma pletina metal2.
   const cc = hl + R.gate_to_diffcont;
   const t0 = dx + R.tap_gap, t1 = t0 + R.tap_width, ty = Math.max(cs, hw);
   [-1, 1].forEach(sg => {
     add(sg*cc - cs, -cs, sg*cc + cs, cs, 'contact');
     add(sg*cc - vw, -vw, sg*cc + vw, vw, 'metal1');
     add(sg*cc - vw, -vw, sg*cc + vw, vw, 'via1');
-
-    const tcx = sg * (t0 + t1) / 2;
-    add(sg*t0, -ty, sg*t1, ty, 'tap');
-    add(tcx - cs, -cs, tcx + cs, cs, 'contact');
-    add(tcx - vw, -vw, tcx + vw, vw, 'metal1');
-    add(tcx - vw, -vw, tcx + vw, vw, 'via1');
   });
+  const tcx = t0 + t1;
+  add(t0, -ty, t1, ty, 'tap');
+  add(tcx/2 - cs, -cs, tcx/2 + cs, cs, 'contact');
+  add(tcx/2 - vw, -vw, tcx/2 + vw, vw, 'metal1');
+  add(tcx/2 - vw, -vw, tcx/2 + vw, vw, 'via1');
   add(-(t1 + vw), -vw, t1 + vw, vw, 'metal2');   // una unica pletina: S = D = bulk
 
-  // Pozos de aislamiento: nwell envuelve canal+tap, dnwell envuelve el nwell
+  // Pozos de aislamiento: nwell envuelve canal+tap+pad de gate, dnwell envuelve el nwell
   // (cap_mos(deepnwell=True) -> pozo flotante del substrato)
-  const wx = t1 + R.tap_margin, wy = ty + R.tap_margin;
+  const wx = t1 + R.tap_margin, wy = Math.max(ty, padY1) + R.tap_margin;
   add(-wx, -wy, wx, wy, 'nwell');
   const dwx = wx + R.well_to_dnwell, dwy = wy + R.well_to_dnwell;
   add(-dwx, -dwy, dwx, dwy, 'dnwell');
@@ -5667,6 +5730,7 @@ function dsgnBuildGF180MOS3D(W, L, units) {
     `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
       ${showN} de ${units} ${units>1?'unidades':'unidad'} · W=${W.toFixed(2)} L=${L.toFixed(2)} um<br>
       <span style="color:var(--blue)">generado con reglas propias (equivalente a gf180.cap_mos)</span><br>
+      ${dsgnArrayNote(showN, units)}
       <div style="margin-top:4px">${legend}</div>
       <span style="opacity:.7">metal2 = una unica pletina horizontal: une los contactos de S/D y de bulk en el mismo nodo (body). metal1 = contactos locales, via1 = salto a metal2</span><br>
       <span style="opacity:.6">geometria estilizada a escala 180 nm — no verificada contra bbox de la PDK</span>
@@ -5856,10 +5920,13 @@ function dsgnBuildIHPMIM3D(W, L, units) {
   d.controls.update(); d.schedule();
 
   const nv = polys.filter(p => p.layer === 'Vmim').length;
+  const IHP_MIM_LABEL = { Metal5:'Metal5 (placa inf.)', MIM:'dieléctrico MIM', Vmim:'via MIM', TopMetal1:'TopMetal1 (placa sup.)' };
   document.getElementById('dsgn-3d-note').innerHTML =
-    `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.5">
+    `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
       ${showN} de ${units} ${units>1?'unidades':'unidad'} · W=${W.toFixed(2)} L=${L.toFixed(2)} um · ${polys.length} poligonos (${nv} vias Vmim)<br>
-      <span style="color:var(--blue)">mismas reglas que gdsfactory/ihp</span> — Metal5 · MIM · Vmim · TopMetal1<br>
+      <span style="color:var(--blue)">mismas reglas que gdsfactory/ihp</span>
+      ${dsgnArrayNote(showN, units)}
+      <div style="margin-top:4px">${dsgnLegendHTML(ORDER, IHP_LAY, IHP_MIM_LABEL)}</div>
       <span style="opacity:.7">verificado contra la PDK: bbox y nº de vias identicos de 2x2 a 100x100 um</span>
     </div>`;
 }
@@ -5891,10 +5958,13 @@ function dsgnBuildIHPMOM3D(nfingers, length) {
   d.camera.position.set(span*0.7, span*0.5 + 4, span*0.8);
   d.controls.update(); d.schedule();
 
+  const momOrder = [...new Set(polys.map(p => p.layer))].sort((a,b) => IHP_MOM_Z[a][0] - IHP_MOM_Z[b][0]);
+  const IHP_MOM_LABEL = { Metal1:'Metal1', Via1:'Via1', Metal2:'Metal2', Via2:'Via2', Metal3:'Metal3', Metal4:'Metal4', Metal5:'Metal5' };
   document.getElementById('dsgn-3d-note').innerHTML =
-    `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.5">
+    `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
       nfingers=${nfingers} · L=${length.toFixed(2)} um · ${polys.length} poligonos<br>
-      <span style="color:var(--blue)">mismas reglas que gdsfactory/ihp</span> — Metal1 · Via1 · Metal2 · Via2 · Metal3<br>
+      <span style="color:var(--blue)">mismas reglas que gdsfactory/ihp</span>
+      <div style="margin-top:4px">${dsgnLegendHTML(momOrder, IHP_MOM_LAY, IHP_MOM_LABEL)}</div>
       <span style="opacity:.7">verificado contra la PDK: bbox, nº de dedos y de vias identicos de 1 a 200 dedos</span>
     </div>`;
 }
@@ -6042,10 +6112,21 @@ function svgCellTop(CELL, units) {
   return s;
 }
 
+let _dsgn3DRendered = false;
 function renderSVG(dev, W, L, units, cObt, cols, rows, shape) {
-  // Vista unica: el layout real en 3D
+  // Vista unica: el layout real en 3D — pero solo se REGENERA al pulsar "Actualizar 3D"
   _lastSVGArgs = [dev, W, L, units, cObt, cols, rows, shape];
+  if (!_dsgn3DRendered) {
+    dsgnSetView3D();
+    _dsgn3DRendered = true;
+  } else {
+    document.getElementById('dsgn-update-3d-btn')?.classList.add('pending');
+  }
+}
+
+function dsgnUpdate3DClick() {
   dsgnSetView3D();
+  document.getElementById('dsgn-update-3d-btn')?.classList.remove('pending');
 }
 
 /* Event wiring */
@@ -6058,7 +6139,7 @@ document.getElementById('dsgn-pdk-grid').addEventListener('click', e => {
   dsgnSt.type = ALL_PDKS[dsgnSt.pdk].defaultType;
   document.getElementById('dsgn-eyebrow').textContent = ALL_PDKS[dsgnSt.pdk].label;
   dsgnRebuildTypeButtons(dsgnSt.pdk);
-  dsgnUpdateInfo(); dsgnCalc();
+  dsgnUpdateInfo(); dsgnCalc(); dsgnUpdate3DClick();
 });
 document.getElementById('dsgn-controls').addEventListener('click', e => {
   const btn = e.target.closest('[data-type]');
@@ -6066,7 +6147,7 @@ document.getElementById('dsgn-controls').addEventListener('click', e => {
   document.querySelectorAll('#dsgn-type-grid .dsgn-type-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   dsgnSt.type = btn.dataset.type;
-  dsgnUpdateInfo(); dsgnCalc();
+  dsgnUpdateInfo(); dsgnCalc(); dsgnUpdate3DClick();
 });
 document.querySelectorAll('.dsgn-unit-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -6085,6 +6166,7 @@ document.getElementById('dsgn-slider').addEventListener('input', e => {
   inp.value = dsgnSt.unit === 'pF' ? (fF/1000).toFixed(3) : fF.toFixed(1);
   dsgnCalc();
 });
+document.getElementById('dsgn-update-3d-btn').addEventListener('click', dsgnUpdate3DClick);
 document.getElementById('dsgn-copy-btn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('dsgn-spice').innerText)
     .then(() => { const b=document.getElementById('dsgn-copy-btn'); b.textContent='Copiado'; setTimeout(()=>b.textContent='Copiar',1800); });
@@ -6197,6 +6279,8 @@ Object.assign(window.CAP_I18N.es, {
     p_tht_sold: 'Patillas a través — wave soldering', p_tht_size: 'desde 4 mm hasta varios cm',
     p_tht_ens: 'Manual o semi-automático', p_tht_variant_radial: 'Radial — patillas paralelas, mismo lado',
     p_tht_uses_radial: 'Componentes grandes (altas tensiones, alta corriente), donde la fuerza mecánica importa, o donde es necesaria reparación manual. El <strong>radial</strong> es la geometría THT más común hoy: ocupa poco espacio horizontal y es fácil de insertar a máquina.',
+    d_view_label: 'Layout real · 3D interactivo — arrastra para rotar, scroll para zoom',
+    d_update_btn: '↻ Actualizar 3D',
   });
 Object.assign(window.CAP_I18N.ca, {
     eyebrow: 'Microelectrònica · Disseny de CI',
@@ -6289,6 +6373,8 @@ Object.assign(window.CAP_I18N.ca, {
     p_tht_sold: 'Potes a través — wave soldering', p_tht_size: 'des de 4 mm fins a diversos cm',
     p_tht_ens: 'Manual o semi-automàtic', p_tht_variant_radial: 'Radial — potes paral·leles, mateix costat',
     p_tht_uses_radial: 'Components grans (altes tensions, alt corrent), on la força mecànica importa, o on cal reparació manual. El <strong>radial</strong> és la geometria THT més comuna avui: ocupa poc espai horitzontal i és fàcil d\'inserir a màquina.',
+    d_view_label: 'Layout real · 3D interactiu — arrossega per rotar, scroll per fer zoom',
+    d_update_btn: '↻ Actualitzar 3D',
   });
 Object.assign(window.CAP_I18N.en, {
     eyebrow: 'Microelectronics · IC Design',
@@ -6381,6 +6467,8 @@ Object.assign(window.CAP_I18N.en, {
     p_tht_sold: 'Leads through — wave soldering', p_tht_size: 'from 4 mm up to several cm',
     p_tht_ens: 'Manual or semi-automatic', p_tht_variant_radial: 'Radial — parallel leads, same side',
     p_tht_uses_radial: 'Large components (high voltage, high current), where mechanical strength matters, or where manual repair is needed. <strong>Radial</strong> is the most common THT geometry today: it takes up little horizontal space and is easy to machine-insert.',
+    d_view_label: 'Real layout · Interactive 3D — drag to rotate, scroll to zoom',
+    d_update_btn: '↻ Update 3D',
   });
 
 function applyCapI18n() {
