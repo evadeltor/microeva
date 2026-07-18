@@ -503,6 +503,7 @@ button.active { background: var(--blue); color: #fff; }
   background: linear-gradient(180deg, #f5f0e8 0%, #ede8df 100%);
   border-bottom: 1px solid var(--rule);
   cursor: grab;
+  touch-action: none;
 }
 .three-container:active { cursor: grabbing; }
 .three-container canvas { display: block; width: 100%; height: 100%; }
@@ -1186,8 +1187,8 @@ function capT(key) {
   <div id="tab-disenyo" class="tab-panel">
     <div class="dsgn-header">
       <div class="dsgn-eyebrow" id="dsgn-eyebrow">SkyWater SKY130 · Open-source PDK · 130 nm</div>
-      <h2 class="dsgn-title">Crea tu condensador</h2>
-      <p class="dsgn-subtitle">Selecciona el PDK, el tipo de estructura y la capacidad objetivo. Obtendrás dimensiones de layout, número de unidades y el snippet SPICE listo para usar.</p>
+      <h2 class="dsgn-title" data-i18n="d_title">Crea tu condensador</h2>
+      <p class="dsgn-subtitle" data-i18n="d_subtitle">Selecciona el PDK, el tipo de estructura y la capacidad objetivo. Obtendrás dimensiones de layout, número de unidades y el snippet SPICE listo para usar.</p>
     </div>
     <div class="dsgn-grid">
       <div class="dsgn-controls" id="dsgn-controls">
@@ -1196,11 +1197,11 @@ function capT(key) {
         <div class="dsgn-step">
           <div class="dsgn-step-num">00</div>
           <div class="dsgn-step-body">
-            <div class="dsgn-step-title">PDK open-source</div>
+            <div class="dsgn-step-title" data-i18n="d_step_pdk">PDK open-source</div>
             <div class="dsgn-type-grid" id="dsgn-pdk-grid">
               <button class="dsgn-type-btn active" data-pdk="sky130"><span class="dsgn-type-tag">SKY130</span><span class="dsgn-type-name">SkyWater 130 nm</span><span class="dsgn-type-spec">MIM · VPP · Varactor</span></button>
               <button class="dsgn-type-btn" data-pdk="gf180"><span class="dsgn-type-tag">GF180MCU</span><span class="dsgn-type-name">GlobalFoundries 180 nm</span><span class="dsgn-type-spec">MIM 2.0 fF/µm²</span></button>
-              <button class="dsgn-type-btn" data-pdk="ihp"><span class="dsgn-type-tag">SG13G2</span><span class="dsgn-type-name">IHP 130 nm BiCMOS</span><span class="dsgn-type-spec">MIM · MOM (RF/analógico)</span></button>
+              <button class="dsgn-type-btn" data-pdk="ihp"><span class="dsgn-type-tag">SG13G2</span><span class="dsgn-type-name">IHP 130 nm BiCMOS</span><span class="dsgn-type-spec" data-i18n="d_ihp_spec">MIM · MOM (RF/analógico)</span></button>
             </div>
           </div>
         </div>
@@ -1209,7 +1210,7 @@ function capT(key) {
         <div class="dsgn-step">
           <div class="dsgn-step-num">01</div>
           <div class="dsgn-step-body">
-            <div class="dsgn-step-title">Tipo de estructura</div>
+            <div class="dsgn-step-title" data-i18n="d_step_tipo">Tipo de estructura</div>
             <div class="dsgn-type-grid" id="dsgn-type-grid"></div>
           </div>
         </div>
@@ -1218,7 +1219,7 @@ function capT(key) {
         <div class="dsgn-step">
           <div class="dsgn-step-num">02</div>
           <div class="dsgn-step-body">
-            <div class="dsgn-step-title">Capacidad objetivo</div>
+            <div class="dsgn-step-title" data-i18n="d_step_cap">Capacidad objetivo</div>
             <div class="dsgn-input-row">
               <input class="dsgn-input" id="dsgn-ctarget" type="number" min="0.01" max="100000" value="100" step="0.1"/>
               <div class="dsgn-unit-toggle">
@@ -1235,7 +1236,7 @@ function capT(key) {
         <div class="dsgn-step">
           <div class="dsgn-step-num">03</div>
           <div class="dsgn-step-body">
-            <div class="dsgn-step-title">Restricción de lado máximo <span class="dsgn-optional">(opcional)</span></div>
+            <div class="dsgn-step-title" data-i18n="d_step_maxside">Restricción de lado máximo <span class="dsgn-optional" data-i18n="d_opcional">(opcional)</span></div>
             <div class="dsgn-input-row">
               <input class="dsgn-input" id="dsgn-maxside" type="number" min="0" value="" placeholder="sin límite"/>
               <span class="dsgn-unit-label">µm</span>
@@ -1249,16 +1250,16 @@ function capT(key) {
         <div class="dsgn-metrics" id="dsgn-metrics">
           <div class="dsgn-metric" id="dm-c">
             <span class="dsgn-metric-v">—</span>
-            <span class="dsgn-metric-k">C obtenida
+            <span class="dsgn-metric-k"><span data-i18n="d_m_c">C obtenida</span>
               <span class="dm-warn-wrap" id="dm-c-warn" style="display:none">
                 <button class="dm-warn-btn" id="dm-c-warn-btn">ℹ</button>
                 <span class="dm-warn-tooltip" id="dm-c-warn-tip"></span>
               </span>
             </span>
           </div>
-          <div class="dsgn-metric" id="dm-area"><span class="dsgn-metric-v">—</span><span class="dsgn-metric-k">Área total</span></div>
-          <div class="dsgn-metric" id="dm-side"><span class="dsgn-metric-v">—</span><span class="dsgn-metric-k">Lado W×L</span></div>
-          <div class="dsgn-metric" id="dm-units"><span class="dsgn-metric-v">—</span><span class="dsgn-metric-k">Unidades</span></div>
+          <div class="dsgn-metric" id="dm-area"><span class="dsgn-metric-v">—</span><span class="dsgn-metric-k" data-i18n="d_m_area">Área total</span></div>
+          <div class="dsgn-metric" id="dm-side"><span class="dsgn-metric-v">—</span><span class="dsgn-metric-k" data-i18n="d_m_side">Lado W×L</span></div>
+          <div class="dsgn-metric" id="dm-units"><span class="dsgn-metric-v">—</span><span class="dsgn-metric-k" data-i18n="d_m_units">Unidades</span></div>
         </div>
         <!-- Vista -->
         <div class="dsgn-preview-wrap">
@@ -1269,7 +1270,7 @@ function capT(key) {
           <svg id="dsgn-svg" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:200px;display:none;background:#1a1a2a;border-radius:4px;">
             <text x="170" y="105" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="#666">configura los parámetros →</text>
           </svg>
-          <div id="dsgn-3d" style="position:relative;height:300px;background:#12121c;border-radius:4px;overflow:hidden;cursor:grab"></div>
+          <div id="dsgn-3d" style="position:relative;height:300px;background:#12121c;border-radius:4px;overflow:hidden;cursor:grab;touch-action:none"></div>
           <div id="dsgn-3d-note"></div>
           <div class="dsgn-preview-caption" id="dsgn-preview-caption"></div>
         </div>
@@ -1282,9 +1283,9 @@ function capT(key) {
         <div class="dsgn-spice-wrap">
           <div class="dsgn-spice-header">
             <span class="dsgn-spice-label">SPICE · ngspice / xschem</span>
-            <button class="dsgn-copy-btn" id="dsgn-copy-btn">Copiar</button>
+            <button class="dsgn-copy-btn" id="dsgn-copy-btn" data-i18n="d_copiar">Copiar</button>
           </div>
-          <pre class="dsgn-spice" id="dsgn-spice">— configura los parámetros —</pre>
+          <pre class="dsgn-spice" id="dsgn-spice" data-i18n="d_spice_placeholder">— configura los parámetros —</pre>
         </div>
         <!-- Nota matching -->
         <div class="dsgn-match-note" id="dsgn-match-note"></div>
@@ -1506,6 +1507,7 @@ p.ic-desc { font-size: 14px; color: var(--ink2); line-height: 1.65; margin-botto
   width: 100%; height: 100%; cursor: grab; display: block;
   /* 'meet' garantiza que TODO el viewBox quepa dentro del marco, sin recortes */
   object-fit: contain;
+  touch-action: none;
 }
 .section-overlay svg:active { cursor: grabbing; }
 .section-close-btn {
@@ -4770,7 +4772,7 @@ function initContainer(container) {
 
     const zoomHint = document.createElement('div');
     zoomHint.className = 'section-zoom-hint';
-    zoomHint.textContent = '⊕ scroll · arrastra · doble clic: reset';
+    zoomHint.textContent = '⊕ scroll / pellizco · arrastra · doble clic: reset';
     overlay.appendChild(zoomHint);
 
     // Toggle ensanchar/reducir dentro del overlay
@@ -4867,12 +4869,47 @@ function setupSVGZoom(svg) {
     setVB();
   }, { passive: false });
 
+  // Soporte multi-touch: 1 dedo = arrastrar, 2 dedos = pellizco para zoom
+  const pointers = new Map();
+  let pinchDist = null, pinchMid = null;
+
+  function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+  function mid(a, b) { return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
+
   let drag = false, lx, ly;
   svg.addEventListener('pointerdown', e => {
-    drag = true; lx = e.clientX; ly = e.clientY;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     svg.setPointerCapture(e.pointerId);
+    if (pointers.size === 1) {
+      drag = true; lx = e.clientX; ly = e.clientY;
+    } else if (pointers.size === 2) {
+      drag = false;
+      const [a, b] = [...pointers.values()];
+      pinchDist = dist(a, b);
+      pinchMid = mid(a, b);
+    }
   });
   svg.addEventListener('pointermove', e => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.size >= 2) {
+      const [a, b] = [...pointers.values()];
+      const newDist = dist(a, b);
+      const newMid = mid(a, b);
+      if (pinchDist) {
+        const factor = pinchDist / newDist;
+        const [mx, my] = toVB(newMid.x, newMid.y);
+        vb[2] *= factor; vb[3] *= factor;
+        const r = svg.getBoundingClientRect();
+        vb[0] = mx - (newMid.x - r.left) / r.width  * vb[2];
+        vb[1] = my - (newMid.y - r.top)  / r.height * vb[3];
+        setVB();
+      }
+      pinchDist = newDist; pinchMid = newMid;
+      return;
+    }
+
     if (!drag) return;
     const r = svg.getBoundingClientRect();
     vb[0] -= (e.clientX - lx) / r.width  * vb[2];
@@ -4880,7 +4917,18 @@ function setupSVGZoom(svg) {
     lx = e.clientX; ly = e.clientY;
     setVB();
   });
-  svg.addEventListener('pointerup', () => { drag = false; });
+  function endPointer(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) { pinchDist = null; pinchMid = null; }
+    if (pointers.size === 1) {
+      const [p] = [...pointers.values()];
+      drag = true; lx = p.x; ly = p.y;
+    } else if (pointers.size === 0) {
+      drag = false;
+    }
+  }
+  svg.addEventListener('pointerup', endPointer);
+  svg.addEventListener('pointercancel', endPointer);
   svg.addEventListener('dblclick', () => { vb = [...orig]; setVB(); });
 }
 
@@ -4949,29 +4997,57 @@ document.querySelectorAll('.tht-toggle-btn').forEach(btn => {
 const SKY130_DEVICES = {
   mim:  { name:'sky130_fd_pr__cap_mim_m3_1', label:'MIM — cap_mim_m3_1', cArea:2.0, cPerim:0.19, wMin:2, lMin:2, wMax:30, lMax:30, fixedSize:false, color:'#26a040',
     info:{diel:'SiN (M3 a cap-top)', densidad:'~2 fF/µm²', vcc:'< 10 ppm/V²', wlMin:'2 × 2 µm', wlMax:'~30 × 30 µm', parasito:'C_bottom ≈ 1–2% al substrato'},
-    matchNote:'Matching MIM: σ(ΔC/C) = A_C/√(W·L). Geometría cuadrada, común-centroide. Placa inferior al nodo de baja impedancia. Dummies de metal para uniformar entorno litográfico. El bloque de metal separado a un lado no es parte del condensador: es el contacto que saca la placa inferior (M3) fuera del área activa, para no tener que atravesar la placa superior.' },
+    info_ca:{diel:'SiN (de M3 al cap-top)', densidad:'~2 fF/µm²', vcc:'< 10 ppm/V²', wlMin:'2 × 2 µm', wlMax:'~30 × 30 µm', parasito:'C_bottom ≈ 1–2% al substrat'},
+    info_en:{diel:'SiN (M3 to cap-top)', densidad:'~2 fF/µm²', vcc:'< 10 ppm/V²', wlMin:'2 × 2 µm', wlMax:'~30 × 30 µm', parasito:'C_bottom ≈ 1–2% to substrate'},
+    matchNote:'Matching MIM: σ(ΔC/C) = A_C/√(W·L). Geometría cuadrada, común-centroide. Placa inferior al nodo de baja impedancia. Dummies de metal para uniformar entorno litográfico. El bloque de metal separado a un lado no es parte del condensador: es el contacto que saca la placa inferior (M3) fuera del área activa, para no tener que atravesar la placa superior.',
+    matchNote_ca:'Matching MIM: σ(ΔC/C) = A_C/√(W·L). Geometria quadrada, común-centroide. Placa inferior al node de baixa impedància. Dummies de metall per uniformar l\'entorn litogràfic. El bloc de metall separat a un costat no és part del condensador: és el contacte que treu la placa inferior (M3) fora de l\'àrea activa, per no haver de travessar la placa superior.',
+    matchNote_en:'MIM matching: σ(ΔC/C) = A_C/√(W·L). Square geometry, common-centroid. Bottom plate to the low-impedance node. Metal dummies to make the lithographic environment uniform. The separate metal block off to one side is not part of the capacitor: it is the contact that brings the bottom plate (M3) out of the active area, so it doesn\'t have to cross the top plate.' },
   vpp:  { name:'sky130_fd_pr__cap_vpp_04p4x04p6_m1m2_noshield', label:'VPP/MOM — cap_vpp', cUnit:0.084, cellW:4.4, cellH:4.6, fixedSize:true, color:'#7fd0ff',
     info:{diel:'IMD SiO₂ (fringe M1‖M2)', densidad:'~0.5 fF/µm²', vcc:'< 50 ppm/V²', wlMin:'Fijo: 4.4 × 4.6 µm/celda', wlMax:'Apilar multiplicando M', parasito:'Routing encima sin shield no extraído'},
-    matchNote:'El dibujo es el layout REAL: los 140 polígonos del GDS de la PDK (met1, via, met2), replicados tantas veces como celdas haga falta. Matching: fill de metal idéntico alrededor de cada par y misma orientación de dedos.' },
+    info_ca:{diel:'IMD SiO₂ (fringe M1‖M2)', densidad:'~0.5 fF/µm²', vcc:'< 50 ppm/V²', wlMin:'Fix: 4.4 × 4.6 µm/cel·la', wlMax:'Apilar multiplicant M', parasito:'Routing per sobre sense shield no extret'},
+    info_en:{diel:'IMD SiO₂ (fringe M1‖M2)', densidad:'~0.5 fF/µm²', vcc:'< 50 ppm/V²', wlMin:'Fixed: 4.4 × 4.6 µm/cell', wlMax:'Stack by multiplying M', parasito:'Routing on top without shield, not extracted'},
+    matchNote:'El dibujo es el layout REAL: los 140 polígonos del GDS de la PDK (met1, via, met2), replicados tantas veces como celdas haga falta. Matching: fill de metal idéntico alrededor de cada par y misma orientación de dedos.',
+    matchNote_ca:'El dibuix és el layout REAL: els 140 polígons del GDS de la PDK (met1, via, met2), replicats tantes vegades com calguin cel·les. Matching: fill de metall idèntic al voltant de cada parell i mateixa orientació de dits.',
+    matchNote_en:'The drawing is the REAL layout: the 140 polygons from the PDK\'s GDS (met1, via, met2), replicated as many times as cells are needed. Matching: identical metal fill around each pair and the same finger orientation.' },
   var:  { name:'sky130_fd_pr__cap_var_lvt', label:'Varactor — cap_var_lvt', cArea:6.5, cPerim:0.3, wMin:1.0, lMin:0.18, wMax:10, lMax:10, fixedSize:false, color:'#ffb060',
     info:{diel:'Gate oxide LVT PMOS (N-well)', densidad:'~6–7 fF/µm² (acumulación)', vcc:'Tuneable ±30% con VGS', wlMin:'W ≥ 0.42 µm, L ≥ 0.15 µm', wlMax:'~10 × 10 µm', parasito:'Fuga de gate — no usar como hold cap'},
-    matchNote:'Varactor: S, D y body (N-well) van todos al mismo nodo vctrl — contactos a ambos lados del canal + un unico tap de nwell (con uno basta), unidos por una pletina de metal local. El gate tiene su propio contacto y va al nodo RF, nodo aparte. cap_var_hvt: umbral más alto, más rango de tuning pero menor C total.\n\n¿Por qué no usar cualquier MOSFET? Todo MOSFET tiene capacidad gate-canal dependiente de V (curva C-V: acumulación → deplexión → inversión), así que en el fondo es el mismo fenómeno. La diferencia es de diseño: aquí S y D están cortocircuitados entre sí y con el body — no hay corriente de canal, es una topología de 2 terminales (gate/body), no un transistor "reutilizado". El threshold es LVT a propósito, para que el rango útil de C(V) caiga en un rango de control cómodo (0–1.8 V). Y el layout (fingers, pitch) está optimizado para minimizar la resistencia serie y maximizar el factor de calidad Q a la frecuencia de interés — cosas que a una celda digital estándar no le importan.' },
+    info_ca:{diel:'Gate oxide LVT PMOS (N-well)', densidad:'~6–7 fF/µm² (acumulació)', vcc:'Sintonitzable ±30% amb VGS', wlMin:'W ≥ 0.42 µm, L ≥ 0.15 µm', wlMax:'~10 × 10 µm', parasito:'Fuga de gate — no usar com a hold cap'},
+    info_en:{diel:'LVT PMOS gate oxide (N-well)', densidad:'~6–7 fF/µm² (accumulation)', vcc:'Tunable ±30% with VGS', wlMin:'W ≥ 0.42 µm, L ≥ 0.15 µm', wlMax:'~10 × 10 µm', parasito:'Gate leakage — do not use as a hold cap'},
+    matchNote:'Varactor: S, D y body (N-well) van todos al mismo nodo vctrl — contactos a ambos lados del canal + un unico tap de nwell (con uno basta), unidos por una pletina de metal local. El gate tiene su propio contacto y va al nodo RF, nodo aparte. cap_var_hvt: umbral más alto, más rango de tuning pero menor C total.\n\n¿Por qué no usar cualquier MOSFET? Todo MOSFET tiene capacidad gate-canal dependiente de V (curva C-V: acumulación → deplexión → inversión), así que en el fondo es el mismo fenómeno. La diferencia es de diseño: aquí S y D están cortocircuitados entre sí y con el body — no hay corriente de canal, es una topología de 2 terminales (gate/body), no un transistor "reutilizado". El threshold es LVT a propósito, para que el rango útil de C(V) caiga en un rango de control cómodo (0–1.8 V). Y el layout (fingers, pitch) está optimizado para minimizar la resistencia serie y maximizar el factor de calidad Q a la frecuencia de interés — cosas que a una celda digital estándar no le importan.',
+    matchNote_ca:'Varactor: S, D i body (N-well) van tots al mateix node vctrl — contactes a banda i banda del canal + un únic tap de nwell (amb un n\'hi ha prou), units per una pletina de metall local. El gate té el seu propi contacte i va al node RF, node a part. cap_var_hvt: llindar més alt, més rang de tuning però menor C total.\n\nPer què no usar qualsevol MOSFET? Tot MOSFET té capacitat gate-canal dependent de V (corba C-V: acumulació → depleció → inversió), així que en el fons és el mateix fenomen. La diferència és de disseny: aquí S i D estan curtcircuitats entre ells i amb el body — no hi ha corrent de canal, és una topologia de 2 terminals (gate/body), no un transistor "reutilitzat". El threshold és LVT a propòsit, perquè el rang útil de C(V) caigui en un rang de control còmode (0–1.8 V). I el layout (fingers, pitch) està optimitzat per minimitzar la resistència sèrie i maximitzar el factor de qualitat Q a la freqüència d\'interès — coses que a una cel·la digital estàndard no li importen.',
+    matchNote_en:'Varactor: S, D and body (N-well) all go to the same vctrl node — contacts on both sides of the channel plus a single nwell tap (one is enough), joined by a local metal strap. The gate has its own contact and goes to the RF node, a separate node. cap_var_hvt: higher threshold, more tuning range but lower total C.\n\nWhy not just use any MOSFET? Every MOSFET has a gate-channel capacitance that depends on V (the C-V curve: accumulation → depletion → inversion), so at heart it\'s the same phenomenon. The difference is in the design: here S and D are shorted to each other and to the body — there\'s no channel current, it\'s a 2-terminal topology (gate/body), not a "repurposed" transistor. The threshold is deliberately LVT, so the useful C(V) range falls within a comfortable control voltage range (0–1.8 V). And the layout (fingers, pitch) is optimized to minimize series resistance and maximize the quality factor Q at the frequency of interest — things a standard digital cell doesn\'t care about.' },
 };
 const GF180_DEVICES = {
   mim_2p0: { name:'gf180mcu_fd_pr__cap_mim_2p0fF', label:'MIM 2.0 fF/µm²', cArea:2.0, cPerim:0, wMin:5, lMin:5, wMax:100, lMax:100, fixedSize:false, color:'#26a040',
     info:{diel:'SiN entre metales superiores', densidad:'2.0 fF/µm²', vcc:'< 30 ppm/V²', wlMin:'5 × 5 µm', wlMax:'100 × 100 µm', parasito:'C_bottom al substrato · máscara extra'},
-    matchNote:'Es el unico MIM que trae la PDK abierta de GF180 (cap_mim_2p0fF). Minimo 5x5 µm por DRC, maximo 100x100. Comun-centroide para ratios precisos. El bloque de metal separado a un lado no es parte del condensador: es el contacto que saca la placa inferior (M3) fuera del área activa, para no tener que atravesar la placa superior.' },
+    info_ca:{diel:'SiN entre metalls superiors', densidad:'2.0 fF/µm²', vcc:'< 30 ppm/V²', wlMin:'5 × 5 µm', wlMax:'100 × 100 µm', parasito:'C_bottom al substrat · màscara extra'},
+    info_en:{diel:'SiN between upper metals', densidad:'2.0 fF/µm²', vcc:'< 30 ppm/V²', wlMin:'5 × 5 µm', wlMax:'100 × 100 µm', parasito:'C_bottom to substrate · extra mask'},
+    matchNote:'Es el unico MIM que trae la PDK abierta de GF180 (cap_mim_2p0fF). Minimo 5x5 µm por DRC, maximo 100x100. Comun-centroide para ratios precisos. El bloque de metal separado a un lado no es parte del condensador: es el contacto que saca la placa inferior (M3) fuera del área activa, para no tener que atravesar la placa superior.',
+    matchNote_ca:'És l\'únic MIM que porta la PDK oberta de GF180 (cap_mim_2p0fF). Mínim 5x5 µm per DRC, màxim 100x100. Comú-centroide per a ràtios precisos. El bloc de metall separat a un costat no és part del condensador: és el contacte que treu la placa inferior (M3) fora de l\'àrea activa, per no haver de travessar la placa superior.',
+    matchNote_en:'It is the only MIM that GF180\'s open PDK provides (cap_mim_2p0fF). Minimum 5x5 µm by DRC, maximum 100x100. Common-centroid for precise ratios. The separate metal block off to one side is not part of the capacitor: it is the contact that brings the bottom plate (M3) out of the active area, so it doesn\'t have to cross the top plate.' },
   mos: { name:'gf180mcu_fd_pr__cap_nmos', label:'MOSCAP — cap_mos', cArea:4.8, cPerim:0, wMin:0.42, lMin:0.28, wMax:100, lMax:100, fixedSize:false, color:'#ff7a1a',
     info:{diel:'Óxido de gate (poly2 sobre canal)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Voltage-dependent (acumulación/inversión)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrato · requiere polarizar el pozo'},
-    matchNote:'Celda parametrica (equivalente a gf180.cap_mos, deepnwell=True): placa superior = poly2 (gate) con su propio contacto en M1. Placa inferior = fuente + drenador (contactos a ambos lados del canal) + un unico tap de pozo (bulk, basta con uno para polarizarlo) — todo al mismo nodo (S=D=bulk), subido por via1 a una unica pletina en METAL2. Solo dos terminales: gate y body. Geometria propia con reglas de escala 180 nm — no viene de la PDK GDS, a diferencia del MIM.' },
+    info_ca:{diel:'Òxid de gate (poly2 sobre canal)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Depenent de la tensió (acumulació/inversió)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrat · cal polaritzar el pou'},
+    info_en:{diel:'Gate oxide (poly2 over channel)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Voltage-dependent (accumulation/inversion)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrate · requires biasing the well'},
+    matchNote:'Celda parametrica (equivalente a gf180.cap_mos, deepnwell=True): placa superior = poly2 (gate) con su propio contacto en M1. Placa inferior = fuente + drenador (contactos a ambos lados del canal) + un unico tap de pozo (bulk, basta con uno para polarizarlo) — todo al mismo nodo (S=D=bulk), subido por via1 a una unica pletina en METAL2. Solo dos terminales: gate y body. Geometria propia con reglas de escala 180 nm — no viene de la PDK GDS, a diferencia del MIM.',
+    matchNote_ca:'Cel·la paramètrica (equivalent a gf180.cap_mos, deepnwell=True): placa superior = poly2 (gate) amb el seu propi contacte en M1. Placa inferior = font + drenador (contactes a banda i banda del canal) + un únic tap de pou (bulk, amb un n\'hi ha prou per polaritzar-lo) — tot al mateix node (S=D=bulk), pujat per via1 a una única pletina en METAL2. Només dos terminals: gate i body. Geometria pròpia amb regles a escala 180 nm — no ve de la PDK GDS, a diferència del MIM.',
+    matchNote_en:'Parametric cell (equivalent to gf180.cap_mos, deepnwell=True): top plate = poly2 (gate) with its own contact in M1. Bottom plate = source + drain (contacts on both sides of the channel) + a single well tap (bulk, one is enough to bias it) — all on the same node (S=D=bulk), brought up by via1 to a single METAL2 strap. Only two terminals: gate and body. Custom geometry with 180 nm-scale rules — it does not come from the PDK GDS, unlike the MIM.' },
 };
 const IHP_DEVICES = {
   mim: { name:'cmim', label:'MIM — cmim', cArea:1.5, cPerim:0, wMin:1.14, lMin:1.14, wMax:1000, lMax:1000, fixedSize:false, color:'#268c6b',
     info:{diel:'SiN entre Metal5 y TopMetal1', densidad:'1.5 fF/µm²', vcc:'VC1 = −26 ppm/V · TC1 = 3.6 ppm/K', wlMin:'1.14 × 1.14 µm', wlMax:'1000 × 1000 µm', parasito:'Breakdown > 15 V'},
-    matchNote:'Celda parametrica: el layout lo genera la PDK con width y length. Metal5 = W + 2·0.6 + 2·0.36; encima la capa MIM, el array de vias Vmim (0.42 µm, pitch 0.94) y TopMetal1 como placa superior. Usa common-centroide para ratios precisos.' },
+    info_ca:{diel:'SiN entre Metal5 i TopMetal1', densidad:'1.5 fF/µm²', vcc:'VC1 = −26 ppm/V · TC1 = 3.6 ppm/K', wlMin:'1.14 × 1.14 µm', wlMax:'1000 × 1000 µm', parasito:'Breakdown > 15 V'},
+    info_en:{diel:'SiN between Metal5 and TopMetal1', densidad:'1.5 fF/µm²', vcc:'VC1 = −26 ppm/V · TC1 = 3.6 ppm/K', wlMin:'1.14 × 1.14 µm', wlMax:'1000 × 1000 µm', parasito:'Breakdown > 15 V'},
+    matchNote:'Celda parametrica: el layout lo genera la PDK con width y length. Metal5 = W + 2·0.6 + 2·0.36; encima la capa MIM, el array de vias Vmim (0.42 µm, pitch 0.94) y TopMetal1 como placa superior. Usa common-centroide para ratios precisos.',
+    matchNote_ca:'Cel·la paramètrica: el layout el genera la PDK amb width i length. Metal5 = W + 2·0.6 + 2·0.36; a sobre la capa MIM, l\'array de vies Vmim (0.42 µm, pitch 0.94) i TopMetal1 com a placa superior. Fa servir common-centroide per a ràtios precisos.',
+    matchNote_en:'Parametric cell: the layout is generated by the PDK from width and length. Metal5 = W + 2·0.6 + 2·0.36; above it the MIM layer, the Vmim via array (0.42 µm, pitch 0.94) and TopMetal1 as the top plate. Uses common-centroid for precise ratios.' },
   mom: { name:'cmom', label:'MOM — cmom', cArea:0.8, cPerim:0.1, wMin:1, lMin:1, wMax:60, lMax:60, fixedSize:false, color:'#ffb060',
     info:{diel:'IMD SiO₂ (fringe entre dedos)', densidad:'~0.8 fF/µm² (Metal1–Metal3)', vcc:'< 50 ppm/V²', wlMin:'nfingers ≥ 4', wlMax:'nfingers ≤ 400', parasito:'Sin coste de mascara — solo routing'},
-    matchNote:'Celda parametrica: la PDK la genera con nfingers y length. Dedos interdigitados en Metal1–Metal3 con pitch 2·(spacing + ancho minimo). La C sale del campo lateral entre dedos vecinos.' },
+    info_ca:{diel:'IMD SiO₂ (fringe entre dits)', densidad:'~0.8 fF/µm² (Metal1–Metal3)', vcc:'< 50 ppm/V²', wlMin:'nfingers ≥ 4', wlMax:'nfingers ≤ 400', parasito:'Sense cost de màscara — només routing'},
+    info_en:{diel:'IMD SiO₂ (fringe between fingers)', densidad:'~0.8 fF/µm² (Metal1–Metal3)', vcc:'< 50 ppm/V²', wlMin:'nfingers ≥ 4', wlMax:'nfingers ≤ 400', parasito:'No mask cost — routing only'},
+    matchNote:'Celda parametrica: la PDK la genera con nfingers y length. Dedos interdigitados en Metal1–Metal3 con pitch 2·(spacing + ancho minimo). La C sale del campo lateral entre dedos vecinos.',
+    matchNote_ca:'Cel·la paramètrica: la PDK la genera amb nfingers i length. Dits interdigitats en Metal1–Metal3 amb pitch 2·(spacing + amplada mínima). La C surt del camp lateral entre dits veïns.',
+    matchNote_en:'Parametric cell: the PDK generates it from nfingers and length. Interdigitated fingers in Metal1–Metal3 with pitch 2·(spacing + minimum width). C comes from the lateral field between neighboring fingers.' },
 };
 const ALL_PDKS = {
   sky130: { label:'SkyWater SKY130 · 130 nm', devices:SKY130_DEVICES, defaultType:'mim' },
@@ -5023,17 +5099,17 @@ function doRC(dev, targetFf, maxSide) {
   const isMos = dsgnSt.pdk === 'gf180' && dsgnSt.type === 'mos';
   setSpice(isVar ? mkSpiceVar(W,L,units,dev.name) : isMos ? mkSpiceMos(W,L,units,dev.name) : mkSpiceMIM(W,L,units,dev.name));
   renderSVG(dev, W, L, units, cObt, null, null, isVar || isMos ? 'var' : 'mim');
-  setNote(dev.matchNote, units, belowMin ? cMin : null, dev);
+  setNote(units, belowMin ? cMin : null, dev);
 }
 
 function doVPP(dev, targetFf) {
   const units = Math.max(1, Math.ceil(targetFf / dev.cUnit));
   const cObt  = units * dev.cUnit;
   const cols  = Math.ceil(Math.sqrt(units)), rows = Math.ceil(units/cols);
-  setMetrics(fmtC(cObt), fmtArea(cols*dev.cellW*rows*dev.cellH), (cols*dev.cellW).toFixed(1)+'×'+(rows*dev.cellH).toFixed(1)+' µm', units+' celdas ('+cols+'×'+rows+')');
+  setMetrics(fmtC(cObt), fmtArea(cols*dev.cellW*rows*dev.cellH), (cols*dev.cellW).toFixed(1)+'×'+(rows*dev.cellH).toFixed(1)+' µm', units+' '+capT('d_celdas')+' ('+cols+'×'+rows+')');
   setSpice(mkSpiceVPP(units, dev.name));
   renderSVG(dev, dev.cellW, dev.cellH, units, cObt, cols, rows, 'vpp');
-  setNote(dev.matchNote, units, null, dev);
+  setNote(units, null, dev);
 }
 
 function setMetrics(c, area, side, units) {
@@ -5044,7 +5120,7 @@ function setMetrics(c, area, side, units) {
 }
 function setSpice(html) { document.getElementById('dsgn-spice').innerHTML = html; }
 
-function setNote(note, units, cMin, dev) {
+function setNote(units, cMin, dev) {
   const el = document.getElementById('dsgn-match-note');
   const dmC = document.getElementById('dm-c');
   const warnWrap = document.getElementById('dm-c-warn');
@@ -5052,10 +5128,12 @@ function setNote(note, units, cMin, dev) {
   dmC.classList.remove('warn'); warnWrap.style.display = 'none'; warnTip.classList.remove('show');
   if (cMin != null) {
     dmC.classList.add('warn'); warnWrap.style.display = 'inline-block';
-    warnTip.textContent = `Objetivo por debajo del mínimo físico. La unidad mínima (${dev.wMin}×${dev.lMin} µm) da ${fmtC(cMin)}. C obtenida = mínimo posible.`;
+    warnTip.textContent = capT('d_warn_below_min')
+      .replace('{w}', dev.wMin).replace('{l}', dev.lMin).replace('{c}', fmtC(cMin));
   }
   let text = '';
-  if (units > 1 && cMin == null) text += `⚠ La capacidad objetivo supera el tamaño máximo de una sola unidad — se necesitan ${units} condensadores en paralelo. El visor 3D solo dibuja una muestra representativa (hasta 4 celdas, por rendimiento) y NO el metal que las uniría en un mismo nodo: el resto de unidades y ese bus de rutado son de nivel superior (los coloca el layout del array, no la celda de la PDK).\n\n`;
+  if (units > 1 && cMin == null) text += capT('d_warn_parallel').replace('{n}', units) + '\n\n';
+  const note = (capLang === 'ca' && dev.matchNote_ca) ? dev.matchNote_ca : (capLang === 'en' && dev.matchNote_en) ? dev.matchNote_en : dev.matchNote;
   text += note;
   el.style.whiteSpace = 'pre-line'; el.textContent = text; el.classList.add('show');
 }
@@ -5063,8 +5141,9 @@ function setNote(note, units, cMin, dev) {
 function dsgnUpdateInfo() {
   const dev = ALL_PDKS[dsgnSt.pdk].devices[dsgnSt.type];
   document.getElementById('dsgn-info-title').textContent = dev.name;
-  const lbl = { diel:'Dieléctrico', densidad:'Densidad', vcc:'VCC', wlMin:'W/L mín', wlMax:'W/L máx', parasito:'Parásito' };
-  document.getElementById('dsgn-info-grid').innerHTML = Object.entries(dev.info).map(([k,v]) =>
+  const lbl = { diel:capT('d_lbl_diel'), densidad:capT('d_lbl_densidad'), vcc:'VCC', wlMin:capT('d_lbl_wlmin'), wlMax:capT('d_lbl_wlmax'), parasito:capT('d_lbl_parasito') };
+  const info = (capLang === 'ca' && dev.info_ca) ? dev.info_ca : (capLang === 'en' && dev.info_en) ? dev.info_en : dev.info;
+  document.getElementById('dsgn-info-grid').innerHTML = Object.entries(info).map(([k,v]) =>
     `<div class="dsgn-info-row"><span class="dsgn-info-k">${lbl[k]||k}</span><span class="dsgn-info-v">${v}</span></div>`).join('');
 }
 
@@ -5451,7 +5530,7 @@ function dsgnArrayNote(shown, total) {
   if (shown >= total) return '';
   return `<div style="margin-top:5px;padding:4px 8px;background:rgba(217,48,37,0.08);border-radius:3px;display:inline-block">
     <span style="color:#d93025;font-weight:700">!</span>
-    <span style="opacity:.85">mostrando ${shown} de ${total} por rendimiento — sin el metal de rutado que las uniría (bus de nivel superior, no de la celda)</span>
+    <span style="opacity:.85">${capT('d_array_note').replace('{shown}', shown).replace('{total}', total)}</span>
   </div>`;
 }
 
@@ -5990,7 +6069,7 @@ function dsgnSetView3D() {
     svg.style.display = 'none'; box.style.display = 'block'; note.style.display = 'block';
     const { W, L, units } = solveDims(dev, dsgnSt.cTargetFf, parseFloat(document.getElementById('dsgn-maxside').value) || null);
     dsgnBuildMIM3D(W, L, units, MIM_PDK[dsgnSt.pdk]);
-    cap.textContent = `${dev.name.split('__')[1] || dev.name} W=${W.toFixed(2)} L=${L.toFixed(2)} um · generado con las reglas del PDK`;
+    cap.textContent = `${dev.name.split('__')[1] || dev.name} W=${W.toFixed(2)} L=${L.toFixed(2)} um · ${capT('d_cap_pdkrules')}`;
     return;
   }
   // IHP cmim: se REGENERA con width/length (mismas reglas que gdsfactory)
@@ -5998,7 +6077,7 @@ function dsgnSetView3D() {
     svg.style.display = 'none'; box.style.display = 'block'; note.style.display = 'block';
     const r = solveDims(dev, dsgnSt.cTargetFf, parseFloat(document.getElementById('dsgn-maxside').value) || null);
     dsgnBuildIHPMIM3D(r.W, r.L, r.units);
-    cap.textContent = `cmim(width=${r.W.toFixed(2)}, length=${r.L.toFixed(2)}) · regenerado al vuelo`;
+    cap.textContent = `cmim(width=${r.W.toFixed(2)}, length=${r.L.toFixed(2)}) · ${capT('d_cap_regen')}`;
     return;
   }
   // IHP cmom: se REGENERA con nfingers/length
@@ -6007,7 +6086,7 @@ function dsgnSetView3D() {
     const r = solveDims(dev, dsgnSt.cTargetFf, parseFloat(document.getElementById('dsgn-maxside').value) || null);
     const nf = Math.max(1, Math.min(200, Math.round(r.W * 4)));
     dsgnBuildIHPMOM3D(nf, r.L);
-    cap.textContent = `cmom(nfingers=${nf}, length=${r.L.toFixed(2)}) · regenerado al vuelo`;
+    cap.textContent = `cmom(nfingers=${nf}, length=${r.L.toFixed(2)}) · ${capT('d_cap_regen')}`;
     return;
   }
   // GF180 cap_mos: se REGENERA con width/length, como el cmim/cmom de IHP
@@ -6015,7 +6094,7 @@ function dsgnSetView3D() {
     svg.style.display = 'none'; box.style.display = 'block'; note.style.display = 'block';
     const r = solveDims(dev, dsgnSt.cTargetFf, parseFloat(document.getElementById('dsgn-maxside').value) || null);
     dsgnBuildGF180MOS3D(r.W, r.L, r.units);
-    cap.textContent = `cap_mos(w=${r.W.toFixed(2)}, l=${r.L.toFixed(2)}, deepnwell=True) · regenerado al vuelo`;
+    cap.textContent = `cap_mos(w=${r.W.toFixed(2)}, l=${r.L.toFixed(2)}, deepnwell=True) · ${capT('d_cap_regen')}`;
     return;
   }
   // Varactor: celda parametrica -> se GENERA con las reglas del PDK
@@ -6023,7 +6102,7 @@ function dsgnSetView3D() {
     svg.style.display = 'none'; box.style.display = 'block'; note.style.display = 'block';
     const r = solveDims(dev, dsgnSt.cTargetFf, parseFloat(document.getElementById('dsgn-maxside').value) || null);
     dsgnBuildVAR3D(r.W, r.L, r.units);
-    cap.textContent = `cap_var_lvt W=${r.W.toFixed(2)} L=${r.L.toFixed(2)} um · generado con las reglas del PDK`;
+    cap.textContent = `cap_var_lvt W=${r.W.toFixed(2)} L=${r.L.toFixed(2)} um · ${capT('d_cap_pdkrules')}`;
     return;
   }
   // El resto: sin GDS ni generador implementado
@@ -6031,7 +6110,7 @@ function dsgnSetView3D() {
     svg.style.display = 'block'; box.style.display = 'none'; note.style.display = 'none';
     svg.innerHTML = `<text x="170" y="92" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8892a0">Generador no implementado para este device</text>
       <text x="170" y="112" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#666">Disponibles en 3D real: MIM (generado) y VPP (GDS).</text>`;
-    cap.textContent = dev.label + ' · sin layout real disponible';
+    cap.textContent = dev.label + ' · ' + capT('d_cap_nolayout');
     return;
   }
 
@@ -6041,7 +6120,7 @@ function dsgnSetView3D() {
   const units = Math.max(1, Math.ceil(dsgnSt.cTargetFf / dev.cUnit));
   const cols = Math.ceil(Math.sqrt(units)), rows = Math.ceil(units / cols);
   dsgnBuild3D(units, cols, rows);
-  cap.textContent = 'sky130_fd_pr__cap_vpp_04p4x04p6 · layout real del GDS';
+  cap.textContent = 'sky130_fd_pr__cap_vpp_04p4x04p6 · ' + capT('d_cap_gdsreal');
 }
 
 let _lastSVGArgs = null;
@@ -6176,7 +6255,7 @@ document.getElementById('dsgn-slider').addEventListener('input', e => {
 document.getElementById('dsgn-update-3d-btn').addEventListener('click', dsgnUpdate3DClick);
 document.getElementById('dsgn-copy-btn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('dsgn-spice').innerText)
-    .then(() => { const b=document.getElementById('dsgn-copy-btn'); b.textContent='Copiado'; setTimeout(()=>b.textContent='Copiar',1800); });
+    .then(() => { const b=document.getElementById('dsgn-copy-btn'); b.textContent=capT('d_copiado'); setTimeout(()=>b.textContent=capT('d_copiar'),1800); });
 });
 document.getElementById('dm-c-warn-btn').addEventListener('click', e => {
   e.stopPropagation();
@@ -6188,6 +6267,8 @@ document.addEventListener('click', () => document.getElementById('dm-c-warn-tip'
 dsgnRebuildTypeButtons('sky130');
 dsgnUpdateInfo();
 dsgnCalc();
+window.dsgnCalc = dsgnCalc;
+window.dsgnUpdateInfo = dsgnUpdateInfo;
 
 </script>
 <script>
@@ -6289,6 +6370,22 @@ Object.assign(window.CAP_I18N.es, {
     d_view_label: 'Layout real · 3D interactivo — arrastra para rotar, scroll para zoom',
     d_update_btn: '↻ Actualizar 3D',
     /* ── IC ── */
+    /* ── Calculadora (resto) ── */
+    d_title: 'Crea tu condensador',
+    d_subtitle: 'Selecciona el PDK, el tipo de estructura y la capacidad objetivo. Obtendrás dimensiones de layout, número de unidades y el snippet SPICE listo para usar.',
+    d_step_pdk: 'PDK open-source', d_ihp_spec: 'MIM · MOM (RF/analógico)',
+    d_step_tipo: 'Tipo de estructura', d_step_cap: 'Capacidad objetivo',
+    d_step_maxside: 'Restricción de lado máximo', d_opcional: '(opcional)',
+    d_m_c: 'C obtenida', d_m_area: 'Área total', d_m_side: 'Lado W×L', d_m_units: 'Unidades',
+    d_copiar: 'Copiar', d_copiado: 'Copiado',
+    d_spice_placeholder: '— configura los parámetros —',
+    d_lbl_diel: 'Dieléctrico', d_lbl_densidad: 'Densidad', d_lbl_wlmin: 'W/L mín', d_lbl_wlmax: 'W/L máx', d_lbl_parasito: 'Parásito',
+    d_celdas: 'celdas',
+    d_warn_below_min: 'Objetivo por debajo del mínimo físico. La unidad mínima ({w}×{l} µm) da {c}. C obtenida = mínimo posible.',
+    d_warn_parallel: '⚠ La capacidad objetivo supera el tamaño máximo de una sola unidad — se necesitan {n} condensadores en paralelo. El visor 3D solo dibuja una muestra representativa (hasta 4 celdas, por rendimiento) y NO el metal que las uniría en un mismo nodo: el resto de unidades y ese bus de rutado son de nivel superior (los coloca el layout del array, no la celda de la PDK).',
+    d_array_note: 'mostrando {shown} de {total} por rendimiento — sin el metal de rutado que las uniría (bus de nivel superior, no de la celda)',
+    d_cap_pdkrules: 'generado con las reglas del PDK', d_cap_regen: 'regenerado al vuelo',
+    d_cap_nolayout: 'sin layout real disponible', d_cap_gdsreal: 'layout real del GDS',
     ic_tag: 'IC — Estructuras integradas',
     ic_h1: 'Condensadores en chip',
     ic_p1: 'En un circuito integrado los condensadores no son componentes físicos soldados: son <strong>estructuras geométricas construidas en las capas del proceso CMOS</strong>. Su capacidad, linealidad y densidad dependen completamente del stack tecnológico — no hay catálogo, se diseñan litográficamente.',
@@ -6412,6 +6509,22 @@ Object.assign(window.CAP_I18N.ca, {
     d_view_label: 'Layout real · 3D interactiu — arrossega per rotar, scroll per fer zoom',
     d_update_btn: '↻ Actualitzar 3D',
     /* ── IC ── */
+    /* ── Calculadora (resta) ── */
+    d_title: 'Crea el teu condensador',
+    d_subtitle: 'Selecciona el PDK, el tipus d\'estructura i la capacitat objectiu. Obtindràs dimensions de layout, nombre d\'unitats i el snippet SPICE llest per usar.',
+    d_step_pdk: 'PDK open-source', d_ihp_spec: 'MIM · MOM (RF/analògic)',
+    d_step_tipo: 'Tipus d\'estructura', d_step_cap: 'Capacitat objectiu',
+    d_step_maxside: 'Restricció de costat màxim', d_opcional: '(opcional)',
+    d_m_c: 'C obtinguda', d_m_area: 'Àrea total', d_m_side: 'Costat W×L', d_m_units: 'Unitats',
+    d_copiar: 'Copiar', d_copiado: 'Copiat',
+    d_spice_placeholder: '— configura els paràmetres —',
+    d_lbl_diel: 'Dielèctric', d_lbl_densidad: 'Densitat', d_lbl_wlmin: 'W/L mín', d_lbl_wlmax: 'W/L màx', d_lbl_parasito: 'Paràsit',
+    d_celdas: 'cel·les',
+    d_warn_below_min: 'Objectiu per sota del mínim físic. La unitat mínima ({w}×{l} µm) dóna {c}. C obtinguda = mínim possible.',
+    d_warn_parallel: '⚠ La capacitat objectiu supera la mida màxima d\'una sola unitat — calen {n} condensadors en paral·lel. El visor 3D només dibuixa una mostra representativa (fins a 4 cel·les, per rendiment) i NO el metall que les uniria en un mateix node: la resta d\'unitats i aquest bus de rutat són de nivell superior (els col·loca el layout de l\'array, no la cel·la de la PDK).',
+    d_array_note: 'mostrant {shown} de {total} per rendiment — sense el metall de rutat que les uniria (bus de nivell superior, no de la cel·la)',
+    d_cap_pdkrules: 'generat amb les regles del PDK', d_cap_regen: 'regenerat al vol',
+    d_cap_nolayout: 'sense layout real disponible', d_cap_gdsreal: 'layout real del GDS',
     ic_tag: 'IC — Estructures integrades',
     ic_h1: 'Condensadors en xip',
     ic_p1: 'En un circuit integrat els condensadors no són components físics soldats: són <strong>estructures geomètriques construïdes a les capes del procés CMOS</strong>. La seva capacitat, linealitat i densitat depenen completament de l\'stack tecnològic — no hi ha catàleg, es dissenyen litogràficament.',
@@ -6535,6 +6648,22 @@ Object.assign(window.CAP_I18N.en, {
     d_view_label: 'Real layout · Interactive 3D — drag to rotate, scroll to zoom',
     d_update_btn: '↻ Update 3D',
     /* ── IC ── */
+    /* ── Calculator (rest) ── */
+    d_title: 'Build your capacitor',
+    d_subtitle: 'Select the PDK, the structure type and the target capacitance. You\'ll get layout dimensions, number of units and a ready-to-use SPICE snippet.',
+    d_step_pdk: 'Open-source PDK', d_ihp_spec: 'MIM · MOM (RF/analog)',
+    d_step_tipo: 'Structure type', d_step_cap: 'Target capacitance',
+    d_step_maxside: 'Max side constraint', d_opcional: '(optional)',
+    d_m_c: 'C obtained', d_m_area: 'Total area', d_m_side: 'Side W×L', d_m_units: 'Units',
+    d_copiar: 'Copy', d_copiado: 'Copied',
+    d_spice_placeholder: '— configure the parameters —',
+    d_lbl_diel: 'Dielectric', d_lbl_densidad: 'Density', d_lbl_wlmin: 'W/L min', d_lbl_wlmax: 'W/L max', d_lbl_parasito: 'Parasitic',
+    d_celdas: 'cells',
+    d_warn_below_min: 'Target below the physical minimum. The minimum unit ({w}×{l} µm) gives {c}. C obtained = smallest possible.',
+    d_warn_parallel: '⚠ The target capacitance exceeds the maximum size of a single unit — {n} capacitors in parallel are needed. The 3D viewer only draws a representative sample (up to 4 cells, for performance) and NOT the metal that would tie them into one node: the remaining units and that routing bus are higher-level (placed by the array layout, not the PDK cell).',
+    d_array_note: 'showing {shown} of {total} for performance — without the routing metal that would tie them together (higher-level bus, not part of the cell)',
+    d_cap_pdkrules: 'generated with the PDK rules', d_cap_regen: 'regenerated on the fly',
+    d_cap_nolayout: 'no real layout available', d_cap_gdsreal: 'real layout from the GDS',
     ic_tag: 'IC — Integrated structures',
     ic_h1: 'Capacitors on chip',
     ic_p1: 'In an integrated circuit, capacitors are not soldered physical components: they are <strong>geometric structures built into the layers of the CMOS process</strong>. Their capacitance, linearity and density depend entirely on the technology stack — there is no catalog, they are designed lithographically.',
@@ -6585,6 +6714,8 @@ function applyCapI18n() {
   if (typeof acDcMode !== 'undefined' && document.getElementById('acDcDesc') && document.getElementById('acDcDesc').innerHTML.trim() !== '') {
     document.getElementById('acDcDesc').innerHTML = capT(acDcMode === 'dc' ? 'f_acdc_dc_html' : 'f_acdc_ac_html');
   }
+  if (typeof window.dsgnUpdateInfo === 'function') window.dsgnUpdateInfo();
+  if (typeof window.dsgnCalc === 'function') window.dsgnCalc();
 }
 
 function chooseCapLang(lang) {
