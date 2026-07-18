@@ -89,6 +89,13 @@ body::before {
 }
 .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--blue); flex-shrink: 0; }
 .eyebrow > span { flex: 1; min-width: 0; }
+
+.back-home-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 11px; color: var(--muted);
+  text-decoration: none; margin-bottom: 18px; transition: color 0.15s ease;
+}
+.back-home-link:hover { color: var(--blue); }
 h1 {
   font-family: var(--serif); font-size: clamp(42px, 6vw, 68px);
   font-weight: 700; line-height: 1.05; color: var(--ink); margin-bottom: 8px;
@@ -674,6 +681,10 @@ function capT(key) {
 </div>
 
 <div class="page">
+
+  <a href="../index.html" id="backHomeLink" class="back-home-link">
+    <span id="backHomeLabel" data-i18n="back_home">← Volver a la página principal</span>
+  </a>
 
   <div class="eyebrow">
     <span data-i18n="eyebrow">Microelectrónica · Diseño de CI</span>
@@ -6322,6 +6333,7 @@ window.dsgnUpdateInfo = dsgnUpdateInfo;
    ═══════════════════════════════════════════════════════════ */
 Object.assign(window.CAP_I18N.es, {
     eyebrow: 'Microelectrónica · Diseño de CI',
+    back_home: '← Volver a la página principal',
     h1_title: 'Condensadores<br>en <em>chips</em>',
     nav_fundamentos: 'Fundamentos', nav_pcb: 'Condensadores en PCB',
     nav_ic: 'Condensadores en IC', nav_disenyo: 'Crea tu condensador',
@@ -6461,6 +6473,7 @@ Object.assign(window.CAP_I18N.es, {
   });
 Object.assign(window.CAP_I18N.ca, {
     eyebrow: 'Microelectrònica · Disseny de CI',
+    back_home: '← Tornar a la pàgina principal',
     h1_title: 'Condensadors<br>en <em>xips</em>',
     nav_fundamentos: 'Fonaments', nav_pcb: 'Condensadors en PCB',
     nav_ic: 'Condensadors en IC', nav_disenyo: 'Crea el teu condensador',
@@ -6600,6 +6613,7 @@ Object.assign(window.CAP_I18N.ca, {
   });
 Object.assign(window.CAP_I18N.en, {
     eyebrow: 'Microelectronics · IC Design',
+    back_home: '← Back to main page',
     h1_title: 'Capacitors<br>on <em>chips</em>',
     nav_fundamentos: 'Fundamentals', nav_pcb: 'Capacitors on PCB',
     nav_ic: 'Capacitors on IC', nav_disenyo: 'Build your capacitor',
@@ -6740,6 +6754,8 @@ Object.assign(window.CAP_I18N.en, {
 
 function applyCapI18n() {
   document.documentElement.lang = capLang;
+  const backLink = document.getElementById('backHomeLink');
+  if (backLink) backLink.href = '../index.html?lang=' + capLang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const val = capT(el.getAttribute('data-i18n'));
     if (typeof val === 'string') el.textContent = val;
