@@ -1404,9 +1404,9 @@ p.ic-desc { font-size: 14px; color: var(--ink2); line-height: 1.65; margin-botto
 .dsgn-title { font-family: var(--serif); font-size: 28px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
 .dsgn-subtitle { font-size: 14px; color: var(--muted); max-width: 580px; line-height: 1.6; }
 @media (min-width: 1100px) { .dsgn-subtitle { max-width: none; font-size: 15px; } }
-.dsgn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.dsgn-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 28px; }
 @media (min-width: 1400px) { .dsgn-grid { gap: 40px; } }
-@media (max-width: 860px) { .dsgn-grid { grid-template-columns: 1fr; } }
+@media (max-width: 860px) { .dsgn-grid { grid-template-columns: minmax(0,1fr); } }
 @media (max-width: 640px) {
   .dsgn-type-btn { flex-wrap: wrap; gap: 6px; padding: 9px 11px; }
   .dsgn-type-spec { white-space: normal; flex-basis: 100%; }
@@ -1416,10 +1416,10 @@ p.ic-desc { font-size: 14px; color: var(--ink2); line-height: 1.65; margin-botto
   .dsgn-input { width: 110px; font-size: 16px; }
   .dsgn-info-k { width: 74px; }
 }
-.dsgn-controls { display: flex; flex-direction: column; gap: 20px; }
-.dsgn-step { display: flex; gap: 14px; }
+.dsgn-controls { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.dsgn-step { display: flex; gap: 14px; min-width: 0; }
 .dsgn-step-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--blue); background: var(--blue-l); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-.dsgn-step-body { flex: 1; }
+.dsgn-step-body { flex: 1; min-width: 0; }
 .dsgn-step-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink2); margin-bottom: 10px; }
 .dsgn-optional { font-size: 9px; color: var(--muted); text-transform: none; letter-spacing: 0; }
 .dsgn-type-grid { display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; }
@@ -1438,7 +1438,7 @@ p.ic-desc { font-size: 14px; color: var(--ink2); line-height: 1.65; margin-botto
 .dsgn-unit-label { font-family: var(--mono); font-size: 13px; color: var(--muted); }
 .dsgn-slider { width: 100%; accent-color: var(--blue); cursor: pointer; }
 .dsgn-slider-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
-.dsgn-result { display: flex; flex-direction: column; gap: 16px; }
+.dsgn-result { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .dsgn-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 5px; overflow: visible; }
 .dsgn-metric { background: var(--paper); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; transition: background .2s; position: relative; }
 .dsgn-metric.warn { background: #fff0f0; }
@@ -1654,13 +1654,14 @@ function computeGeo() {
   const dRaw = +document.getElementById('sliderD').value;  // px separación
   const aRaw = +document.getElementById('sliderA').value;  // px ancho placa
   const pHRaw = 28;                                        // altura placa
-  const leftBox = 78, rightMargin = 20;
-  const availW = Math.max(80, W - leftBox - rightMargin);
+  const leftBox = 78, boxGap = 26, rightMargin = 20;
+  const diagX0 = leftBox + boxGap;
+  const availW = Math.max(80, W - diagX0 - rightMargin);
   // Escala responsive: si el canvas es estrecho (movil) el condensador se
   // encoge para no solaparse con la caja "electrónica" de la izquierda.
   const k = Math.min(1, availW / 320);   // 320 = valor maximo del slider de area
   const d = dRaw * k, a = aRaw * k, pH = pHRaw * k;
-  const cx = leftBox + availW / 2;
+  const cx = diagX0 + availW / 2;
   const cy = H / 2;
   const plateY_A = cy - d / 2 - pH;
   const plateY_B = cy + d / 2;
