@@ -842,6 +842,22 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-header-text">
+                            <h3 id="cap_title">¿Cómo funcionan los condensadores en un chip?</h3>
+                            <div class="accordion-meta" id="cap_meta">Microelectrónica · Infografía interactiva</div>
+                        </div>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">
+                            <p id="cap_desc">Una infografía interactiva sobre condensadores: desde la física básica y los tipos de PCB hasta las estructuras MIM, MOM, varactor y MOSCAP dentro de un circuito integrado — con una calculadora paramétrica para diseñar el tuyo propio.</p>
+                            <a href="infografias/condensadores_chip_infografia.html" class="accordion-link" id="cap_btn" onclick="passLang(event, this)">Ver Infografía →</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <p class="accordion-more" id="infografias_more">... y muchos más contenidos en camino 🔬</p>
         </div>
@@ -1012,7 +1028,10 @@
                 yield_btn: "Próximamente...",
                 vi_title: "¿Cómo funciona una cámara?", vi_meta: "Visión Industrial · Infografía interactiva",
                 vi_desc: "Simuladores interactivos sobre cómo capturan luz las cámaras digitales: filtros, sensores, electrónica, obturador y procesamiento de imagen.",
+                cap_title: "¿Cómo funcionan los condensadores en un chip?", cap_meta: "Microelectrónica · Infografía interactiva",
+                cap_desc: "Una infografía interactiva sobre condensadores: desde la física básica y los tipos de PCB hasta las estructuras MIM, MOM, varactor y MOSCAP dentro de un circuito integrado — con una calculadora paramétrica para diseñar el tuyo propio.",
                 vi_btn: "Ver Infografía →",
+                cap_btn: "Ver Infografía →",
                 infografias_more: "... y muchos más contenidos en camino 🔬",
                 sobre_title: "Sobre Mí",
                 sobre_p1: "Como estudiante de doctorado en el Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualmente trabajo en el diseño de un circuito integrado de lectura digital (ROIC) de bajo consumo, bajo ruido y alta densidad para un sensor de imagen MWIR PbSe-CMOS de alta velocidad. Mi proyecto tiene como objetivo desarrollar la tercera generación de ROIC para cuadruplicar el número de píxeles en el array de plano focal manteniendo el mismo nodo tecnológico CMOS, debido a los requisitos de post-procesado a nivel de oblea del PbSe. Este reto implica reducir el área y el consumo del sensor de píxel digital PbSe-CMOS actual en un factor de 2, además de mejorar la resolución espacial y la sensibilidad.",
@@ -1051,7 +1070,10 @@
                 yield_btn: "Pròximament...",
                 vi_title: "Com funciona una càmera?", vi_meta: "Visió Industrial · Infografia interactiva",
                 vi_desc: "Simuladors interactius sobre com capturen llum les càmeres digitals: filtres, sensors, electrònica, obturador i processament d'imatge.",
+                cap_title: "Com funcionen els condensadors en un xip?", cap_meta: "Microelectrònica · Infografia interactiva",
+                cap_desc: "Una infografia interactiva sobre condensadors: des de la física bàsica i els tipus de PCB fins a les estructures MIM, MOM, varactor i MOSCAP dins d'un circuit integrat — amb una calculadora paramètrica per dissenyar el teu propi.",
                 vi_btn: "Veure Infografia →",
+                cap_btn: "Veure Infografia →",
                 infografias_more: "... i molt més contingut en camí 🔬",
                 sobre_title: "Sobre Mi",
                 sobre_p1: "Com a estudiant de doctorat a l'Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualment treballo en el disseny d'un circuit integrat de lectura digital (ROIC) de baix consum, baix soroll i alta densitat per a un sensor d'imatge MWIR PbSe-CMOS d'alta velocitat. El meu projecte té com a objectiu desenvolupar la tercera generació de ROIC per quadruplicar el nombre de píxels en l'array de pla focal mantenint el mateix node tecnològic CMOS, a causa dels requisits de post-processat a nivell de oblea del PbSe. Aquest repte implica reduir l'àrea i el consum del sensor de píxel digital PbSe-CMOS actual en un factor de 2, a més de millorar la resolució espacial i la sensibilitat.",
@@ -1090,7 +1112,10 @@
                 yield_btn: "Coming soon...",
                 vi_title: "How does a camera work?", vi_meta: "Industrial Vision · Interactive Infographic",
                 vi_desc: "Interactive simulators on how digital cameras capture light: filters, sensors, electronics, shutter, and image processing.",
+                cap_title: "How do capacitors work on a chip?", cap_meta: "Microelectronics · Interactive Infographic",
+                cap_desc: "An interactive infographic about capacitors: from basic physics and PCB types to MIM, MOM, varactor and MOSCAP structures inside an integrated circuit — with a parametric calculator to design your own.",
                 vi_btn: "View Infographic →",
+                cap_btn: "View Infographic →",
                 infografias_more: "... and much more content on the way 🔬",
                 sobre_title: "About Me",
                 sobre_p1: "As a PhD student at the Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), I am currently working on the design of a low-power, low-noise, and high-density digital readout integrated circuit (ROIC) for a high-speed MWIR PbSe-CMOS imager. My project aims to develop the third generation of ROIC to quadruple the number of pixels in the focal plane array while maintaining the same CMOS technology node due to the wafer-level post-processing requirements of PbSe. This challenge involves reducing the area and power of the current PbSe-CMOS digital pixel sensor by a factor of 2, as well as improving the spatial resolution and sensitivity.",
@@ -1155,6 +1180,8 @@
             setText('yield_desc', t.yield_desc); setText('yield_btn', t.yield_btn);
             setText('vi_title', t.vi_title); setText('vi_meta', t.vi_meta);
             setText('vi_desc', t.vi_desc); setText('vi_btn', t.vi_btn);
+            setText('cap_title', t.cap_title); setText('cap_meta', t.cap_meta);
+            setText('cap_desc', t.cap_desc); setText('cap_btn', t.cap_btn);
             setText('infografias_more', t.infografias_more);
             setText('sobre_title', t.sobre_title); setText('sobre_p1', t.sobre_p1); setText('sobre_p2', t.sobre_p2);
             setText('hl1_title', t.hl1_title); setText('hl1_text', t.hl1_text);
