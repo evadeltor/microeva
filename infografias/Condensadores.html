@@ -620,6 +620,24 @@ button.active { background: var(--blue); color: #fff; }
 }
 @keyframes dsgnPendingPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.68; } }
 
+/* Reafirmado al final del stylesheet: en CSS, a igual especificidad gana la
+   regla que aparece mas tarde en el archivo, y esta regla de movil estaba
+   antes que la base .tabs-nav / .tab-btn.active — por eso no se aplicaba
+   nunca aunque el media query sí se cumpliera. */
+@media (max-width: 640px) {
+  .tabs-nav {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+    overflow-x: visible; flex-wrap: unset; border-bottom: none;
+  }
+  .tab-btn {
+    padding: 10px 8px; white-space: normal; font-size: 9.5px;
+    line-height: 1.3; text-align: center; border-bottom: none;
+    background: var(--paper); border: 1px solid var(--rule); margin-bottom: 0;
+  }
+  .tab-btn.active { background: var(--blue); color: #fff; border: 1px solid var(--blue); }
+  .tabs-wrap::after { display: none; }
+}
+
 </style>
 <script type="importmap">
 {
