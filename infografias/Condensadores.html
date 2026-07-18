@@ -1730,7 +1730,7 @@ function draw() {
   // ── Geometría del circuito (compartida por cables y electrones) ──
   const boxX = 14, boxW = 64;
   const boxCx = boxX + boxW / 2;
-  const boxH  = Math.max(70, (plateY_B + pH) - plateY_A);
+  const boxH  = Math.max(100, (plateY_B + pH) - plateY_A + 24);
   const boxTop = cy - boxH / 2, boxBot = cy + boxH / 2;
   const topY = plateY_A - 58;              // raíl superior: por encima de la cota "A (área)"
   const botY = plateY_B + pH + 40;         // raíl inferior
