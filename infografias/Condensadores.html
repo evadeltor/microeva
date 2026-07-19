@@ -1706,7 +1706,7 @@ function computeGeo() {
   const plateY_A = cy - d / 2 - pH;
   const plateY_B = cy + d / 2;
   const plateX   = cx - a / 2;
-  GEO = { W, H, d, a, pH, cx, cy, plateY_A, plateY_B, plateX };
+  GEO = { W, H, d, a, pH, cx, cy, plateY_A, plateY_B, plateX, k };
 }
 
 function onSlider() {
@@ -1764,7 +1764,8 @@ function roundRect(x, y, w, h, r, fill, stroke, sw) {
 
 /* ─── Frame de dibujo ─── */
 function draw() {
-  const { W, H, d, a, pH, cx, cy, plateY_A, plateY_B, plateX } = GEO;
+  const { W, H, d, a, pH, cx, cy, plateY_A, plateY_B, plateX, k } = GEO;
+  const fk = Math.max(0.65, k || 1);   // escala tipografica proporcional al tamaño del condensador (con suelo legible)
   const q = charge;
 
   // ── Geometría del circuito (compartida por cables y electrones) ──
@@ -1790,7 +1791,7 @@ function draw() {
 
   // Etiqueta dieléctrico
   ctx.save();
-  ctx.font = `500 13px 'Source Sans 3', sans-serif`;
+  ctx.font = `500 ${Math.round(13*fk)}px 'Source Sans 3', sans-serif`;
   ctx.fillStyle = COL.dielBord;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -1812,7 +1813,7 @@ function draw() {
     // Etiqueta "E⃗"
     ctx.save();
     ctx.globalAlpha = q * 0.85;
-    ctx.font = `500 12px 'DM Mono', monospace`;
+    ctx.font = `500 ${Math.round(12*fk)}px 'DM Mono', monospace`;
     ctx.fillStyle = COL.field;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
@@ -1826,7 +1827,7 @@ function draw() {
 
   // Etiqueta placa A
   ctx.save();
-  ctx.font = `500 12px 'DM Mono', monospace`;
+  ctx.font = `500 ${Math.round(12*fk)}px 'DM Mono', monospace`;
   ctx.fillStyle = COL.plateTxt; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('Placa A  (+)', cx, plateY_A + pH / 2);
   ctx.restore();
@@ -1834,7 +1835,7 @@ function draw() {
   /* 4. PLACA B (–) */
   roundRect(plateX, plateY_B, a, pH, 3, COL.plate, null, 0);
   ctx.save();
-  ctx.font = `500 12px 'DM Mono', monospace`;
+  ctx.font = `500 ${Math.round(12*fk)}px 'DM Mono', monospace`;
   ctx.fillStyle = COL.plateTxt; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('Placa B  (–)', cx, plateY_B + pH / 2);
   ctx.restore();
@@ -1845,10 +1846,11 @@ function draw() {
   // Efecto: van emergiendo desde el interior hacia el borde
   // Los iones aparecen UNO A UNO, del centro hacia los laterales, conforme sube q
   const nIons = 14;
-  const ionSpacing = (a - 40) / (nIons - 1);
+  const ionMargin = 20 * Math.min(1, k || 1);
+  const ionSpacing = Math.max(3, (a - ionMargin * 2) / (nIons - 1));
 
   for (let i = 0; i < nIons; i++) {
-    const ix = plateX + 20 + i * ionSpacing;
+    const ix = plateX + ionMargin + i * ionSpacing;
     const distFromCenter = Math.abs(i - (nIons - 1) / 2);
     const threshold = distFromCenter / ((nIons - 1) / 2);
     if (q < threshold) continue;
@@ -1857,7 +1859,7 @@ function draw() {
     // Ion + en el borde inferior de la placa A
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.font = `bold 14px 'DM Mono', monospace`;
+    ctx.font = `bold ${Math.round(14*fk)}px 'DM Mono', monospace`;
     ctx.fillStyle = COL.plus;
     ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
     ctx.beginPath(); ctx.rect(plateX, plateY_A, a, pH); ctx.clip();
@@ -1867,7 +1869,7 @@ function draw() {
     // Ion – en el borde superior de la placa B
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.font = `bold 14px 'DM Mono', monospace`;
+    ctx.font = `bold ${Math.round(14*fk)}px 'DM Mono', monospace`;
     ctx.fillStyle = COL.minus;
     ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     ctx.beginPath(); ctx.rect(plateX, plateY_B, a, pH); ctx.clip();
@@ -1912,7 +1914,7 @@ function draw() {
       // Gris al salir de la placa A (queda +), azul al entrar en la B (queda −)
       ctx.fillStyle = (t < t2) ? '#888' : COL.electron;
       ctx.fill();
-      ctx.font = `bold 8px 'DM Mono', monospace`;
+      ctx.font = `bold ${Math.round(8*fk)}px 'DM Mono', monospace`;
       ctx.fillStyle = '#fff';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('e⁻', ex, ey);
@@ -1928,7 +1930,7 @@ function draw() {
   const dX = plateX + a + 28;
   arrow(dX, plateY_B, dX, plateY_A + pH, COL.orange, 1, 7);
   arrow(dX, plateY_A + pH, dX, plateY_B, COL.orange, 1, 7);
-  ctx.font = `12px 'DM Mono', monospace`;
+  ctx.font = `${Math.round(12*fk)}px 'DM Mono', monospace`;
   ctx.fillStyle = COL.orange; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   ctx.fillText('d', dX + 10, cy);
   ctx.restore();
@@ -1939,7 +1941,7 @@ function draw() {
   const aY = plateY_A - 22;
   arrow(plateX, aY, plateX + a, aY, COL.orange, 1, 7);
   arrow(plateX + a, aY, plateX, aY, COL.orange, 1, 7);
-  ctx.font = `12px 'DM Mono', monospace`;
+  ctx.font = `${Math.round(12*fk)}px 'DM Mono', monospace`;
   ctx.fillStyle = COL.orange; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
   ctx.fillText('A (área)', cx, aY - 4);
   ctx.restore();
@@ -1958,7 +1960,7 @@ function draw() {
 
   // Rótulo vertical
   ctx.save();
-  ctx.font = `700 11px 'DM Mono', monospace`;
+  ctx.font = `700 ${Math.round(11*fk)}px 'DM Mono', monospace`;
   ctx.fillStyle = '#5d6b7d';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.translate(boxCx, cy);
@@ -1986,7 +1988,7 @@ function draw() {
 
   // Etiqueta V (tensión)
   ctx.save();
-  ctx.font = `14px 'DM Mono', monospace`;
+  ctx.font = `${Math.round(14*fk)}px 'DM Mono', monospace`;
   ctx.fillStyle = COL.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('V', (boxX + boxW + plateX) / 2, cy);
   ctx.restore();
@@ -1997,7 +1999,7 @@ function draw() {
   const label = mode === 'charge'
     ? `Cargando… ${pct}%`
     : `Descargando… ${pct}%`;
-  ctx.font = `11px 'DM Mono', monospace`;
+  ctx.font = `${Math.round(11*fk)}px 'DM Mono', monospace`;
   ctx.fillStyle = pct > 80 ? COL.plus : COL.field;
   ctx.textAlign = 'right'; ctx.textBaseline = 'top';
   ctx.fillText(label, W - 12, 12);
