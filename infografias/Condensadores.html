@@ -870,7 +870,7 @@ function capT(key) {
               </div>
               <div class="pcb-uses">
                 <strong data-i18n="p_cuando_usarlo">Cuándo usarlo</strong>
-                <span data-i18n="p_c2_uses">Una sola capa cerámica con electrodo a cada cara — por eso da poca capacidad pero aguanta <em>tensiones muy altas</em>. Se usa en supresión de EMI (clase X/Y), fuentes conmutadas y alta tensión. En señal lo ha sustituido el MLCC.</span>
+                <span data-i18n-html="p_c2_uses">Una sola capa cerámica con electrodo a cada cara — por eso da poca capacidad pero aguanta <em>tensiones muy altas</em>. Se usa en supresión de EMI (clase X/Y), fuentes conmutadas y alta tensión. En señal lo ha sustituido el MLCC.</span>
               </div>
             </div>
           </div>
@@ -891,7 +891,7 @@ function capT(key) {
               </div>
               <div class="pcb-uses">
                 <strong data-i18n="p_cuando_usarlo">Cuándo usarlo</strong>
-                <span data-i18n="p_c3_uses">Para valores altos de capacidad a bajo coste — bulk storage, filtros de baja frecuencia, fuentes. <em>Respetar polaridad.</em> El electrolito se seca con el tiempo.</span>
+                <span data-i18n-html="p_c3_uses">Para valores altos de capacidad a bajo coste — bulk storage, filtros de baja frecuencia, fuentes. <em>Respetar polaridad.</em> El electrolito se seca con el tiempo.</span>
               </div>
             </div>
           </div>
@@ -912,7 +912,7 @@ function capT(key) {
               </div>
               <div class="pcb-uses">
                 <strong data-i18n="p_cuando_usarlo">Cuándo usarlo</strong>
-                <span data-i18n="p_c4_uses">Alta capacidad en formato SMD compacto con buena estabilidad. <em>Muy sensible a sobretensiones</em> y a corriente inversa — puede entrar en cortocircuito.</span>
+                <span data-i18n-html="p_c4_uses">Alta capacidad en formato SMD compacto con buena estabilidad. <em>Muy sensible a sobretensiones</em> y a corriente inversa — puede entrar en cortocircuito.</span>
               </div>
             </div>
           </div>
@@ -1147,7 +1147,7 @@ function capT(key) {
           <div class="ic-card-right">
             <div class="ic-type-tag">Metal–Oxide–Semiconductor</div>
             <h3 class="ic-name" data-i18n="ic_mos_name">Condensador MOS</h3>
-            <p class="ic-desc" data-i18n-html="ic_mos_desc">Usa el óxido de gate como dieléctrico y el canal del transistor como placa inferior. La densidad es muy alta gracias al SiO₂ ultra-delgado del gate, pero la capacidad <strong>depende fuertemente de la tensión aplicada</strong> — no lineal.</p>
+            <p class="ic-desc" data-i18n-html="ic_mos_desc">Usa el gate oxide como dieléctrico y el canal del transistor como placa inferior. La densidad es muy alta gracias al SiO₂ ultra-delgado del gate, pero la capacidad <strong>depende fuertemente de la tensión aplicada</strong> — no lineal.</p>
             <div class="ic-specs-grid">
               <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_densidad">Densidad</span><span class="ic-spec-v">5–30 fF/µm²</span></div>
               <div class="ic-spec"><span class="ic-spec-k" data-i18n="ic_k_linealidad">Linealidad</span><span class="ic-spec-v" data-i18n="ic_mos_lin">Baja (VCC alto)</span></div>
@@ -1212,7 +1212,7 @@ function capT(key) {
             </div>
             <div class="ic-matching-note">
               <span class="ic-match-tag" data-i18n="ic_matching">Matching</span>
-              <span data-i18n="ic_mom_match">Muy sensible a variaciones de pitch litográfico. Usar fill de metal homogéneo alrededor, y apilar siempre el mismo número de capas en los dos condensadores a emparejar.</span>
+              <span data-i18n="ic_mom_match">Muy sensible a variaciones de pitch litográfico. Usar metal fill homogéneo alrededor, y apilar siempre el mismo número de capas en los dos condensadores a emparejar.</span>
             </div>
           </div>
         </div>
@@ -2295,7 +2295,7 @@ function switchSub(id) {
 ═══════════════════════════════════════════ */
 
 // Datos de cada condensador para la tabla comparativa
-const CAP_DATA = {
+const CAP_DATA_ES = {
   ceramic: {
     name: 'Cerámico (MLCC)',
     dielectric: 'Cerámica (BaTiO₃, óxidos)',
@@ -2417,6 +2417,26 @@ const CAP_DATA = {
   }
 };
 
+const CAP_DATA_CA = {
+  ceramic: { name:'Ceràmic (MLCC)', dielectric:'Ceràmica (BaTiO₃, òxids)', er:'30 — 4000', range:'1 pF – 100 µF', voltage:'fins a 5 kV', polarized:false, tolerance:'±5 % – ±20 %', stability:'Excel·lent (C0G) / Moderada (X7R)', esr:'Molt baixa', cost:'Molt baix', lifespan:'Indefinida', typical_use:'Desacoblament, RF, filtres generals', pros:'Petit, barat, alta freqüència', cons:'X7R/X5R varien amb tensió i temperatura', svg_key:'ceramic' },
+  disc: { name:'Ceràmic de disc', dielectric:'Ceràmica (BaTiO₃) — capa única', er:'30 — 10000', range:'1 pF – 100 nF', voltage:'50 V – 15 kV', polarized:false, tolerance:'±10 % – ±80 %', stability:'Baixa (Y5V) / Excel·lent (C0G)', esr:'Baixa', cost:'Molt baix', lifespan:'Indefinida', typical_use:'Alta tensió, supressió EMI (classe X/Y)', pros:'Aguanta kV en format petit i barat', cons:'Poca capacitat — una sola capa, sense apilar', svg_key:'disc' },
+  electrolytic: { name:'Electrolític (Al)', dielectric:'Òxid d\'alumini (Al₂O₃)', er:'~ 10', range:'1 µF – 100 000 µF', voltage:'4 V – 500 V', polarized:true, tolerance:'–20 % / +80 %', stability:'Pobra — varia amb temperatura', esr:'Alta', cost:'Baix', lifespan:'2000 – 10 000 h (s\'asseca)', typical_use:'Bulk storage, fonts, filtres LF', pros:'Alta capacitat a baix cost', cons:'Polaritzat, vida limitada, ESR alta', svg_key:'electro' },
+  tantalum: { name:'Tàntal', dielectric:'Pentòxid de tàntal (Ta₂O₅)', er:'~ 27', range:'0.1 µF – 1000 µF', voltage:'2 V – 50 V', polarized:true, tolerance:'±10 % – ±20 %', stability:'Bona', esr:'Mitjana', cost:'Mitjà-alt', lifespan:'Molt llarga (sòlid)', typical_use:'Desacoblament SMD compacte, FPGA, mòbils', pros:'Estable, compacte SMD, sense assecat', cons:'Car, sensible a sobretensió (pot cremar)', svg_key:'tantalum' },
+  film: { name:'Film', dielectric:'Polímer (PET, PP, PEN, PPS)', er:'2 — 3.5', range:'1 nF – 100 µF', voltage:'50 V – 2 kV', polarized:false, tolerance:'±1 % – ±10 %', stability:'Excel·lent', esr:'Molt baixa', cost:'Mitjà', lifespan:'Molt llarga', typical_use:'Àudio HiFi, snubbers, EMI, potència', pros:'Molt lineal, baixa autoabsorció, fiable', cons:'Mida gran per a capacitats altes', svg_key:'film' },
+  mica: { name:'Mica platejada', dielectric:'Mica natural + plata', er:'5 — 7', range:'1 pF – 10 nF', voltage:'100 V – 10 kV', polarized:false, tolerance:'±1 % – ±5 %', stability:'Excepcional', esr:'Molt baixa', cost:'Molt alt', lifespan:'Indefinida', typical_use:'RF de precisió, alta tensió, ràdio professional', pros:'Estabilitat i precisió insuperables', cons:'Car, només valors petits', svg_key:'mica' },
+  supercap: { name:'Supercondensador', dielectric:'Doble capa (carboni activat)', er:'N/A (mecanisme diferent)', range:'0.1 F – 3000 F', voltage:'2.5 V – 3 V per cel·la', polarized:true, tolerance:'±20 %', stability:'Moderada', esr:'Mitjana-alta', cost:'Alt', lifespan:'10⁵ – 10⁶ cicles', typical_use:'Backup memòria, regen. d\'energia, KERS', pros:'Capacitat enorme, milers de cicles', cons:'Tensió molt baixa, fuga elevada', svg_key:'supercap' }
+};
+
+const CAP_DATA_EN = {
+  ceramic: { name:'Ceramic (MLCC)', dielectric:'Ceramic (BaTiO₃, oxides)', er:'30 — 4000', range:'1 pF – 100 µF', voltage:'up to 5 kV', polarized:false, tolerance:'±5 % – ±20 %', stability:'Excellent (C0G) / Moderate (X7R)', esr:'Very low', cost:'Very low', lifespan:'Indefinite', typical_use:'Decoupling, RF, general filtering', pros:'Small, cheap, high frequency', cons:'X7R/X5R vary with voltage and temperature', svg_key:'ceramic' },
+  disc: { name:'Disc ceramic', dielectric:'Ceramic (BaTiO₃) — single layer', er:'30 — 10000', range:'1 pF – 100 nF', voltage:'50 V – 15 kV', polarized:false, tolerance:'±10 % – ±80 %', stability:'Low (Y5V) / Excellent (C0G)', esr:'Low', cost:'Very low', lifespan:'Indefinite', typical_use:'High voltage, EMI suppression (class X/Y)', pros:'Handles kV in a small, cheap package', cons:'Low capacitance — single layer, not stacked', svg_key:'disc' },
+  electrolytic: { name:'Electrolytic (Al)', dielectric:'Aluminum oxide (Al₂O₃)', er:'~ 10', range:'1 µF – 100,000 µF', voltage:'4 V – 500 V', polarized:true, tolerance:'–20 % / +80 %', stability:'Poor — varies with temperature', esr:'High', cost:'Low', lifespan:'2000 – 10,000 h (dries out)', typical_use:'Bulk storage, power supplies, LF filters', pros:'High capacitance at low cost', cons:'Polarized, limited life, high ESR', svg_key:'electro' },
+  tantalum: { name:'Tantalum', dielectric:'Tantalum pentoxide (Ta₂O₅)', er:'~ 27', range:'0.1 µF – 1000 µF', voltage:'2 V – 50 V', polarized:true, tolerance:'±10 % – ±20 %', stability:'Good', esr:'Medium', cost:'Medium-high', lifespan:'Very long (solid)', typical_use:'Compact SMD decoupling, FPGA, mobile', pros:'Stable, compact SMD, no drying out', cons:'Expensive, sensitive to overvoltage (can ignite)', svg_key:'tantalum' },
+  film: { name:'Film', dielectric:'Polymer (PET, PP, PEN, PPS)', er:'2 — 3.5', range:'1 nF – 100 µF', voltage:'50 V – 2 kV', polarized:false, tolerance:'±1 % – ±10 %', stability:'Excellent', esr:'Very low', cost:'Medium', lifespan:'Very long', typical_use:'HiFi audio, snubbers, EMI, power', pros:'Very linear, low self-absorption, reliable', cons:'Large size for high capacitance', svg_key:'film' },
+  mica: { name:'Silvered mica', dielectric:'Natural mica + silver', er:'5 — 7', range:'1 pF – 10 nF', voltage:'100 V – 10 kV', polarized:false, tolerance:'±1 % – ±5 %', stability:'Exceptional', esr:'Very low', cost:'Very high', lifespan:'Indefinite', typical_use:'Precision RF, high voltage, professional radio', pros:'Unmatched stability and precision', cons:'Expensive, small values only', svg_key:'mica' },
+  supercap: { name:'Supercapacitor', dielectric:'Double layer (activated carbon)', er:'N/A (different mechanism)', range:'0.1 F – 3000 F', voltage:'2.5 V – 3 V per cell', polarized:true, tolerance:'±20 %', stability:'Moderate', esr:'Medium-high', cost:'High', lifespan:'10⁵ – 10⁶ cycles', typical_use:'Memory backup, energy regen., KERS', pros:'Huge capacitance, thousands of cycles', cons:'Very low voltage, high leakage', svg_key:'supercap' }
+};
+
 // SVGs en miniatura para la tabla (referencia a los del DOM)
 function getCapSvg(capId) {
   const card = document.querySelector(`.pcb-card[data-cap-id="${capId}"]`);
@@ -2437,7 +2457,7 @@ function toggleCap(checkboxEl) {
   } else {
     if (selected.size >= 4) {
       // Limitar a 4 para que la tabla no se sature
-      alert('Puedes comparar hasta 4 condensadores a la vez.');
+      alert(capT('compare_max_alert'));
       return;
     }
     selected.add(id);
@@ -2450,11 +2470,9 @@ function toggleCap(checkboxEl) {
 function updateCompareBar() {
   const bar   = document.getElementById('compareBar');
   const count = document.getElementById('compareCount');
-  const s1    = document.getElementById('compareS');
-  const s2    = document.getElementById('compareS2');
+  const label = document.getElementById('compareCountLabel');
   count.textContent = selected.size;
-  s1.textContent = selected.size === 1 ? '' : 'es';
-  s2.textContent = selected.size === 1 ? '' : 's';
+  label.textContent = capT(selected.size === 1 ? 'compare_count_one' : 'compare_count_many');
   if (selected.size >= 2) bar.classList.add('visible');
   else                    bar.classList.remove('visible');
 }
@@ -2480,7 +2498,7 @@ function closeCompare() {
 }
 
 /* Qué significa cada fila — se muestra en el "!" junto al nombre */
-const ROW_INFO = {
+const ROW_INFO_ES = {
   dielectric: 'El material aislante que separa las placas. Es la decisión de fondo: condiciona cuánta capacidad cabe en un volumen dado, cuánta tensión aguanta antes de perforarse y cómo se porta con la temperatura.',
   er: 'Permitividad relativa. Multiplica la capacidad: C = ε₀·εᵣ·A/d. Un εᵣ enorme parece siempre mejor, pero los dieléctricos de εᵣ alto (ferroeléctricos como el BaTiO₃) pagan esa densidad con estabilidad mala. Por eso no se puede decir cuál "gana".',
   range: 'Valores comerciales típicos de la familia. No se marca ningún ganador: el mejor rango es el que cubre lo que necesitas — de nada sirve llegar a 3000 F si buscas 10 pF.',
@@ -2494,6 +2512,36 @@ const ROW_INFO = {
   typical_use: 'Dónde se usa habitualmente esta familia.',
   pros: 'Lo que la hace elegible frente a las demás.',
   cons: 'Lo que hay que tener en cuenta antes de elegirla.',
+};
+const ROW_INFO_CA = {
+  dielectric: 'El material aïllant que separa les plaques. És la decisió de fons: condiciona quanta capacitat cap en un volum donat, quanta tensió aguanta abans de perforar-se i com es comporta amb la temperatura.',
+  er: 'Permitivitat relativa. Multiplica la capacitat: C = ε₀·εᵣ·A/d. Un εᵣ enorme sembla sempre millor, però els dielèctrics d\'εᵣ alt (ferroelèctrics com el BaTiO₃) paguen aquesta densitat amb mala estabilitat. Per això no es pot dir quin "guanya".',
+  range: 'Valors comercials típics de la família. No es marca cap guanyador: el millor rang és el que cobreix el que necessites — de res serveix arribar a 3000 F si busques 10 pF.',
+  voltage: 'Tensió màxima de treball. Passar-se perfora el dielèctric i el condensador mor, normalment en curtcircuit. A la pràctica es tria amb marge: en electrolítics, com a mínim el doble de la tensió de treball.',
+  polarized: 'Si té polaritat definida. Un polaritzat muntat al revés es degrada i pot rebentar. Els no polaritzats accepten qualsevol orientació i tensió alterna — més còmodes i més segurs.',
+  tolerance: 'Quant pot desviar-se la capacitat real del valor nominal. Crítica en filtres, osciŀladors i temporitzadors; gairebé irrellevant en desacoblament, on només importa que hi hagi càrrega disponible.',
+  stability: 'Quant canvia la capacitat amb la temperatura, la tensió aplicada i el temps. Un X7R pot perdre la meitat de la seva C a la tensió nominal — un detall que no apareix al valor imprès.',
+  esr: 'Resistència sèrie equivalent: la resistència paràsita en sèrie amb el condensador. Provoca pèrdues i escalfament, i limita el corrent de pic. Determinant en desacoblament i en fonts commutades.',
+  cost: 'Cost relatiu per unitat de capacitat dins la família.',
+  lifespan: 'Com envelleix. Els electrolítics són el cas a part: l\'electròlit s\'evapora i la seva vida es compta en hores a temperatura nominal. Els d\'estat sòlid no es degraden de forma apreciable.',
+  typical_use: 'On s\'usa habitualment aquesta família.',
+  pros: 'El que la fa elegible davant les altres.',
+  cons: 'El que cal tenir en compte abans de triar-la.',
+};
+const ROW_INFO_EN = {
+  dielectric: 'The insulating material that separates the plates. This is the fundamental choice: it determines how much capacitance fits in a given volume, how much voltage it withstands before breaking down, and how it behaves with temperature.',
+  er: 'Relative permittivity. It multiplies capacitance: C = ε₀·εᵣ·A/d. A huge εᵣ always seems better, but high-εᵣ dielectrics (ferroelectrics like BaTiO₃) pay for that density with poor stability. That\'s why there\'s no single "winner".',
+  range: 'Typical commercial values for the family. No winner is marked: the best range is the one that covers what you need — reaching 3000 F is useless if you\'re after 10 pF.',
+  voltage: 'Maximum working voltage. Exceeding it punctures the dielectric and the capacitor dies, usually shorting out. In practice it\'s chosen with margin: for electrolytics, at least double the working voltage.',
+  polarized: 'Whether it has defined polarity. A polarized capacitor mounted backwards degrades and can burst. Non-polarized ones accept any orientation and AC voltage — more convenient and safer.',
+  tolerance: 'How much the real capacitance can deviate from the nominal value. Critical in filters, oscillators and timers; nearly irrelevant in decoupling, where only having charge available matters.',
+  stability: 'How much capacitance changes with temperature, applied voltage and time. An X7R can lose half its C at rated voltage — a detail that doesn\'t show up in the printed value.',
+  esr: 'Equivalent series resistance: the parasitic resistance in series with the capacitor. It causes losses and heating, and limits peak current. Decisive in decoupling and switching supplies.',
+  cost: 'Relative cost per unit of capacitance within the family.',
+  lifespan: 'How it ages. Electrolytics are the special case: the electrolyte evaporates and its life is counted in hours at rated temperature. Solid-state types don\'t degrade appreciably.',
+  typical_use: 'Where this family is typically used.',
+  pros: 'What makes it a good pick over the others.',
+  cons: 'What to keep in mind before choosing it.',
 };
 
 /* Puntuación por fila para marcar la mejor opción.
@@ -2534,7 +2582,7 @@ const SCORERS = {
     return Math.max(...m.map(x => parseFloat(x[1]) * V_MULT[x[2]]));
   },
   // No polarizado = mejor (acepta AC y no revienta al invertirlo)
-  polarized: (_t, id) => CAP_DATA[id].polarized ? 0 : 1,
+  polarized: (_t, id) => CAP_DATA_ES[id].polarized ? 0 : 1,
   // Tolerancia más estrecha = mejor
   tolerance: txt => {
     const m = [...txt.matchAll(/([\d.]+)\s*%/g)];
@@ -2554,37 +2602,41 @@ const SCORERS = {
 
 function buildCompareTable() {
   const ids = Array.from(selected);
+  const DATA = capLang === 'ca' ? CAP_DATA_CA : capLang === 'en' ? CAP_DATA_EN : CAP_DATA_ES;
+  const ROW_INFO = capLang === 'ca' ? ROW_INFO_CA : capLang === 'en' ? ROW_INFO_EN : ROW_INFO_ES;
   const rows = [
-    { key: 'svg',         label: '',             render: id => `<div style="padding:8px">${getCapSvg(id)}</div>` },
-    { key: 'dielectric',  label: 'Dieléctrico' },
+    { key: 'svg',         label: '',                        render: id => `<div style="padding:8px">${getCapSvg(id)}</div>` },
+    { key: 'dielectric',  label: capT('cmp_dielectric') },
     { key: 'er',          label: 'εᵣ' },
-    { key: 'range',       label: 'Rango de C' },
-    { key: 'voltage',     label: 'Tensión' },
-    { key: 'polarized',   label: 'Polarizado',
-      render: id => CAP_DATA[id].polarized
-        ? '<span class="badge-yes">Sí ⚠</span>'
-        : '<span class="badge-no">No</span>' },
-    { key: 'tolerance',   label: 'Tolerancia' },
-    { key: 'stability',   label: 'Estabilidad' },
+    { key: 'range',       label: capT('cmp_range') },
+    { key: 'voltage',     label: capT('cmp_voltage') },
+    { key: 'polarized',   label: capT('cmp_polarized'),
+      render: id => CAP_DATA_ES[id].polarized
+        ? `<span class="badge-yes">${capT('cmp_yes')} ⚠</span>`
+        : `<span class="badge-no">${capT('cmp_no')}</span>` },
+    { key: 'tolerance',   label: capT('cmp_tolerance') },
+    { key: 'stability',   label: capT('cmp_stability') },
     { key: 'esr',         label: 'ESR' },
-    { key: 'cost',        label: 'Coste' },
-    { key: 'lifespan',    label: 'Vida útil' },
-    { key: 'typical_use', label: 'Aplicación' },
-    { key: 'pros',        label: 'Ventajas' },
-    { key: 'cons',        label: 'Desventajas' },
+    { key: 'cost',        label: capT('cmp_cost') },
+    { key: 'lifespan',    label: capT('cmp_lifespan') },
+    { key: 'typical_use', label: capT('cmp_typical_use') },
+    { key: 'pros',        label: capT('cmp_pros') },
+    { key: 'cons',        label: capT('cmp_cons') },
   ];
 
-  let html = '<table class="compare-table"><thead><tr><th>Característica</th>';
-  ids.forEach(id => { html += `<th>${CAP_DATA[id].name}</th>`; });
+  let html = `<table class="compare-table"><thead><tr><th>${capT('cmp_feature')}</th>`;
+  ids.forEach(id => { html += `<th>${DATA[id].name}</th>`; });
   html += '</tr></thead><tbody>';
 
   rows.forEach(row => {
-    // ¿Quién gana esta fila? (null si la fila no se puntúa)
+    // ¿Quién gana esta fila? Se puntua SIEMPRE con el dato canonico en
+    // español (CAP_DATA_ES), independientemente del idioma que se muestre,
+    // porque el scoring busca palabras clave en ese idioma fijo.
     let winners = new Set();
     const scorer = SCORERS[row.key];
     if (scorer && ids.length > 1) {
       const scores = ids.map(id => {
-        const raw = CAP_DATA[id][row.key];
+        const raw = CAP_DATA_ES[id][row.key];
         const v = scorer(String(raw ?? ''), id);
         return { id, v };
       }).filter(x => x.v !== null && !Number.isNaN(x.v));
@@ -2602,7 +2654,7 @@ function buildCompareTable() {
       : '';
     html += `<tr><th>${row.label}${tip}</th>`;
     ids.forEach(id => {
-      const value = row.render ? row.render(id) : (CAP_DATA[id][row.key] || '—');
+      const value = row.render ? row.render(id) : (DATA[id][row.key] || '—');
       const cls = winners.has(id) ? ' class="best"' : '';
       html += `<td${cls}>${value}</td>`;
     });
@@ -2611,8 +2663,7 @@ function buildCompareTable() {
   html += '</tbody></table>';
   html += `<div class="compare-legend">
     <span class="compare-legend-swatch"></span>
-    Mejor opción de la fila entre las seleccionadas. Las filas sin marcar
-    (dieléctrico, εᵣ, rango, aplicación) no tienen un ganador objetivo: depende de para qué lo quieras.
+    ${capT('cmp_legend')}
   </div>`;
   return html;
 }
@@ -2631,12 +2682,12 @@ document.querySelectorAll('.section').forEach(s => obs.observe(s));
 
 <!-- BARRA FLOTANTE DE COMPARACIÓN -->
 <div class="compare-bar" id="compareBar">
-  <div class="compare-count">
-    <strong id="compareCount">0</strong> condensador<span id="compareS">es</span> seleccionado<span id="compareS2">s</span>
+  <div class="compare-count" id="compareCountWrap">
+    <strong id="compareCount">0</strong> <span id="compareCountLabel">condensadores seleccionados</span>
   </div>
   <div class="compare-actions">
-    <button class="btn-ghost" onclick="clearSelection()">Deseleccionar todo</button>
-    <button class="btn-primary" onclick="openCompare()">Comparar →</button>
+    <button class="btn-ghost" onclick="clearSelection()" data-i18n="compare_clear">Deseleccionar todo</button>
+    <button class="btn-primary" onclick="openCompare()" data-i18n="compare_btn">Comparar →</button>
   </div>
 </div>
 
@@ -2644,7 +2695,7 @@ document.querySelectorAll('.section').forEach(s => obs.observe(s));
 <div class="compare-modal" id="compareModal" onclick="if(event.target===this)closeCompare()">
   <div class="compare-modal-content">
     <div class="compare-modal-header">
-      <h3>Comparación de condensadores</h3>
+      <h3 data-i18n="compare_title">Comparación de condensadores</h3>
       <button class="compare-modal-close" onclick="closeCompare()">×</button>
     </div>
     <div class="compare-modal-body" id="compareBody">
@@ -3834,7 +3885,7 @@ function initICMIM(container) {
   const SIN_COL = 0xb14dff;  // violeta
   const VIA_COL = 0xe8e8ee;  // plata clara
 
-  const viaMat = new THREE.MeshStandardMaterial({ color: VIA_COL, roughness: 0.15, metalness: 0.95 });
+  const viaMat = new THREE.MeshStandardMaterial({ color: VIA_COL, roughness: 0.3, metalness: 0.6, emissive: VIA_COL, emissiveIntensity: 0.15 });
 
   // ── Niveles del stack ──
   const M2_Y0 = 0.00, M2_H = 0.16;
@@ -3960,7 +4011,7 @@ function initICMOS(container) {
   // ── Nivel M1 (por encima del poly) ──
   const M1_Y0 = POLY_TOP + 0.14, M1_H = 0.14;
 
-  const cMat = mat(0xd8d8e0, { roughness: 0.2, metalness: 0.9, emissiveIntensity: 0 });
+  const cMat = mat(0xd8d8e0, { roughness: 0.3, metalness: 0.6, emissiveIntensity: 0.15 });
   function contact(x, z, y0, y1) {
     const h = y1 - y0;
     const c = addShadow(new THREE.Mesh(new THREE.BoxGeometry(0.18, h, 0.18), cMat));
@@ -4004,7 +4055,7 @@ function initICMOM(container) {
       color: c, roughness: 0.25, metalness: 0.85, emissive: c, emissiveIntensity: 0.12,
     });
   }
-  const viaMat = new THREE.MeshStandardMaterial({ color: 0xe8e8ee, roughness: 0.15, metalness: 0.95 });
+  const viaMat = new THREE.MeshStandardMaterial({ color: 0xe8e8ee, roughness: 0.3, metalness: 0.6, emissive: 0xe8e8ee, emissiveIntensity: 0.15 });
 
   LAYERS.forEach((L, li) => {
     const m = mat(L.col);
@@ -5021,16 +5072,6 @@ window.switchTab = function(id) {
 document.querySelectorAll('.subtab-panel.active .three-container, .tab-panel.active .three-container').forEach(initContainer);
 
 /* Toggle radial ↔ axial en la tarjeta THT */
-const THT_VARIANTS = {
-  radial: {
-    spec: 'Radial — patillas paralelas, mismo lado',
-    uses: 'Componentes grandes (altas tensiones, alta corriente), donde la fuerza mecánica importa, o donde es necesaria reparación manual. El <strong>radial</strong> es la geometría THT más común hoy: ocupa poco espacio horizontal y es fácil de insertar a máquina.',
-  },
-  axial: {
-    spec: 'Axial — patillas en extremos opuestos',
-    uses: 'Componentes grandes (altas tensiones, alta corriente), donde la fuerza mecánica importa, o donde es necesaria reparación manual. El <strong>axial</strong> está casi extinto en electrónica general: sobrevive en restauración de equipos vintage, audio audiófilo y aplicaciones militares con altos requisitos mecánicos.',
-  },
-};
 document.querySelectorAll('.tht-toggle-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const view = btn.dataset.view;
@@ -5038,8 +5079,12 @@ document.querySelectorAll('.tht-toggle-btn').forEach(btn => {
     btn.classList.add('active');
     document.getElementById('three-radial').style.display = view === 'radial' ? '' : 'none';
     document.getElementById('three-axial').style.display  = view === 'axial'  ? '' : 'none';
-    document.getElementById('tht-variant-spec').textContent = THT_VARIANTS[view].spec;
-    document.getElementById('tht-uses-text').innerHTML      = THT_VARIANTS[view].uses;
+    const specEl = document.getElementById('tht-variant-spec');
+    const usesEl = document.getElementById('tht-uses-text');
+    specEl.setAttribute('data-i18n', 'p_tht_variant_' + view);
+    usesEl.setAttribute('data-i18n-html', 'p_tht_uses_' + view);
+    specEl.textContent = capT('p_tht_variant_' + view);
+    usesEl.innerHTML   = capT('p_tht_uses_' + view);
     // Inicializa el modelo la primera vez que se muestra
     const c = document.getElementById('three-' + view);
     if (c) initContainer(c);
@@ -5061,8 +5106,8 @@ const SKY130_DEVICES = {
     info:{diel:'IMD SiO₂ (fringe M1‖M2)', densidad:'~0.5 fF/µm²', vcc:'< 50 ppm/V²', wlMin:'Fijo: 4.4 × 4.6 µm/celda', wlMax:'Apilar multiplicando M', parasito:'Routing encima sin shield no extraído'},
     info_ca:{diel:'IMD SiO₂ (fringe M1‖M2)', densidad:'~0.5 fF/µm²', vcc:'< 50 ppm/V²', wlMin:'Fix: 4.4 × 4.6 µm/cel·la', wlMax:'Apilar multiplicant M', parasito:'Routing per sobre sense shield no extret'},
     info_en:{diel:'IMD SiO₂ (fringe M1‖M2)', densidad:'~0.5 fF/µm²', vcc:'< 50 ppm/V²', wlMin:'Fixed: 4.4 × 4.6 µm/cell', wlMax:'Stack by multiplying M', parasito:'Routing on top without shield, not extracted'},
-    matchNote:'El dibujo es el layout REAL: los 140 polígonos del GDS de la PDK (met1, via, met2), replicados tantas veces como celdas haga falta. Matching: fill de metal idéntico alrededor de cada par y misma orientación de dedos.',
-    matchNote_ca:'El dibuix és el layout REAL: els 140 polígons del GDS de la PDK (met1, via, met2), replicats tantes vegades com calguin cel·les. Matching: fill de metall idèntic al voltant de cada parell i mateixa orientació de dits.',
+    matchNote:'El dibujo es el layout REAL: los 140 polígonos del GDS de la PDK (met1, via, met2), replicados tantas veces como celdas haga falta. Matching: metal fill idéntico alrededor de cada par y misma orientación de dedos.',
+    matchNote_ca:'El dibuix és el layout REAL: els 140 polígons del GDS de la PDK (met1, via, met2), replicats tantes vegades com calguin cel·les. Matching: metal fill idèntic al voltant de cada parell i mateixa orientació de dits.',
     matchNote_en:'The drawing is the REAL layout: the 140 polygons from the PDK\'s GDS (met1, via, met2), replicated as many times as cells are needed. Matching: identical metal fill around each pair and the same finger orientation.' },
   var:  { name:'sky130_fd_pr__cap_var_lvt', label:'Varactor — cap_var_lvt', cArea:6.5, cPerim:0.3, wMin:1.0, lMin:0.18, wMax:10, lMax:10, fixedSize:false, color:'#ffb060',
     info:{diel:'Gate oxide LVT PMOS (N-well)', densidad:'~6–7 fF/µm² (acumulación)', vcc:'Tuneable ±30% con VGS', wlMin:'W ≥ 0.42 µm, L ≥ 0.15 µm', wlMax:'~10 × 10 µm', parasito:'Fuga de gate — no usar como hold cap'},
@@ -5081,8 +5126,8 @@ const GF180_DEVICES = {
     matchNote_ca:'És l\'únic MIM que porta la PDK oberta de GF180 (cap_mim_2p0fF). Mínim 5x5 µm per DRC, màxim 100x100. Comú-centroide per a ràtios precisos. El bloc de metall separat a un costat no és part del condensador: és el contacte que treu la placa inferior (M3) fora de l\'àrea activa, per no haver de travessar la placa superior.',
     matchNote_en:'It is the only MIM that GF180\'s open PDK provides (cap_mim_2p0fF). Minimum 5x5 µm by DRC, maximum 100x100. Common-centroid for precise ratios. The separate metal block off to one side is not part of the capacitor: it is the contact that brings the bottom plate (M3) out of the active area, so it doesn\'t have to cross the top plate.' },
   mos: { name:'gf180mcu_fd_pr__cap_nmos', label:'MOSCAP — cap_mos', cArea:4.8, cPerim:0, wMin:0.42, lMin:0.28, wMax:100, lMax:100, fixedSize:false, color:'#ff7a1a',
-    info:{diel:'Óxido de gate (poly2 sobre canal)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Voltage-dependent (acumulación/inversión)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrato · requiere polarizar el pozo'},
-    info_ca:{diel:'Òxid de gate (poly2 sobre canal)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Depenent de la tensió (acumulació/inversió)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrat · cal polaritzar el pou'},
+    info:{diel:'Gate oxide (poly2 sobre canal)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Voltage-dependent (acumulación/inversión)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrato · requiere polarizar el pozo'},
+    info_ca:{diel:'Gate oxide (poly2 sobre canal)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Depenent de la tensió (acumulació/inversió)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrat · cal polaritzar el pou'},
     info_en:{diel:'Gate oxide (poly2 over channel)', densidad:'~4.8 fF/µm² (Cox, 3.3 V)', vcc:'Voltage-dependent (accumulation/inversion)', wlMin:'0.42 × 0.28 µm', wlMax:'~100 × 100 µm', parasito:'C_well-substrate · requires biasing the well'},
     matchNote:'Celda parametrica (equivalente a gf180.cap_mos, deepnwell=True): placa superior = poly2 (gate) con su propio contacto en M1. Placa inferior = fuente + drenador (contactos a ambos lados del canal) + un unico tap de pozo (bulk, basta con uno para polarizarlo) — todo al mismo nodo (S=D=bulk), subido por via1 a una unica pletina en METAL2. Solo dos terminales: gate y body. Geometria propia con reglas de escala 180 nm — no viene de la PDK GDS, a diferencia del MIM.',
     matchNote_ca:'Cel·la paramètrica (equivalent a gf180.cap_mos, deepnwell=True): placa superior = poly2 (gate) amb el seu propi contacte en M1. Placa inferior = font + drenador (contactes a banda i banda del canal) + un únic tap de pou (bulk, amb un n\'hi ha prou per polaritzar-lo) — tot al mateix node (S=D=bulk), pujat per via1 a una única pletina en METAL2. Només dos terminals: gate i body. Geometria pròpia amb regles a escala 180 nm — no ve de la PDK GDS, a diferència del MIM.',
@@ -5572,8 +5617,8 @@ function dsgnBuild3D(units, cols, rows) {
   const vppOrder = VPP_CELL.layers.map(L => L.n);
   const vppColorMap = Object.fromEntries(VPP_CELL.layers.map(L => [L.n, L.c]));
   note.innerHTML = `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
-      ${showC * showR} de ${units} celdas · ${(showC * showR * 140)} polígonos reales del GDS
-      ${hidden > 0 ? `· +${hidden} no mostradas` : ''} · arrastra para rotar
+      ${showC * showR} ${capT('d_of')} ${units} ${capT('d_celdas')} · ${(showC * showR * 140)} ${capT('d_gds_polys')}
+      ${hidden > 0 ? `· +${hidden} ${capT('d_not_shown')}` : ''} · ${capT('d_drag_rotate')}
       ${dsgnArrayNote(showC * showR, units)}
       <div style="margin-top:4px">${dsgnLegendHTML(vppOrder, vppColorMap)}</div>
     </div>`;
@@ -5636,11 +5681,11 @@ function dsgnBuildMIM3D(W, L, units, RULES = MIM_RULES) {
   d.schedule();
 
   const C = mimCval(W, L);
-  const MIM_LABEL = { m3:'Metal3 (placa inf.)', mimcap:'dieléctrico MIM', mimcc:'contacto MIM', via3:'via3', m4:'Metal4 (placa sup.)' };
+  const MIM_LABEL = { m3:'Metal3 (' + capT('leg_plate_bot') + ')', mimcap:capT('leg_mim_diel'), mimcc:capT('leg_mim_contact'), via3:'via3', m4:'Metal4 (' + capT('leg_plate_top') + ')' };
   document.getElementById('dsgn-3d-note').innerHTML =
     `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
-      ${showN} de ${units} ${units > 1 ? 'unidades' : 'unidad'} · W=${W.toFixed(2)} L=${L.toFixed(2)} µm · C=${C.toFixed(2)} fF/unidad<br>
-      <span style="color:var(--blue)">layout generado con las reglas de sky130.tcl</span>
+      ${showN} de ${units} ${units > 1 ? capT('d_unidades') : capT('d_unidad')} · W=${W.toFixed(2)} L=${L.toFixed(2)} µm · C=${C.toFixed(2)} fF/unidad<br>
+      <span style="color:var(--blue)">${capT('d_layout_sky130')}</span>
       ${dsgnArrayNote(showN, units)}
       <div style="margin-top:4px">${dsgnLegendHTML(ORDER, MIM_COL, MIM_LABEL)}</div>
     </div>`;
@@ -5660,7 +5705,7 @@ const VAR_RULES = {
 const VAR_COL = { nwell:'#9d4dff', tap_ring:'#00d5f0', diff:'#22e05a',
                   poly:'#ff7a1a', licon:'#e8e8ee', li:'#00b0ff' };
 const VAR_Z = { nwell:[0.0,0.60], tap_ring:[0.43,0.18], diff:[0.43,0.18],
-                poly:[0.44,0.18], licon:[0.60,0.34], li:[0.94,0.10] };
+                poly:[0.61,0.18], licon:[0.61,0.34], li:[0.95,0.10] };
 
 function varGenerate(w, l) {
   const R = VAR_RULES, P = [];
@@ -5737,11 +5782,11 @@ function dsgnBuildVAR3D(W, L, units) {
   d.controls.target.set(0, 0.5*SC, 0);
   d.camera.position.set(span*0.7, span*0.6 + 2, span*0.8);
   d.controls.update(); d.schedule();
-  const VAR_LABEL = { nwell:'nwell', tap_ring:'tap (bulk)', diff:'diff (S/D)', poly:'poly2 (gate)', licon:'contacto', li:'metal local' };
+  const VAR_LABEL = { nwell:'nwell', tap_ring:'tap (bulk)', diff:'diff (S/D)', poly:'poly2 (gate)', licon:capT('leg_contact'), li:capT('leg_metal_local') };
   document.getElementById('dsgn-3d-note').innerHTML =
     `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
-      ${showN} de ${units} ${units>1?'unidades':'unidad'} · W=${W.toFixed(2)} L=${L.toFixed(2)} um<br>
-      <span style="color:var(--blue)">geometria generada con las reglas de sky130.tcl</span>
+      ${showN} de ${units} ${units > 1 ? capT('d_unidades') : capT('d_unidad')} · W=${W.toFixed(2)} L=${L.toFixed(2)} um<br>
+      <span style="color:var(--blue)">${capT('d_geom_sky130')}</span>
       ${dsgnArrayNote(showN, units)}
       <div style="margin-top:4px">${dsgnLegendHTML(ORDER, VAR_COL, VAR_LABEL)}</div>
     </div>`;
@@ -5773,7 +5818,7 @@ const GF180_MOS_COL = {
 };
 const GF180_MOS_Z = {
   dnwell:  [-1.00, 1.60], nwell: [0.00, 0.60], diff: [0.43, 0.19], tap: [0.43, 0.19],
-  poly:    [0.44, 0.19],  contact:[0.60, 0.34], metal1:[0.96, 0.12],
+  poly:    [0.62, 0.19],  contact:[0.62, 0.34], metal1:[0.96, 0.12],
   via1:    [1.08, 0.10],  metal2:[1.20, 0.16],
 };
 
@@ -5869,12 +5914,12 @@ function dsgnBuildGF180MOS3D(W, L, units) {
 
   document.getElementById('dsgn-3d-note').innerHTML =
     `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
-      ${showN} de ${units} ${units>1?'unidades':'unidad'} · W=${W.toFixed(2)} L=${L.toFixed(2)} um<br>
-      <span style="color:var(--blue)">generado con reglas propias (equivalente a gf180.cap_mos)</span><br>
+      ${showN} de ${units} ${units > 1 ? capT('d_unidades') : capT('d_unidad')} · W=${W.toFixed(2)} L=${L.toFixed(2)} um<br>
+      <span style="color:var(--blue)">${capT('d_gf180_mos_rules')}</span><br>
       ${dsgnArrayNote(showN, units)}
       <div style="margin-top:4px">${legend}</div>
-      <span style="opacity:.7">metal2 = una unica pletina horizontal: une los contactos de S/D y de bulk en el mismo nodo (body). metal1 = contactos locales, via1 = salto a metal2</span><br>
-      <span style="opacity:.6">geometria estilizada a escala 180 nm — no verificada contra bbox de la PDK</span>
+      <span style="opacity:.7">${capT('d_gf180_mos_note')}</span><br>
+      <span style="opacity:.6">${capT('d_gf180_mos_stylized')}</span>
     </div>`;
 }
 
@@ -6061,14 +6106,14 @@ function dsgnBuildIHPMIM3D(W, L, units) {
   d.controls.update(); d.schedule();
 
   const nv = polys.filter(p => p.layer === 'Vmim').length;
-  const IHP_MIM_LABEL = { Metal5:'Metal5 (placa inf.)', MIM:'dieléctrico MIM', Vmim:'via MIM', TopMetal1:'TopMetal1 (placa sup.)' };
+  const IHP_MIM_LABEL = { Metal5:'Metal5 (' + capT('leg_plate_bot') + ')', MIM:capT('leg_mim_diel'), Vmim:capT('leg_via_mim'), TopMetal1:'TopMetal1 (' + capT('leg_plate_top') + ')' };
   document.getElementById('dsgn-3d-note').innerHTML =
     `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
-      ${showN} de ${units} ${units>1?'unidades':'unidad'} · W=${W.toFixed(2)} L=${L.toFixed(2)} um · ${polys.length} poligonos (${nv} vias Vmim)<br>
-      <span style="color:var(--blue)">mismas reglas que gdsfactory/ihp</span>
+      ${showN} de ${units} ${units > 1 ? capT('d_unidades') : capT('d_unidad')} · W=${W.toFixed(2)} L=${L.toFixed(2)} um · ${polys.length} poligonos (${nv} vias Vmim)<br>
+      <span style="color:var(--blue)">${capT('d_same_rules_ihp')}</span>
       ${dsgnArrayNote(showN, units)}
       <div style="margin-top:4px">${dsgnLegendHTML(ORDER, IHP_LAY, IHP_MIM_LABEL)}</div>
-      <span style="opacity:.7">verificado contra la PDK: bbox y nº de vias identicos de 2x2 a 100x100 um</span>
+      <span style="opacity:.7">${capT('d_verified_mim')}</span>
     </div>`;
 }
 
@@ -6103,10 +6148,10 @@ function dsgnBuildIHPMOM3D(nfingers, length) {
   const IHP_MOM_LABEL = { Metal1:'Metal1', Via1:'Via1', Metal2:'Metal2', Via2:'Via2', Metal3:'Metal3', Metal4:'Metal4', Metal5:'Metal5' };
   document.getElementById('dsgn-3d-note').innerHTML =
     `<div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.6">
-      nfingers=${nfingers} · L=${length.toFixed(2)} um · ${polys.length} poligonos<br>
-      <span style="color:var(--blue)">mismas reglas que gdsfactory/ihp</span>
+      nfingers=${nfingers} · L=${length.toFixed(2)} um · ${polys.length} ${capT('d_gds_polys_short')}<br>
+      <span style="color:var(--blue)">${capT('d_same_rules_ihp')}</span>
       <div style="margin-top:4px">${dsgnLegendHTML(momOrder, IHP_MOM_LAY, IHP_MOM_LABEL)}</div>
-      <span style="opacity:.7">verificado contra la PDK: bbox, nº de dedos y de vias identicos de 1 a 200 dedos</span>
+      <span style="opacity:.7">${capT('d_verified_mom')}</span>
     </div>`;
 }
 
@@ -6334,6 +6379,16 @@ window.dsgnUpdateInfo = dsgnUpdateInfo;
 Object.assign(window.CAP_I18N.es, {
     eyebrow: 'Microelectrónica · Diseño de CI',
     back_home: '← Volver a la página principal',
+    /* ── Tabla comparativa ── */
+    compare_clear: 'Deseleccionar todo', compare_btn: 'Comparar →',
+    compare_title: 'Comparación de condensadores',
+    compare_count_one: 'condensador seleccionado', compare_count_many: 'condensadores seleccionados',
+    compare_max_alert: 'Puedes comparar hasta 4 condensadores a la vez.',
+    cmp_feature: 'Característica', cmp_dielectric: 'Dieléctrico', cmp_range: 'Rango de C',
+    cmp_voltage: 'Tensión', cmp_polarized: 'Polarizado', cmp_yes: 'Sí', cmp_no: 'No',
+    cmp_tolerance: 'Tolerancia', cmp_stability: 'Estabilidad', cmp_cost: 'Coste',
+    cmp_lifespan: 'Vida útil', cmp_typical_use: 'Aplicación', cmp_pros: 'Ventajas', cmp_cons: 'Desventajas',
+    cmp_legend: 'Mejor opción de la fila entre las seleccionadas. Las filas sin marcar (dieléctrico, εᵣ, rango, aplicación) no tienen un ganador objetivo: depende de para qué lo quieras.',
     h1_title: 'Condensadores<br>en <em>chips</em>',
     nav_fundamentos: 'Fundamentos', nav_pcb: 'Condensadores en PCB',
     nav_ic: 'Condensadores en IC', nav_disenyo: 'Crea tu condensador',
@@ -6423,6 +6478,8 @@ Object.assign(window.CAP_I18N.es, {
     p_tht_sold: 'Patillas a través — wave soldering', p_tht_size: 'desde 4 mm hasta varios cm',
     p_tht_ens: 'Manual o semi-automático', p_tht_variant_radial: 'Radial — patillas paralelas, mismo lado',
     p_tht_uses_radial: 'Componentes grandes (altas tensiones, alta corriente), donde la fuerza mecánica importa, o donde es necesaria reparación manual. El <strong>radial</strong> es la geometría THT más común hoy: ocupa poco espacio horizontal y es fácil de insertar a máquina.',
+    p_tht_variant_axial: 'Axial — patillas en extremos opuestos',
+    p_tht_uses_axial: 'Componentes grandes (altas tensiones, alta corriente), donde la fuerza mecánica importa, o donde es necesaria reparación manual. El <strong>axial</strong> está casi extinto en electrónica general: sobrevive en restauración de equipos vintage, audio audiófilo y aplicaciones militares con altos requisitos mecánicos.',
     d_view_label: 'Layout real · 3D interactivo — arrastra para rotar, scroll para zoom',
     d_update_btn: '↻ Actualizar 3D',
     /* ── IC ── */
@@ -6441,6 +6498,20 @@ Object.assign(window.CAP_I18N.es, {
     d_warn_parallel: '⚠ La capacidad objetivo supera el tamaño máximo de una sola unidad — se necesitan {n} condensadores en paralelo. El visor 3D solo dibuja una muestra representativa (hasta 4 celdas, por rendimiento) y NO el metal que las uniría en un mismo nodo: el resto de unidades y ese bus de rutado son de nivel superior (los coloca el layout del array, no la celda de la PDK).',
     d_array_note: 'mostrando {shown} de {total} por rendimiento — sin el metal de rutado que las uniría (bus de nivel superior, no de la celda)',
     d_cap_pdkrules: 'generado con las reglas del PDK', d_cap_regen: 'regenerado al vuelo',
+    d_layout_sky130: 'layout generado con las reglas de sky130.tcl',
+    d_geom_sky130: 'geometria generada con las reglas de sky130.tcl',
+    d_same_rules_ihp: 'mismas reglas que gdsfactory/ihp',
+    d_verified_mim: 'verificado contra la PDK: bbox y nº de vias identicos de 2x2 a 100x100 um',
+    d_verified_mom: 'verificado contra la PDK: bbox, nº de dedos y de vias identicos de 1 a 200 dedos',
+    d_unidad: 'unidad', d_unidades: 'unidades',
+    d_gf180_mos_rules: 'generado con reglas propias (equivalente a gf180.cap_mos)',
+    d_gf180_mos_note: 'metal2 = una unica pletina horizontal: une los contactos de S/D y de bulk en el mismo nodo (body). metal1 = contactos locales, via1 = salto a metal2',
+    d_gf180_mos_stylized: 'geometria estilizada a escala 180 nm — no verificada contra bbox de la PDK',
+    d_of: 'de', d_gds_polys: 'polígonos reales del GDS', d_gds_polys_short: 'poligonos',
+    d_not_shown: 'no mostradas', d_drag_rotate: 'arrastra para rotar',
+    leg_plate_bot: 'placa inf.', leg_plate_top: 'placa sup.',
+    leg_mim_diel: 'dieléctrico MIM', leg_mim_contact: 'contacto MIM',
+    leg_contact: 'contacto', leg_metal_local: 'metal local', leg_via_mim: 'via MIM',
     d_cap_nolayout: 'sin layout real disponible', d_cap_gdsreal: 'layout real del GDS',
     ic_tag: 'IC — Estructuras integradas',
     ic_h1: 'Condensadores en chip',
@@ -6460,7 +6531,7 @@ Object.assign(window.CAP_I18N.es, {
     ic_mim_match: 'El mismatch de capacidad escala con 1/√A. Para maximizar matching: usar geometría cuadrada, común centroid, y guardar distancia a bordes de pista.',
     ic_mos_leg1: 'Substrato p', ic_mos_leg3: 'p+ (S y D)', ic_mos_leg4: 'n+ tap (body)', ic_mos_leg5: 'Gate oxide', ic_mos_leg6: 'Gate poly',
     ic_mos_name: 'Condensador MOS',
-    ic_mos_desc: 'Usa el óxido de gate como dieléctrico y el canal del transistor como placa inferior. La densidad es muy alta gracias al SiO₂ ultra-delgado del gate, pero la capacidad <strong>depende fuertemente de la tensión aplicada</strong> — no lineal.',
+    ic_mos_desc: 'Usa el gate oxide como dieléctrico y el canal del transistor como placa inferior. La densidad es muy alta gracias al SiO₂ ultra-delgado del gate, pero la capacidad <strong>depende fuertemente de la tensión aplicada</strong> — no lineal.',
     ic_mos_lin: 'Baja (VCC alto)', ic_mos_vmax: 'VGS_max del proceso', ic_mos_stack: 'FEOL (gate oxide)',
     ic_mos_uses: 'Desacoplo de alimentación (VDD–GND), osciladores de relajación, donde la capacidad no necesita ser lineal con V. Evitar en señal analógica de precisión por su VCC elevado.',
     ic_mos_match: 'En acumulación la capacidad es estable. En depleción cae bruscamente — asegúrate de que el nodo esté siempre en acumulación o usa NMOS con N-well para PMOS equivalente.',
@@ -6469,11 +6540,21 @@ Object.assign(window.CAP_I18N.es, {
     ic_mom_desc: 'Explota la capacidad <strong>lateral (fringe)</strong> entre dedos interdigitados en la misma capa de metal o en múltiples capas del BEOL. No requiere máscaras extra — se construye con las capas estándar del proceso. Excelente para tecnologías sub-90 nm donde la altura del metal es mayor que el pitch.',
     ic_mom_lin: 'Alta', ic_mom_vmax: 'Sin límite especial', ic_mom_diel: 'Óxido inter-metal (IMD)', ic_mom_stack: 'BEOL — capas estándar',
     ic_mom_uses: 'Proceso sin opción MIM, o cuando el área lo permite. Muy popular en FinFET y procesos avanzados. Fácil de escalar añadiendo capas. Compatible con flujo de diseño estándar sin coste de proceso extra.',
-    ic_mom_match: 'Muy sensible a variaciones de pitch litográfico. Usar fill de metal homogéneo alrededor, y apilar siempre el mismo número de capas en los dos condensadores a emparejar.',
+    ic_mom_match: 'Muy sensible a variaciones de pitch litográfico. Usar metal fill homogéneo alrededor, y apilar siempre el mismo número de capas en los dos condensadores a emparejar.',
   });
 Object.assign(window.CAP_I18N.ca, {
     eyebrow: 'Microelectrònica · Disseny de CI',
     back_home: '← Tornar a la pàgina principal',
+    /* ── Taula comparativa ── */
+    compare_clear: 'Desseleccionar tot', compare_btn: 'Comparar →',
+    compare_title: 'Comparació de condensadors',
+    compare_count_one: 'condensador seleccionat', compare_count_many: 'condensadors seleccionats',
+    compare_max_alert: 'Pots comparar fins a 4 condensadors alhora.',
+    cmp_feature: 'Característica', cmp_dielectric: 'Dielèctric', cmp_range: 'Rang de C',
+    cmp_voltage: 'Tensió', cmp_polarized: 'Polaritzat', cmp_yes: 'Sí', cmp_no: 'No',
+    cmp_tolerance: 'Tolerància', cmp_stability: 'Estabilitat', cmp_cost: 'Cost',
+    cmp_lifespan: 'Vida útil', cmp_typical_use: 'Aplicació', cmp_pros: 'Avantatges', cmp_cons: 'Desavantatges',
+    cmp_legend: 'Millor opció de la fila entre les seleccionades. Les files sense marcar (dielèctric, εᵣ, rang, aplicació) no tenen un guanyador objectiu: depèn de per a què el vulguis.',
     h1_title: 'Condensadors<br>en <em>xips</em>',
     nav_fundamentos: 'Fonaments', nav_pcb: 'Condensadors en PCB',
     nav_ic: 'Condensadors en IC', nav_disenyo: 'Crea el teu condensador',
@@ -6563,6 +6644,8 @@ Object.assign(window.CAP_I18N.ca, {
     p_tht_sold: 'Potes a través — wave soldering', p_tht_size: 'des de 4 mm fins a diversos cm',
     p_tht_ens: 'Manual o semi-automàtic', p_tht_variant_radial: 'Radial — potes paral·leles, mateix costat',
     p_tht_uses_radial: 'Components grans (altes tensions, alt corrent), on la força mecànica importa, o on cal reparació manual. El <strong>radial</strong> és la geometria THT més comuna avui: ocupa poc espai horitzontal i és fàcil d\'inserir a màquina.',
+    p_tht_variant_axial: 'Axial — potes en extrems oposats',
+    p_tht_uses_axial: 'Components grans (altes tensions, alt corrent), on la força mecànica importa, o on cal reparació manual. L\'<strong>axial</strong> està gairebé extingit en electrònica general: sobreviu en restauració d\'equips vintage, àudio audiòfil i aplicacions militars amb alts requisits mecànics.',
     d_view_label: 'Layout real · 3D interactiu — arrossega per rotar, scroll per fer zoom',
     d_update_btn: '↻ Actualitzar 3D',
     /* ── IC ── */
@@ -6581,6 +6664,20 @@ Object.assign(window.CAP_I18N.ca, {
     d_warn_parallel: '⚠ La capacitat objectiu supera la mida màxima d\'una sola unitat — calen {n} condensadors en paral·lel. El visor 3D només dibuixa una mostra representativa (fins a 4 cel·les, per rendiment) i NO el metall que les uniria en un mateix node: la resta d\'unitats i aquest bus de rutat són de nivell superior (els col·loca el layout de l\'array, no la cel·la de la PDK).',
     d_array_note: 'mostrant {shown} de {total} per rendiment — sense el metall de rutat que les uniria (bus de nivell superior, no de la cel·la)',
     d_cap_pdkrules: 'generat amb les regles del PDK', d_cap_regen: 'regenerat al vol',
+    d_layout_sky130: 'layout generat amb les regles de sky130.tcl',
+    d_geom_sky130: 'geometria generada amb les regles de sky130.tcl',
+    d_same_rules_ihp: 'mateixes regles que gdsfactory/ihp',
+    d_verified_mim: 'verificat contra la PDK: bbox i nº de vies idèntics de 2x2 a 100x100 um',
+    d_verified_mom: 'verificat contra la PDK: bbox, nº de dits i de vies idèntics d\'1 a 200 dits',
+    d_unidad: 'unitat', d_unidades: 'unitats',
+    d_gf180_mos_rules: 'generat amb regles pròpies (equivalent a gf180.cap_mos)',
+    d_gf180_mos_note: 'metal2 = una única pletina horitzontal: uneix els contactes de S/D i de bulk en el mateix node (body). metal1 = contactes locals, via1 = salt a metal2',
+    d_gf180_mos_stylized: 'geometria estilitzada a escala 180 nm — no verificada contra bbox de la PDK',
+    d_of: 'de', d_gds_polys: 'polígons reals del GDS', d_gds_polys_short: 'polígons',
+    d_not_shown: 'no mostrats', d_drag_rotate: 'arrossega per rotar',
+    leg_plate_bot: 'placa inf.', leg_plate_top: 'placa sup.',
+    leg_mim_diel: 'dielèctric MIM', leg_mim_contact: 'contacte MIM',
+    leg_contact: 'contacte', leg_metal_local: 'metall local', leg_via_mim: 'via MIM',
     d_cap_nolayout: 'sense layout real disponible', d_cap_gdsreal: 'layout real del GDS',
     ic_tag: 'IC — Estructures integrades',
     ic_h1: 'Condensadors en xip',
@@ -6600,7 +6697,7 @@ Object.assign(window.CAP_I18N.ca, {
     ic_mim_match: 'El mismatch de capacitat escala amb 1/√A. Per maximitzar el matching: usar geometria quadrada, común centroid, i guardar distància a vores de pista.',
     ic_mos_leg1: 'Substrat p', ic_mos_leg3: 'p+ (S i D)', ic_mos_leg4: 'n+ tap (body)', ic_mos_leg5: 'Gate oxide', ic_mos_leg6: 'Gate poly',
     ic_mos_name: 'Condensador MOS',
-    ic_mos_desc: 'Usa l\'òxid de gate com a dielèctric i el canal del transistor com a placa inferior. La densitat és molt alta gràcies al SiO₂ ultra-prim del gate, però la capacitat <strong>depèn fortament de la tensió aplicada</strong> — no lineal.',
+    ic_mos_desc: 'Usa el gate oxide com a dielèctric i el canal del transistor com a placa inferior. La densitat és molt alta gràcies al SiO₂ ultra-prim del gate, però la capacitat <strong>depèn fortament de la tensió aplicada</strong> — no lineal.',
     ic_mos_lin: 'Baixa (VCC alt)', ic_mos_vmax: 'VGS_max del procés', ic_mos_stack: 'FEOL (gate oxide)',
     ic_mos_uses: 'Desacoblament d\'alimentació (VDD–GND), osciŀladors de relaxació, on la capacitat no necessita ser lineal amb V. Evitar en senyal analògic de precisió pel seu VCC elevat.',
     ic_mos_match: 'En acumulació la capacitat és estable. En depleció cau bruscament — assegura\'t que el node estigui sempre en acumulació o usa NMOS amb N-well per a PMOS equivalent.',
@@ -6609,11 +6706,21 @@ Object.assign(window.CAP_I18N.ca, {
     ic_mom_desc: 'Explota la capacitat <strong>lateral (fringe)</strong> entre dits interdigitats a la mateixa capa de metall o en múltiples capes del BEOL. No requereix màscares extra — es construeix amb les capes estàndard del procés. Excel·lent per a tecnologies sub-90 nm on l\'alçada del metall és més gran que el pitch.',
     ic_mom_lin: 'Alta', ic_mom_vmax: 'Sense límit especial', ic_mom_diel: 'Òxid inter-metall (IMD)', ic_mom_stack: 'BEOL — capes estàndard',
     ic_mom_uses: 'Procés sense opció MIM, o quan l\'àrea ho permet. Molt popular en FinFET i processos avançats. Fàcil d\'escalar afegint capes. Compatible amb flux de disseny estàndard sense cost de procés extra.',
-    ic_mom_match: 'Molt sensible a variacions de pitch litogràfic. Usar fill de metall homogeni al voltant, i apilar sempre el mateix nombre de capes en els dos condensadors a aparellar.',
+    ic_mom_match: 'Molt sensible a variacions de pitch litogràfic. Usar metal fill homogeni al voltant, i apilar sempre el mateix nombre de capes en els dos condensadors a aparellar.',
   });
 Object.assign(window.CAP_I18N.en, {
     eyebrow: 'Microelectronics · IC Design',
     back_home: '← Back to main page',
+    /* ── Comparison table ── */
+    compare_clear: 'Clear selection', compare_btn: 'Compare →',
+    compare_title: 'Capacitor comparison',
+    compare_count_one: 'capacitor selected', compare_count_many: 'capacitors selected',
+    compare_max_alert: 'You can compare up to 4 capacitors at once.',
+    cmp_feature: 'Feature', cmp_dielectric: 'Dielectric', cmp_range: 'C range',
+    cmp_voltage: 'Voltage', cmp_polarized: 'Polarized', cmp_yes: 'Yes', cmp_no: 'No',
+    cmp_tolerance: 'Tolerance', cmp_stability: 'Stability', cmp_cost: 'Cost',
+    cmp_lifespan: 'Lifespan', cmp_typical_use: 'Application', cmp_pros: 'Pros', cmp_cons: 'Cons',
+    cmp_legend: 'Best option in the row among the selected ones. Unmarked rows (dielectric, εᵣ, range, application) have no objective winner: it depends on what you need it for.',
     h1_title: 'Capacitors<br>on <em>chips</em>',
     nav_fundamentos: 'Fundamentals', nav_pcb: 'Capacitors on PCB',
     nav_ic: 'Capacitors on IC', nav_disenyo: 'Build your capacitor',
@@ -6703,6 +6810,8 @@ Object.assign(window.CAP_I18N.en, {
     p_tht_sold: 'Leads through — wave soldering', p_tht_size: 'from 4 mm up to several cm',
     p_tht_ens: 'Manual or semi-automatic', p_tht_variant_radial: 'Radial — parallel leads, same side',
     p_tht_uses_radial: 'Large components (high voltage, high current), where mechanical strength matters, or where manual repair is needed. <strong>Radial</strong> is the most common THT geometry today: it takes up little horizontal space and is easy to machine-insert.',
+    p_tht_variant_axial: 'Axial — leads at opposite ends',
+    p_tht_uses_axial: 'Large components (high voltage, high current), where mechanical strength matters, or where manual repair is needed. <strong>Axial</strong> is nearly extinct in general electronics: it survives in vintage equipment restoration, audiophile audio, and military applications with high mechanical requirements.',
     d_view_label: 'Real layout · Interactive 3D — drag to rotate, scroll to zoom',
     d_update_btn: '↻ Update 3D',
     /* ── IC ── */
@@ -6721,6 +6830,20 @@ Object.assign(window.CAP_I18N.en, {
     d_warn_parallel: '⚠ The target capacitance exceeds the maximum size of a single unit — {n} capacitors in parallel are needed. The 3D viewer only draws a representative sample (up to 4 cells, for performance) and NOT the metal that would tie them into one node: the remaining units and that routing bus are higher-level (placed by the array layout, not the PDK cell).',
     d_array_note: 'showing {shown} of {total} for performance — without the routing metal that would tie them together (higher-level bus, not part of the cell)',
     d_cap_pdkrules: 'generated with the PDK rules', d_cap_regen: 'regenerated on the fly',
+    d_layout_sky130: 'layout generated with sky130.tcl rules',
+    d_geom_sky130: 'geometry generated with sky130.tcl rules',
+    d_same_rules_ihp: 'same rules as gdsfactory/ihp',
+    d_verified_mim: 'verified against the PDK: bbox and via count identical from 2x2 to 100x100 um',
+    d_verified_mom: 'verified against the PDK: bbox, finger count and via count identical from 1 to 200 fingers',
+    d_unidad: 'unit', d_unidades: 'units',
+    d_gf180_mos_rules: 'generated with custom rules (equivalent to gf180.cap_mos)',
+    d_gf180_mos_note: 'metal2 = a single horizontal strap: ties the S/D and bulk contacts to the same node (body). metal1 = local contacts, via1 = jump up to metal2',
+    d_gf180_mos_stylized: 'stylized geometry at 180 nm scale — not verified against the PDK bbox',
+    d_of: 'of', d_gds_polys: 'real polygons from the GDS', d_gds_polys_short: 'polygons',
+    d_not_shown: 'not shown', d_drag_rotate: 'drag to rotate',
+    leg_plate_bot: 'bottom plate', leg_plate_top: 'top plate',
+    leg_mim_diel: 'MIM dielectric', leg_mim_contact: 'MIM contact',
+    leg_contact: 'contact', leg_metal_local: 'local metal', leg_via_mim: 'MIM via',
     d_cap_nolayout: 'no real layout available', d_cap_gdsreal: 'real layout from the GDS',
     ic_tag: 'IC — Integrated structures',
     ic_h1: 'Capacitors on chip',
@@ -6776,6 +6899,10 @@ function applyCapI18n() {
   }
   if (typeof window.dsgnUpdateInfo === 'function') window.dsgnUpdateInfo();
   if (typeof window.dsgnCalc === 'function') window.dsgnCalc();
+  if (typeof updateCompareBar === 'function' && document.getElementById('compareBar')) updateCompareBar();
+  if (typeof buildCompareTable === 'function' && document.getElementById('compareModal')?.classList.contains('open')) {
+    document.getElementById('compareBody').innerHTML = buildCompareTable();
+  }
 }
 
 function chooseCapLang(lang) {
