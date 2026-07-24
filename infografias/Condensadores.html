@@ -2179,7 +2179,7 @@ function drawAcDc(dt) {
   if (acDcMode === 'dc') {
     // Entrada: DC constante = línea plana arriba
     drawPanel(0, leftW, 'Tensión de entrada (DC)', orangeStroke,
-      t => 0.85,   // constante
+      t => 0.85 * (1 - Math.exp(-t * 2.2)),   // constante
       false
     );
     // Salida: corriente que cae exponencialmente a 0
