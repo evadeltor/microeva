@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmando suscripción — Eva Deltor</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root { --primary:#D4A574; --dark:#1a1a1a; --light:#F5F3F0; --text:#3a3a3a; --border:#E8E4DF; }
+    body { font-family:'Poppins',sans-serif; background:var(--light); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .box { text-align:center; padding:60px 30px; max-width:420px; }
+    .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--primary); border-radius:50%; margin:0 auto 24px; animation:spin 0.8s linear infinite; }
+    .check { width:48px; height:48px; margin:0 auto 20px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    h1 { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--dark); margin-bottom:10px; }
+    p { font-size:0.95rem; color:#777; line-height:1.6; }
+    a.home { display:inline-block; margin-top:24px; color:var(--primary); text-decoration:none; font-size:0.9rem; font-weight:500; }
+    a.home:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="box">
+    <div id="loadingState">
+        <div class="spinner"></div>
+        <h1 id="t_loading_title">Confirmando tu suscripción...</h1>
+        <p id="t_loading_body">Un momento, por favor.</p>
+    </div>
+    <div id="doneState" style="display:none;">
+        <svg class="check" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#D4A574" stroke-width="1.5"/><path d="M7 12.5l3 3 7-7" stroke="#D4A574" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h1 id="t_done_title">¡Listo!</h1>
+        <p id="t_done_body">Tu suscripción ha sido confirmada. Te avisaré cuando publique contenido nuevo.</p>
+        <a href="index.html" class="home" id="t_home_link">← Volver a la web</a>
+    </div>
+</div>
+
+<script>
+    const translations = {
+        es: {
+            loadingTitle: "Confirmando tu suscripción...",
+            loadingBody: "Un momento, por favor.",
+            doneTitle: "¡Listo!",
+            doneBody: "Tu suscripción ha sido confirmada. Te avisaré cuando publique contenido nuevo.",
+            homeLink: "← Volver a la web"
+        },
+        ca: {
+            loadingTitle: "Confirmant la teva subscripció...",
+            loadingBody: "Un moment, si us plau.",
+            doneTitle: "Fet!",
+            doneBody: "La teva subscripció ha estat confirmada. T'avisaré quan publiqui contingut nou.",
+            homeLink: "← Tornar al web"
+        },
+        en: {
+            loadingTitle: "Confirming your subscription...",
+            loadingBody: "One moment, please.",
+            doneTitle: "All done!",
+            doneBody: "Your subscription has been confirmed. I'll let you know when I publish new content.",
+            homeLink: "← Back to the site"
+        }
+    };
+
+    // URL fija del despliegue del Apps Script (actualízala aquí si vuelves a implementar y cambia).
+    const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLwhazjTcIb-YjMDNblW7ePYHA3hltvD13qWqxkm6P0k7fE7Bp0mjhFdqMIoyUPoqaAw/exec';
+
+    function applyLang(lang) {
+        const t = translations[lang] || translations.es;
+        document.getElementById('t_loading_title').textContent = t.loadingTitle;
+        document.getElementById('t_loading_body').textContent = t.loadingBody;
+        document.getElementById('t_done_title').textContent = t.doneTitle;
+        document.getElementById('t_done_body').textContent = t.doneBody;
+        document.getElementById('t_home_link').textContent = t.homeLink;
+        document.documentElement.lang = lang;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const lang = params.get('lang') || sessionStorage.getItem('eva_lang') || 'es';
+    applyLang(lang);
+
+    if (token) {
+        // Petición en segundo plano: no-cors evita el selector de cuentas de Google
+        // que rompe la navegación directa a script.google.com en móviles con varias cuentas.
+        fetch(EXEC_URL + '?confirm=' + encodeURIComponent(token), { mode: 'no-cors' })
+            .catch(() => {}) // opaco por no-cors; si la petición se envía, el script ya se ejecutó
+            .finally(() => {
+                setTimeout(() => {
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('doneState').style.display = 'block';
+                }, 1200);
+            });
+    } else {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('doneState').style.display = 'block';
+    }
+</script>
+</body>
+</html>
