@@ -434,6 +434,16 @@
         .form-field { display: flex; flex-direction: column; gap: 6px; }
         .form-label { font-size: 0.82rem; font-weight: 600; color: var(--dark); letter-spacing: 0.3px; }
 
+        /* ── Consent checkbox ── */
+        .consent-field { display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; }
+        .consent-field input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; accent-color: var(--primary); }
+        .consent-field label { font-size: 0.78rem; line-height: 1.5; cursor: pointer; }
+        .consent-field a { color: var(--primary); text-decoration: underline; }
+        .newsletter-box .consent-field label { color: rgba(255,255,255,0.7); }
+        .newsletter-box .consent-field a { color: var(--primary); }
+        .contacto-info .consent-field label { color: #888; }
+        .contacto-info .consent-field a { color: var(--accent); }
+
         /* ── Footer ── */
         footer { background: var(--dark); color: white; padding: 50px 0 30px; margin-top: 80px; }
 
@@ -455,6 +465,9 @@
 
         .footer-social a:hover { background: var(--primary); border-color: var(--primary); }
         .footer-bottom { text-align: center; padding-top: 30px; font-size: 0.85rem; opacity: 0.7; }
+        .footer-legal { text-align: center; padding-top: 12px; font-size: 0.8rem; }
+        .footer-legal a { color: rgba(255,255,255,0.6); text-decoration: none; }
+        .footer-legal a:hover { color: var(--primary); text-decoration: underline; }
 
         /* ── Language Popup ── */
         .lang-overlay {
@@ -921,6 +934,10 @@
                                 <label class="form-label" id="label_mensaje">Mensaje</label>
                                 <textarea class="newsletter-input" id="contactoMensaje" placeholder="Cuéntame en qué puedo ayudarte..." rows="4" style="background:white;color:var(--text);border-color:var(--border);resize:vertical;font-family:'Poppins',sans-serif;font-size:0.9rem;"></textarea>
                             </div>
+                            <div class="consent-field">
+                                <input type="checkbox" id="contactoConsent">
+                                <label for="contactoConsent" id="contacto_consent_label">He leído y acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>. Mis datos se usarán solo para responder a este mensaje.</label>
+                            </div>
                             <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
                                 <label>No rellenes este campo: <input type="text" id="contactoWebsite" name="website" tabindex="-1" autocomplete="off"></label>
                             </div>
@@ -947,6 +964,10 @@
                     <div class="newsletter-form" id="newsletterForm">
                         <input type="text" class="newsletter-input" id="newsletterName" placeholder="Tu nombre">
                         <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="Tu email">
+                        <div class="consent-field">
+                            <input type="checkbox" id="newsletterConsent">
+                            <label for="newsletterConsent" id="newsletter_consent_label">He leído y acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>. Puedo darme de baja cuando quiera.</label>
+                        </div>
                         <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
                             <label>No rellenes: <input type="text" id="newsletterWebsite" name="website" tabindex="-1" autocomplete="off"></label>
                         </div>
@@ -980,6 +1001,7 @@
         <div class="footer-bottom">
             <div class="container">
                 <p id="footer_copy">© 2026 Eva Deltor. Todos los derechos reservados.</p>
+                <p class="footer-legal"><a href="privacidad.html" id="footer_privacy" target="_blank" rel="noopener">Política de Privacidad</a></p>
             </div>
         </div>
     </footer>
@@ -1044,11 +1066,15 @@
                 label_nombre: "Nombre", label_email: "Email", label_mensaje: "Mensaje",
                 ph_nombre: "Tu nombre", ph_email: "tu@email.com", ph_mensaje: "Cuéntame en qué puedo ayudarte...",
                 contacto_btn: "Enviar mensaje →", contacto_ok: "✓ Mensaje enviado — te responderé pronto.",
+                contacto_consent_label: "He leído y acepto la <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">política de privacidad</a>. Mis datos se usarán solo para responder a este mensaje.",
                 newsletter_h3: "Nuevo contenido, antes que nadie",
                 newsletter_p: "Apúntate y te aviso cuando publique nuevas infografías interactivas, herramientas educativas o contenido especial.",
                 newsletter_btn: "Quiero estar al tanto →", newsletter_note: "Sin spam. Solo contenido que vale la pena.",
                 newsletter_ok: "¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.",
-                footer_sub: "Doctoranda en Microelectrónica", footer_copy: "© 2026 Eva Deltor. Todos los derechos reservados."
+                newsletter_consent_label: "He leído y acepto la <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">política de privacidad</a>. Puedo darme de baja cuando quiera.",
+                footer_sub: "Doctoranda en Microelectrónica", footer_copy: "© 2026 Eva Deltor. Todos los derechos reservados.",
+                footer_privacy: "Política de Privacidad",
+                alert_consent: "Debes aceptar la política de privacidad para continuar."
             },
             ca: {
                 nav_redes: "Xarxes Socials", nav_infografias: "Infografies", nav_sobre: "Sobre Mi", nav_contacto: "Contacte",
@@ -1086,11 +1112,15 @@
                 label_nombre: "Nom", label_email: "Correu electrònic", label_mensaje: "Missatge",
                 ph_nombre: "El teu nom", ph_email: "tu@correu.cat", ph_mensaje: "Explica'm en què et puc ajudar...",
                 contacto_btn: "Enviar missatge →", contacto_ok: "✓ Missatge enviat — et respondré aviat.",
+                contacto_consent_label: "He llegit i accepto la <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">política de privacitat</a>. Les meves dades s'utilitzaran només per respondre aquest missatge.",
                 newsletter_h3: "Nou contingut, abans que ningú",
                 newsletter_p: "Apunta't i t'aviso quan publiqui noves infografies interactives, eines educatives o contingut especial.",
                 newsletter_btn: "Vull estar al dia →", newsletter_note: "Sense spam. Només contingut que val la pena.",
                 newsletter_ok: "Perfecte! ✓<br>T'avisaré quan hi hagi alguna cosa nova.",
-                footer_sub: "Doctoranda en Microelectrònica", footer_copy: "© 2026 Eva Deltor. Tots els drets reservats."
+                newsletter_consent_label: "He llegit i accepto la <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">política de privacitat</a>. Em puc donar de baixa quan vulgui.",
+                footer_sub: "Doctoranda en Microelectrònica", footer_copy: "© 2026 Eva Deltor. Tots els drets reservats.",
+                footer_privacy: "Política de Privacitat",
+                alert_consent: "Has d'acceptar la política de privacitat per continuar."
             },
             en: {
                 nav_redes: "Social Media", nav_infografias: "Infographics", nav_sobre: "About Me", nav_contacto: "Contact",
@@ -1128,11 +1158,15 @@
                 label_nombre: "Name", label_email: "Email", label_mensaje: "Message",
                 ph_nombre: "Your name", ph_email: "you@email.com", ph_mensaje: "Tell me how I can help you...",
                 contacto_btn: "Send message →", contacto_ok: "✓ Message sent — I will reply soon.",
+                contacto_consent_label: "I have read and accept the <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">privacy policy</a>. My data will only be used to reply to this message.",
                 newsletter_h3: "New content, before anyone else",
                 newsletter_p: "Sign up and I will notify you when I publish new interactive infographics, educational tools or special content.",
                 newsletter_btn: "Keep me posted →", newsletter_note: "No spam. Only content worth reading.",
                 newsletter_ok: "Perfect! ✓<br>I will let you know when there is something new.",
-                footer_sub: "PhD Student in Microelectronics", footer_copy: "© 2026 Eva Deltor. All rights reserved."
+                newsletter_consent_label: "I have read and accept the <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">privacy policy</a>. I can unsubscribe at any time.",
+                footer_sub: "PhD Student in Microelectronics", footer_copy: "© 2026 Eva Deltor. All rights reserved.",
+                footer_privacy: "Privacy Policy",
+                alert_consent: "You must accept the privacy policy to continue."
             }
         };
 
@@ -1148,6 +1182,12 @@
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             el.innerHTML = escaped.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+        }
+
+        /* Allow a small, fixed whitelist of tags (a/br) for consent labels — content is never user-supplied. */
+        function setConsentHTML(id, val) {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) el.innerHTML = val;
         }
 
         function setPlaceholder(id, val) {
@@ -1194,11 +1234,15 @@
             setPlaceholder('contactoNombre', t.ph_nombre); setPlaceholder('contactoEmail', t.ph_email);
             setPlaceholder('contactoMensaje', t.ph_mensaje);
             setText('contactoBtn', t.contacto_btn); setText('contacto_ok', t.contacto_ok);
+            setConsentHTML('contacto_consent_label', t.contacto_consent_label);
             setText('newsletter_h3', t.newsletter_h3); setText('newsletter_p', t.newsletter_p);
             setText('newsletter_btn', t.newsletter_btn); setText('newsletter_note', t.newsletter_note);
             setSafeHTML('newsletter_ok', t.newsletter_ok);
+            setConsentHTML('newsletter_consent_label', t.newsletter_consent_label);
             setText('footer_sub', t.footer_sub); setText('footer_copy', t.footer_copy);
+            setText('footer_privacy', t.footer_privacy);
             document.documentElement.lang = lang;
+            window.__currentLang = lang;
         }
 
         window.addEventListener('load', () => {
@@ -1218,6 +1262,10 @@
         const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
         const LIMITS = { nombre: 100, email: 150, mensaje: 2000 };
         function clip(str, max) { return String(str || '').slice(0, max); }
+        function consentAlert() {
+            const lang = window.__currentLang || 'es';
+            alert(translations[lang].alert_consent);
+        }
 
         function submitContacto() {
             const hp = document.getElementById('contactoWebsite');
@@ -1229,6 +1277,7 @@
             if (!nombre || !email || !mensaje) { alert('Por favor rellena todos los campos.'); return; }
             if (!EMAIL_REGEX.test(email)) { alert('Por favor introduce un email válido.'); return; }
             if (mensaje.length < 5) { alert('El mensaje es demasiado corto.'); return; }
+            if (!document.getElementById('contactoConsent').checked) { consentAlert(); return; }
             const btn = document.getElementById('contactoBtn');
             btn.textContent = 'Enviando...'; btn.disabled = true;
             const formData = new FormData();
@@ -1253,6 +1302,7 @@
             const email = clip(document.getElementById('newsletterEmail').value.trim(), LIMITS.email);
             if (!name || !email) { alert('Por favor rellena tu nombre y email.'); return; }
             if (!EMAIL_REGEX.test(email)) { alert('Por favor introduce un email válido.'); return; }
+            if (!document.getElementById('newsletterConsent').checked) { consentAlert(); return; }
             const btn = document.querySelector('.newsletter-btn');
             btn.textContent = 'Enviando...'; btn.disabled = true;
             const formData = new FormData();
