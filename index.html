@@ -1309,7 +1309,7 @@
             formData.append('nombre', name); formData.append('email', email);
             formData.append('lang', window.__currentLang || sessionStorage.getItem('eva_lang') || 'es');
             formData.append('origin', window.location.origin);
-            fetch('https://script.google.com/macros/s/AKfycbyxP7fXiGQ1L57xUml_FjwGahFGAmIgERhowfkYj1MJ3-OMocjGY0GSAx5iuSSXZScL/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbwLwhazjTcIb-YjMDNblW7ePYHA3hltvD13qWqxkm6P0k7fE7Bp0mjhFdqMIoyUPoqaAw/exec', {
                 method: 'POST', body: formData, referrerPolicy: 'strict-origin-when-cross-origin'
             }).then(() => {
                 document.getElementById('newsletterForm').style.display = 'none';
