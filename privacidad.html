@@ -10,8 +10,14 @@
     :root { --primary:#D4A574; --dark:#1a1a1a; --light:#F5F3F0; --text:#3a3a3a; --border:#E8E4DF; }
     body { font-family:'Poppins',sans-serif; background:var(--light); color:var(--text); line-height:1.7; }
     .wrap { max-width:760px; margin:0 auto; padding:60px 24px 100px; }
-    a.back { display:inline-block; margin-bottom:30px; color:var(--primary); text-decoration:none; font-size:0.9rem; font-weight:500; }
+    .top-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; flex-wrap:wrap; gap:12px; }
+    a.back { color:var(--primary); text-decoration:none; font-size:0.9rem; font-weight:500; }
     a.back:hover { text-decoration:underline; }
+    .lang-switcher { display:flex; gap:4px; border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+    .lang-switcher button { background:transparent; border:none; padding:6px 12px; font-family:'Poppins',sans-serif; font-size:0.72rem; font-weight:600; color:#aaa; cursor:pointer; transition:all 0.2s ease; letter-spacing:0.05em; border-right:1px solid var(--border); }
+    .lang-switcher button:last-child { border-right:none; }
+    .lang-switcher button:hover { color:var(--primary); background:#FDF5EC; }
+    .lang-switcher button.active { background:var(--primary); color:white; }
     h1 { font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--dark); margin-bottom:8px; }
     .updated { font-size:0.85rem; color:#999; margin-bottom:40px; }
     h2 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--dark); margin:36px 0 12px; }
@@ -25,44 +31,168 @@
 </head>
 <body>
 <div class="wrap">
-    <a href="index.html" class="back">← Volver</a>
-    <h1>Política de Privacidad</h1>
-    <p class="updated">Última actualización: agosto de 2026</p>
+    <div class="top-row">
+        <a href="index.html" class="back" id="back_link">← Volver</a>
+        <div class="lang-switcher">
+            <button id="sw_ca" onclick="setLang('ca')">CAT</button>
+            <button id="sw_es" onclick="setLang('es')">ES</button>
+            <button id="sw_en" onclick="setLang('en')">ENG</button>
+        </div>
+    </div>
 
-    <p>Esta política explica qué datos personales recojo a través de este sitio web (<strong>evadeltor.com</strong>), con qué finalidad, y cómo puedes ejercer tus derechos, de acuerdo con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>
+    <h1 id="p_title">Política de Privacidad</h1>
+    <p class="updated" id="p_updated">Última actualización: agosto de 2026</p>
 
-    <h2>Responsable del tratamiento</h2>
-    <p>Eva Deltor, actuando a título personal como titular de este sitio y de los perfiles @microeva. Contacto: a través del formulario de esta web o de los canales indicados en la sección "Contacto".</p>
+    <p id="p_intro">Esta política explica qué datos personales recojo a través de este sitio web (<strong>evadeltor.github.io/microeva</strong>), con qué finalidad, y cómo puedes ejercer tus derechos, de acuerdo con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>
 
-    <h2>¿Qué datos recojo y con qué finalidad?</h2>
+    <h2 id="h_resp">Responsable del tratamiento</h2>
+    <p id="p_resp">Eva Deltor, actuando a título personal como titular de este sitio y de los perfiles @microeva. Contacto: a través del formulario de esta web o de los canales indicados en la sección "Contacto".</p>
+
+    <h2 id="h_datos">¿Qué datos recojo y con qué finalidad?</h2>
     <ul>
-        <li><strong>Formulario de contacto:</strong> nombre, email y el mensaje que escribes. Finalidad: responder a tu consulta o propuesta. Base legal: consentimiento (art. 6.1.a RGPD) e interés legítimo en gestionar la comunicación que tú mismo/a inicias.</li>
-        <li><strong>Newsletter:</strong> nombre y email. Finalidad: enviarte avisos sobre nuevo contenido (infografías, herramientas educativas). Base legal: tu consentimiento explícito.</li>
+        <li id="li_contacto"><strong>Formulario de contacto:</strong> nombre, email y el mensaje que escribes. Finalidad: responder a tu consulta o propuesta. Base legal: consentimiento (art. 6.1.a RGPD) e interés legítimo en gestionar la comunicación que tú mismo/a inicias.</li>
+        <li id="li_newsletter"><strong>Newsletter:</strong> nombre y email. Finalidad: enviarte avisos sobre nuevo contenido (infografías, herramientas educativas). Base legal: tu consentimiento explícito.</li>
     </ul>
-    <p>No se recogen datos de navegación, cookies de terceros ni analítica de seguimiento en este sitio.</p>
+    <p id="p_nocookies">No se recogen datos de navegación, cookies de terceros ni analítica de seguimiento en este sitio.</p>
 
-    <h2>¿Dónde se almacenan los datos?</h2>
-    <p>Los datos enviados por los formularios se procesan mediante <strong>Google Apps Script</strong> y se almacenan en una <strong>hoja de cálculo de Google Sheets</strong> privada, con acceso restringido únicamente a mí. No se comparten con terceros más allá de este proveedor técnico.</p>
-    <p>Google LLC actúa como <strong>encargado del tratamiento</strong> al alojar la infraestructura donde se guardan los datos. Al tratarse de un proveedor con sede en EE. UU., la transferencia internacional de datos está amparada por el <a href="https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/eu-us-data-privacy-framework_en" target="_blank" rel="noopener">EU-US Data Privacy Framework</a>, marco reconocido por la Comisión Europea como garantía adecuada de protección (Decisión de adecuación de julio de 2023).</p>
+    <h2 id="h_donde">¿Dónde se almacenan los datos?</h2>
+    <p id="p_donde1">Los datos enviados por los formularios se procesan mediante <strong>Google Apps Script</strong> y se almacenan en una <strong>hoja de cálculo de Google Sheets</strong> privada, con acceso restringido únicamente a mí. No se comparten con terceros más allá de este proveedor técnico.</p>
+    <p id="p_donde2">Google LLC actúa como <strong>encargado del tratamiento</strong> al alojar la infraestructura donde se guardan los datos. Al tratarse de un proveedor con sede en EE. UU., la transferencia internacional de datos está amparada por el <a href="https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/eu-us-data-privacy-framework_en" target="_blank" rel="noopener">EU-US Data Privacy Framework</a>, marco reconocido por la Comisión Europea como garantía adecuada de protección (Decisión de adecuación de julio de 2023).</p>
 
-    <h2>¿Cuánto tiempo se conservan?</h2>
+    <h2 id="h_tiempo">¿Cuánto tiempo se conservan?</h2>
     <ul>
-        <li>Mensajes de contacto: hasta que se resuelve la consulta y, como máximo, 12 meses.</li>
-        <li>Newsletter: mientras sigas suscrito/a. Si te das de baja o no interactúas durante un periodo prolongado, tus datos se eliminarán o anonimizarán.</li>
+        <li id="li_tiempo1">Mensajes de contacto: hasta que se resuelve la consulta y, como máximo, 12 meses.</li>
+        <li id="li_tiempo2">Newsletter: mientras sigas suscrito/a. Si te das de baja o no interactúas durante un periodo prolongado, tus datos se eliminarán o anonimizarán.</li>
     </ul>
 
-    <h2>Tus derechos</h2>
-    <p>Puedes ejercer en cualquier momento tus derechos de <strong>acceso, rectificación, supresión, oposición, limitación y portabilidad</strong> escribiéndome a través del formulario de contacto o de mis redes sociales. También tienes derecho a presentar una reclamación ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos (AEPD)</a>.</p>
+    <h2 id="h_derechos">Tus derechos</h2>
+    <p id="p_derechos">Puedes ejercer en cualquier momento tus derechos de <strong>acceso, rectificación, supresión, oposición, limitación y portabilidad</strong> escribiéndome a través del formulario de contacto o de mis redes sociales. También tienes derecho a presentar una reclamación ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos (AEPD)</a>.</p>
 
-    <h2>Baja de la newsletter</h2>
-    <p>Cada envío de la newsletter incluirá un enlace de baja. También puedes solicitarla directamente escribiéndome.</p>
+    <h2 id="h_baja">Baja de la newsletter</h2>
+    <p id="p_baja">Cada envío de la newsletter incluirá un enlace de baja. También puedes solicitarla directamente escribiéndome.</p>
 
-    <h2>Seguridad</h2>
-    <p>Aplico medidas razonables de seguridad (acceso restringido, minimización de datos) para proteger la información que me confías. Ningún sistema es 100% infalible, pero no se realiza ningún tratamiento adicional más allá de lo descrito en esta política.</p>
+    <h2 id="h_seguridad">Seguridad</h2>
+    <p id="p_seguridad">Aplico medidas razonables de seguridad (acceso restringido, minimización de datos) para proteger la información que me confías. Ningún sistema es 100% infalible, pero no se realiza ningún tratamiento adicional más allá de lo descrito en esta política.</p>
 
     <div class="box">
-        <p style="margin-bottom:0;">Si tienes cualquier duda sobre esta política o sobre cómo se tratan tus datos, escríbeme desde el <a href="index.html#contacto">formulario de contacto</a>.</p>
+        <p style="margin-bottom:0;" id="p_box"><span id="p_box_text">Si tienes cualquier duda sobre esta política o sobre cómo se tratan tus datos, escríbeme desde el</span> <a href="index.html#contacto" id="p_box_link">formulario de contacto</a>.</p>
     </div>
 </div>
+
+<script>
+    const translations = {
+        es: {
+            title: "Política de Privacidad",
+            back: "← Volver",
+            updated: "Última actualización: agosto de 2026",
+            intro: 'Esta política explica qué datos personales recojo a través de este sitio web (<strong>evadeltor.github.io/microeva</strong>), con qué finalidad, y cómo puedes ejercer tus derechos, de acuerdo con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).',
+            h_resp: "Responsable del tratamiento",
+            p_resp: 'Eva Deltor, actuando a título personal como titular de este sitio y de los perfiles @microeva. Contacto: a través del formulario de esta web o de los canales indicados en la sección "Contacto".',
+            h_datos: "¿Qué datos recojo y con qué finalidad?",
+            li_contacto: '<strong>Formulario de contacto:</strong> nombre, email y el mensaje que escribes. Finalidad: responder a tu consulta o propuesta. Base legal: consentimiento (art. 6.1.a RGPD) e interés legítimo en gestionar la comunicación que tú mismo/a inicias.',
+            li_newsletter: '<strong>Newsletter:</strong> nombre y email. Finalidad: enviarte avisos sobre nuevo contenido (infografías, herramientas educativas). Base legal: tu consentimiento explícito.',
+            p_nocookies: "No se recogen datos de navegación, cookies de terceros ni analítica de seguimiento en este sitio.",
+            h_donde: "¿Dónde se almacenan los datos?",
+            p_donde1: 'Los datos enviados por los formularios se procesan mediante <strong>Google Apps Script</strong> y se almacenan en una <strong>hoja de cálculo de Google Sheets</strong> privada, con acceso restringido únicamente a mí. No se comparten con terceros más allá de este proveedor técnico.',
+            p_donde2: 'Google LLC actúa como <strong>encargado del tratamiento</strong> al alojar la infraestructura donde se guardan los datos. Al tratarse de un proveedor con sede en EE. UU., la transferencia internacional de datos está amparada por el <a href="https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/eu-us-data-privacy-framework_en" target="_blank" rel="noopener">EU-US Data Privacy Framework</a>, marco reconocido por la Comisión Europea como garantía adecuada de protección (Decisión de adecuación de julio de 2023).',
+            h_tiempo: "¿Cuánto tiempo se conservan?",
+            li_tiempo1: "Mensajes de contacto: hasta que se resuelve la consulta y, como máximo, 12 meses.",
+            li_tiempo2: "Newsletter: mientras sigas suscrito/a. Si te das de baja o no interactúas durante un periodo prolongado, tus datos se eliminarán o anonimizarán.",
+            h_derechos: "Tus derechos",
+            p_derechos: 'Puedes ejercer en cualquier momento tus derechos de <strong>acceso, rectificación, supresión, oposición, limitación y portabilidad</strong> escribiéndome a través del formulario de contacto o de mis redes sociales. También tienes derecho a presentar una reclamación ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos (AEPD)</a>.',
+            h_baja: "Baja de la newsletter",
+            p_baja: "Cada envío de la newsletter incluirá un enlace de baja. También puedes solicitarla directamente escribiéndome.",
+            h_seguridad: "Seguridad",
+            p_seguridad: "Aplico medidas razonables de seguridad (acceso restringido, minimización de datos) para proteger la información que me confías. Ningún sistema es 100% infalible, pero no se realiza ningún tratamiento adicional más allá de lo descrito en esta política.",
+            p_box_text: "Si tienes cualquier duda sobre esta política o sobre cómo se tratan tus datos, escríbeme desde el",
+            p_box_link: "formulario de contacto"
+        },
+        ca: {
+            title: "Política de Privacitat",
+            back: "← Tornar",
+            updated: "Última actualització: agost de 2026",
+            intro: 'Aquesta política explica quines dades personals recullo a través d\'aquest lloc web (<strong>evadeltor.github.io/microeva</strong>), amb quina finalitat, i com pots exercir els teus drets, d\'acord amb el Reglament (UE) 2016/679 (RGPD) i la Llei Orgànica 3/2018 (LOPDGDD).',
+            h_resp: "Responsable del tractament",
+            p_resp: 'Eva Deltor, actuant a títol personal com a titular d\'aquest lloc i dels perfils @microeva. Contacte: a través del formulari d\'aquest web o dels canals indicats a la secció "Contacte".',
+            h_datos: "Quines dades recullo i amb quina finalitat?",
+            li_contacto: '<strong>Formulari de contacte:</strong> nom, correu electrònic i el missatge que escrius. Finalitat: respondre la teva consulta o proposta. Base legal: consentiment (art. 6.1.a RGPD) i interès legítim a gestionar la comunicació que tu mateix/a inicies.',
+            li_newsletter: '<strong>Newsletter:</strong> nom i correu electrònic. Finalitat: enviar-te avisos sobre nou contingut (infografies, eines educatives). Base legal: el teu consentiment explícit.',
+            p_nocookies: "No es recullen dades de navegació, cookies de tercers ni analítica de seguiment en aquest lloc.",
+            h_donde: "On s'emmagatzemen les dades?",
+            p_donde1: 'Les dades enviades pels formularis es processen mitjançant <strong>Google Apps Script</strong> i s\'emmagatzemen en un <strong>full de càlcul de Google Sheets</strong> privat, amb accés restringit únicament a mi. No es comparteixen amb tercers més enllà d\'aquest proveïdor tècnic.',
+            p_donde2: 'Google LLC actua com a <strong>encarregat del tractament</strong> en allotjar la infraestructura on es guarden les dades. Com que és un proveïdor amb seu als EUA, la transferència internacional de dades està emparada pel <a href="https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/eu-us-data-privacy-framework_en" target="_blank" rel="noopener">EU-US Data Privacy Framework</a>, marc reconegut per la Comissió Europea com a garantia adequada de protecció (Decisió d\'adequació de juliol de 2023).',
+            h_tiempo: "Quant de temps es conserven?",
+            li_tiempo1: "Missatges de contacte: fins que es resol la consulta i, com a màxim, 12 mesos.",
+            li_tiempo2: "Newsletter: mentre segueixis subscrit/a. Si et dones de baixa o no interactues durant un període prolongat, les teves dades s'eliminaran o anonimitzaran.",
+            h_derechos: "Els teus drets",
+            p_derechos: 'Pots exercir en qualsevol moment els teus drets d\'<strong>accés, rectificació, supressió, oposició, limitació i portabilitat</strong> escrivint-me a través del formulari de contacte o de les meves xarxes socials. També tens dret a presentar una reclamació davant l\'<a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos (AEPD)</a>.',
+            h_baja: "Baixa de la newsletter",
+            p_baja: "Cada enviament de la newsletter inclourà un enllaç de baixa. També pots sol·licitar-la directament escrivint-me.",
+            h_seguridad: "Seguretat",
+            p_seguridad: "Aplico mesures raonables de seguretat (accés restringit, minimització de dades) per protegir la informació que em confies. Cap sistema és 100% infal·lible, però no es realitza cap tractament addicional més enllà del descrit en aquesta política.",
+            p_box_text: "Si tens qualsevol dubte sobre aquesta política o sobre com es tracten les teves dades, escriu-me des del",
+            p_box_link: "formulari de contacte"
+        },
+        en: {
+            title: "Privacy Policy",
+            back: "← Back",
+            updated: "Last updated: August 2026",
+            intro: 'This policy explains what personal data I collect through this website (<strong>evadeltor.github.io/microeva</strong>), for what purpose, and how you can exercise your rights, in accordance with Regulation (EU) 2016/679 (GDPR) and Spanish Organic Law 3/2018 (LOPDGDD).',
+            h_resp: "Data controller",
+            p_resp: 'Eva Deltor, acting in a personal capacity as owner of this site and the @microeva profiles. Contact: through the form on this website or the channels listed in the "Contact" section.',
+            h_datos: "What data do I collect and for what purpose?",
+            li_contacto: '<strong>Contact form:</strong> name, email and the message you write. Purpose: to reply to your query or proposal. Legal basis: consent (art. 6.1.a GDPR) and legitimate interest in managing the communication you initiate.',
+            li_newsletter: '<strong>Newsletter:</strong> name and email. Purpose: to notify you about new content (infographics, educational tools). Legal basis: your explicit consent.',
+            p_nocookies: "No browsing data, third-party cookies, or tracking analytics are collected on this site.",
+            h_donde: "Where is the data stored?",
+            p_donde1: 'Data submitted through the forms is processed via <strong>Google Apps Script</strong> and stored in a private <strong>Google Sheets</strong> spreadsheet, with access restricted to me only. It is not shared with third parties beyond this technical provider.',
+            p_donde2: 'Google LLC acts as a <strong>data processor</strong> by hosting the infrastructure where the data is stored. As a US-based provider, the international data transfer is covered by the <a href="https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/eu-us-data-privacy-framework_en" target="_blank" rel="noopener">EU-US Data Privacy Framework</a>, recognized by the European Commission as providing an adequate level of protection (Adequacy Decision, July 2023).',
+            h_tiempo: "How long is data kept?",
+            li_tiempo1: "Contact messages: until the query is resolved, and 12 months maximum.",
+            li_tiempo2: "Newsletter: for as long as you remain subscribed. If you unsubscribe or are inactive for a long period, your data will be deleted or anonymized.",
+            h_derechos: "Your rights",
+            p_derechos: 'You may exercise your rights of <strong>access, rectification, erasure, objection, restriction and portability</strong> at any time by writing to me through the contact form or my social media. You also have the right to file a complaint with the <a href="https://www.aepd.es" target="_blank" rel="noopener">Spanish Data Protection Agency (AEPD)</a>.',
+            h_baja: "Unsubscribing from the newsletter",
+            p_baja: "Every newsletter will include an unsubscribe link. You may also request it directly by writing to me.",
+            h_seguridad: "Security",
+            p_seguridad: "I apply reasonable security measures (restricted access, data minimization) to protect the information you share with me. No system is 100% foolproof, but no processing takes place beyond what is described in this policy.",
+            p_box_text: "If you have any questions about this policy or how your data is handled, write to me via the",
+            p_box_link: "contact form"
+        }
+    };
+
+    function setHTML(id, val) { const el = document.getElementById(id); if (el && val !== undefined) el.innerHTML = val; }
+    function setText(id, val) { const el = document.getElementById(id); if (el && val !== undefined) el.textContent = val; }
+
+    function setLang(lang) {
+        const t = translations[lang];
+        if (!t) return;
+        sessionStorage.setItem('eva_lang', lang);
+        ['ca','es','en'].forEach(l => {
+            const btn = document.getElementById('sw_' + l);
+            if (btn) btn.classList.toggle('active', l === lang);
+        });
+        setText('back_link', t.back);
+        setText('p_title', t.title);
+        setText('p_updated', t.updated);
+        setHTML('p_intro', t.intro);
+        setText('h_resp', t.h_resp); setHTML('p_resp', t.p_resp);
+        setText('h_datos', t.h_datos);
+        setHTML('li_contacto', t.li_contacto); setHTML('li_newsletter', t.li_newsletter);
+        setText('p_nocookies', t.p_nocookies);
+        setText('h_donde', t.h_donde); setHTML('p_donde1', t.p_donde1); setHTML('p_donde2', t.p_donde2);
+        setText('h_tiempo', t.h_tiempo); setText('li_tiempo1', t.li_tiempo1); setText('li_tiempo2', t.li_tiempo2);
+        setText('h_derechos', t.h_derechos); setHTML('p_derechos', t.p_derechos);
+        setText('h_baja', t.h_baja); setText('p_baja', t.p_baja);
+        setText('h_seguridad', t.h_seguridad); setText('p_seguridad', t.p_seguridad);
+        setText('p_box_text', t.p_box_text); setText('p_box_link', t.p_box_link);
+        document.documentElement.lang = lang;
+    }
+
+    window.addEventListener('load', () => {
+        const saved = sessionStorage.getItem('eva_lang');
+        setLang(saved || 'es');
+    });
+</script>
 </body>
 </html>
