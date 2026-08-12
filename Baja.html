@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cancelando suscripción — Eva Deltor</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root { --primary:#D4A574; --dark:#1a1a1a; --light:#F5F3F0; --text:#3a3a3a; --border:#E8E4DF; }
+    body { font-family:'Poppins',sans-serif; background:var(--light); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .box { text-align:center; padding:60px 30px; max-width:420px; }
+    .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--primary); border-radius:50%; margin:0 auto 24px; animation:spin 0.8s linear infinite; }
+    .icon { width:48px; height:48px; margin:0 auto 20px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    h1 { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--dark); margin-bottom:10px; }
+    p { font-size:0.95rem; color:#777; line-height:1.6; }
+    a.home { display:inline-block; margin-top:24px; color:var(--primary); text-decoration:none; font-size:0.9rem; font-weight:500; }
+    a.home:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="box">
+    <div id="loadingState">
+        <div class="spinner"></div>
+        <h1 id="t_loading_title">Procesando tu baja...</h1>
+        <p id="t_loading_body">Un momento, por favor.</p>
+    </div>
+    <div id="doneState" style="display:none;">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#D4A574" stroke-width="1.5"/><path d="M9 9l6 6M15 9l-6 6" stroke="#D4A574" stroke-width="2" stroke-linecap="round"/></svg>
+        <h1 id="t_done_title">Baja confirmada</h1>
+        <p id="t_done_body">Te has dado de baja de la newsletter. Tus datos se han eliminado. Sentimos verte marchar.</p>
+        <a href="index.html" class="home" id="t_home_link">← Volver a la web</a>
+    </div>
+</div>
+
+<script>
+    const translations = {
+        es: {
+            loadingTitle: "Procesando tu baja...",
+            loadingBody: "Un momento, por favor.",
+            doneTitle: "Baja confirmada",
+            doneBody: "Te has dado de baja de la newsletter. Tus datos se han eliminado. Sentimos verte marchar.",
+            homeLink: "← Volver a la web"
+        },
+        ca: {
+            loadingTitle: "Processant la teva baixa...",
+            loadingBody: "Un moment, si us plau.",
+            doneTitle: "Baixa confirmada",
+            doneBody: "T'has donat de baixa de la newsletter. Les teves dades s'han eliminat. Sentim veure't marxar.",
+            homeLink: "← Tornar al web"
+        },
+        en: {
+            loadingTitle: "Processing your unsubscribe...",
+            loadingBody: "One moment, please.",
+            doneTitle: "Unsubscribed",
+            doneBody: "You've been unsubscribed from the newsletter. Your data has been deleted. Sorry to see you go.",
+            homeLink: "← Back to the site"
+        }
+    };
+
+    // URL fija del despliegue del Apps Script (actualízala aquí si vuelves a implementar y cambia,
+    // igual que en confirmar.html).
+    const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLwhazjTcIb-YjMDNblW7ePYHA3hltvD13qWqxkm6P0k7fE7Bp0mjhFdqMIoyUPoqaAw/exec';
+
+    function applyLang(lang) {
+        const t = translations[lang] || translations.es;
+        document.getElementById('t_loading_title').textContent = t.loadingTitle;
+        document.getElementById('t_loading_body').textContent = t.loadingBody;
+        document.getElementById('t_done_title').textContent = t.doneTitle;
+        document.getElementById('t_done_body').textContent = t.doneBody;
+        document.getElementById('t_home_link').textContent = t.homeLink;
+        document.documentElement.lang = lang;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const lang = params.get('lang') || sessionStorage.getItem('eva_lang') || 'es';
+    applyLang(lang);
+
+    if (token) {
+        fetch(EXEC_URL + '?unsub=' + encodeURIComponent(token), { mode: 'no-cors' })
+            .catch(() => {})
+            .finally(() => {
+                setTimeout(() => {
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('doneState').style.display = 'block';
+                }, 1200);
+            });
+    } else {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('doneState').style.display = 'block';
+    }
+</script>
+</body>
+</html>
