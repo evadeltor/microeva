@@ -976,7 +976,7 @@
                     </div>
                     <div class="newsletter-success" id="newsletterSuccess">
                         <p id="newsletter_ok">¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.</p>
-                        <p id="newsletter_ok_spam" style="font-size:0.8rem;opacity:0.6;margin-top:10px;">Revisa tu carpeta de spam: te acabamos de enviar un correo de confirmación y a veces llega ahí.</p>
+                        <p id="newsletter_ok_spam" style="background:rgba(212,165,116,0.15);border:1px solid var(--primary);border-radius:4px;padding:12px 14px;margin-top:14px;font-size:0.88rem;line-height:1.5;color:white;text-align:left;">⚠️ Revisa tu carpeta de <strong>spam</strong>: te acabamos de enviar un correo de confirmación y a veces llega ahí.</p>
                     </div>
                 </div>
             </div>
@@ -1072,7 +1072,7 @@
                 newsletter_p: "Apúntate y te aviso cuando publique nuevas infografías interactivas, herramientas educativas o contenido especial.",
                 newsletter_btn: "Quiero estar al tanto →", newsletter_note: "Sin spam. Solo contenido que vale la pena.",
                 newsletter_ok: "¡Perfecto! ✓<br>Te avisaré cuando haya algo nuevo.",
-                newsletter_ok_spam: "Revisa tu carpeta de spam: te acabamos de enviar un correo de confirmación y a veces llega ahí.",
+                newsletter_ok_spam: "⚠️ Revisa tu carpeta de <strong>spam</strong>: te acabamos de enviar un correo de confirmación y a veces llega ahí.",
                 newsletter_consent_label: "He leído y acepto la <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">política de privacidad</a>. Puedo darme de baja cuando quiera.",
                 footer_sub: "Doctoranda en Microelectrónica", footer_copy: "© 2026 Eva Deltor. Todos los derechos reservados.",
                 footer_privacy: "Política de Privacidad",
@@ -1119,7 +1119,7 @@
                 newsletter_p: "Apunta't i t'aviso quan publiqui noves infografies interactives, eines educatives o contingut especial.",
                 newsletter_btn: "Vull estar al dia →", newsletter_note: "Sense spam. Només contingut que val la pena.",
                 newsletter_ok: "Perfecte! ✓<br>T'avisaré quan hi hagi alguna cosa nova.",
-                newsletter_ok_spam: "Revisa la carpeta de correu brossa: t'acabem d'enviar un correu de confirmació i de vegades hi arriba.",
+                newsletter_ok_spam: "⚠️ Revisa la carpeta de <strong>correu brossa</strong>: t'acabem d'enviar un correu de confirmació i de vegades hi arriba.",
                 newsletter_consent_label: "He llegit i accepto la <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">política de privacitat</a>. Em puc donar de baixa quan vulgui.",
                 footer_sub: "Doctoranda en Microelectrònica", footer_copy: "© 2026 Eva Deltor. Tots els drets reservats.",
                 footer_privacy: "Política de Privacitat",
@@ -1166,7 +1166,7 @@
                 newsletter_p: "Sign up and I will notify you when I publish new interactive infographics, educational tools or special content.",
                 newsletter_btn: "Keep me posted →", newsletter_note: "No spam. Only content worth reading.",
                 newsletter_ok: "Perfect! ✓<br>I will let you know when there is something new.",
-                newsletter_ok_spam: "Check your spam folder: we just sent you a confirmation email and it sometimes ends up there.",
+                newsletter_ok_spam: "⚠️ Check your <strong>spam folder</strong>: we just sent you a confirmation email and it sometimes ends up there.",
                 newsletter_consent_label: "I have read and accept the <a href=\"privacidad.html\" target=\"_blank\" rel=\"noopener\">privacy policy</a>. I can unsubscribe at any time.",
                 footer_sub: "PhD Student in Microelectronics", footer_copy: "© 2026 Eva Deltor. All rights reserved.",
                 footer_privacy: "Privacy Policy",
@@ -1242,7 +1242,7 @@
             setText('newsletter_h3', t.newsletter_h3); setText('newsletter_p', t.newsletter_p);
             setText('newsletter_btn', t.newsletter_btn); setText('newsletter_note', t.newsletter_note);
             setSafeHTML('newsletter_ok', t.newsletter_ok);
-            setText('newsletter_ok_spam', t.newsletter_ok_spam);
+            setConsentHTML('newsletter_ok_spam', t.newsletter_ok_spam);
             setConsentHTML('newsletter_consent_label', t.newsletter_consent_label);
             setText('footer_sub', t.footer_sub); setText('footer_copy', t.footer_copy);
             setText('footer_privacy', t.footer_privacy);
@@ -1288,7 +1288,7 @@
             const formData = new FormData();
             formData.append('nombre', nombre); formData.append('email', email);
             formData.append('mensaje', mensaje); formData.append('origin', window.location.origin);
-            fetch('https://script.google.com//s/AKfycbzPM_MfFm82iDLg8XDlEwmnzXKd-2Qbtg4lLtOhS6wZdzlB1I7VNfYKqmQ90MEmHjdT/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbzPM_MfFm82iDLg8XDlEwmnzXKd-2Qbtg4lLtOhS6wZdzlB1I7VNfYKqmQ90MEmHjdT/exec', {
                 method: 'POST', body: formData, referrerPolicy: 'strict-origin-when-cross-origin'
             }).then(() => {
                 document.getElementById('contactoForm').style.display = 'none';
