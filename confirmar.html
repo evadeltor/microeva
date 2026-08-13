@@ -40,7 +40,7 @@
             loadingTitle: "Confirmando tu suscripción...",
             loadingBody: "Un momento, por favor.",
             doneTitle: "¡Listo!",
-            doneBody: "Tu suscripción ha sido confirmada. Te avisaré cuando publique contenido nuevo :)",
+            doneBody: "Tu suscripción ha sido confirmada. Te avisaré cuando publique contenido nuevo.",
             homeLink: "← Volver a la web"
         },
         ca: {
@@ -73,14 +73,14 @@
     }
 
     const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    const emailParam = params.get('email');
     const lang = params.get('lang') || sessionStorage.getItem('eva_lang') || 'es';
     applyLang(lang);
 
-    if (token) {
+    if (emailParam) {
         // Petición en segundo plano: no-cors evita el selector de cuentas de Google
         // que rompe la navegación directa a script.google.com en móviles con varias cuentas.
-        fetch(EXEC_URL + '?confirm=' + encodeURIComponent(token), { mode: 'no-cors' })
+        fetch(EXEC_URL + '?confirm=' + encodeURIComponent(emailParam), { mode: 'no-cors' })
             .catch(() => {}) // opaco por no-cors; si la petición se envía, el script ya se ejecutó
             .finally(() => {
                 setTimeout(() => {
