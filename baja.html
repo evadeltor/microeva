@@ -74,12 +74,12 @@
     }
 
     const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    const emailParam = params.get('email');
     const lang = params.get('lang') || sessionStorage.getItem('eva_lang') || 'es';
     applyLang(lang);
 
-    if (token) {
-        fetch(EXEC_URL + '?unsub=' + encodeURIComponent(token), { mode: 'no-cors' })
+    if (emailParam) {
+        fetch(EXEC_URL + '?unsub=' + encodeURIComponent(emailParam), { mode: 'no-cors' })
             .catch(() => {})
             .finally(() => {
                 setTimeout(() => {
