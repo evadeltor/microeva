@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: https:;
+        base-uri 'self';
+        upgrade-insecure-requests;
+    ">
+    <title>Extractor gm/Id · Eva Deltor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #D4A574;
+            --dark: #1a1a1a;
+            --light: #F5F3F0;
+            --text: #3a3a3a;
+            --border: #E8E4DF;
+            --accent: #8B7355;
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+            --inline-code-bg: #EFE9DF;
+            --inline-code-text: #6b5233;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+
+        header {
+            padding: 25px 0;
+            border-bottom: 1px solid var(--border);
+            background: var(--light);
+        }
+
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+
+        .back-link {
+            text-decoration: none; color: var(--text); font-weight: 500;
+            font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        .lang-switcher { display: flex; gap: 4px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .lang-switcher button {
+            background: transparent; border: none; padding: 5px 10px;
+            font-family: 'Poppins', sans-serif; font-size: 0.72rem; font-weight: 600;
+            color: #aaa; cursor: pointer; transition: all 0.2s ease;
+            letter-spacing: 0.05em; border-right: 1px solid var(--border);
+        }
+        .lang-switcher button:last-child { border-right: none; }
+        .lang-switcher button:hover { color: var(--primary); background: #FDF5EC; }
+        .lang-switcher button.active { background: var(--primary); color: white; }
+
+        main { padding: 70px 0 100px; }
+
+        .badge {
+            display: inline-block; font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+            background: #FDF5EC; border: 1px solid var(--primary);
+            padding: 5px 12px; border-radius: 20px; margin-bottom: 20px;
+        }
+
+        h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--dark); margin-bottom: 18px; line-height: 1.2; }
+        .lead { font-size: 1.05rem; color: #666; margin-bottom: 40px; line-height: 1.8; max-width: 700px; }
+
+        /* ── Inline code (fuera de bloques <pre>) ── */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--inline-code-bg);
+            color: var(--inline-code-text);
+            padding: 2px 7px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        /* ── Tabla qué hace / qué necesita ── */
+        .feature-table-wrapper {
+            margin-bottom: 45px; border: 1px solid var(--border);
+            border-radius: 8px; overflow: hidden; background: white;
+        }
+
+        .feature-table { width: 100%; border-collapse: collapse; }
+
+        .feature-table th {
+            background: #FDFBF8; text-align: left; padding: 14px 22px;
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--accent);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-table td {
+            padding: 16px 22px; font-size: 0.9rem; vertical-align: top;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-table tr:last-child td { border-bottom: none; }
+        .feature-table td:first-child { color: var(--dark); font-weight: 500; width: 45%; }
+        .feature-table td:last-child { color: #666; }
+        .feature-table td code { white-space: normal; }
+
+        .code-block {
+            position: relative; background: var(--code-bg); border-radius: 8px;
+            overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15); margin-bottom: 30px;
+        }
+
+        .code-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; background: #2a2a2a; border-bottom: 1px solid #3a3a3a;
+        }
+
+        .code-filename { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #999; }
+
+        .copy-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            color: #ddd; padding: 6px 14px; border-radius: 4px; font-size: 0.8rem;
+            font-family: 'Poppins', sans-serif; cursor: pointer; transition: all 0.2s ease;
+        }
+        .copy-btn:hover { background: var(--primary); border-color: var(--primary); color: white; }
+        .copy-btn.copied { background: #4a7c59; border-color: #4a7c59; color: white; }
+
+        pre {
+            margin: 0; padding: 24px; overflow-x: auto; max-height: 720px; overflow-y: auto;
+        }
+
+        pre code {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.7;
+            color: var(--code-text); white-space: pre;
+            background: transparent; padding: 0; border-radius: 0;
+        }
+
+        .note {
+            background: white; border: 1px solid var(--border); border-radius: 6px;
+            padding: 20px 24px; font-size: 0.88rem; color: #666; line-height: 1.9;
+        }
+        .note strong { color: var(--dark); }
+
+        footer { border-top: 1px solid var(--border); padding: 30px 0; text-align: center; color: #999; font-size: 0.85rem; }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            h1 { font-size: 1.8rem; }
+            main { padding: 40px 0 60px; }
+            pre { padding: 16px; }
+            pre code { font-size: 0.75rem; }
+            .feature-table th, .feature-table td { padding: 12px 14px; font-size: 0.84rem; }
+            .feature-table td:first-child { width: auto; }
+        }
+
+        @media (max-width: 560px) {
+            .feature-table, .feature-table thead, .feature-table tbody, .feature-table tr, .feature-table td { display: block; width: 100%; }
+            .feature-table thead { display: none; }
+            .feature-table tr { border-bottom: 1px solid var(--border); padding: 14px 18px; }
+            .feature-table tr:last-child { border-bottom: none; }
+            .feature-table td { border-bottom: none; padding: 4px 0; }
+            .feature-table td:first-child::before {
+                content: attr(data-label); display: block; font-size: 0.7rem;
+                text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);
+                font-weight: 600; margin-bottom: 4px;
+            }
+            .feature-table td:last-child::before {
+                content: attr(data-label); display: block; font-size: 0.7rem;
+                text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);
+                font-weight: 600; margin-top: 10px; margin-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="../index.html#cadence" class="back-link" id="back_link">← Volver al sitio</a>
+            <div class="lang-switcher">
+                <button id="sw_ca" onclick="setLang('ca')">CAT</button>
+                <button id="sw_es" onclick="setLang('es')">ES</button>
+                <button id="sw_en" onclick="setLang('en')">ENG</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <span class="badge" id="badge">SKILL · Cadence Virtuoso</span>
+        <h1 id="title">Extractor automático de gm/Id y margen de saturación</h1>
+        <p class="lead" id="lead">Plugin en SKILL para ADE Assembler (Maestro) que detecta automáticamente los transistores de un esquemático — incluso dentro de jerarquías anidadas — y genera las expresiones de gm/Id y el margen de saturación para cada uno.</p>
+
+        <div class="feature-table-wrapper">
+            <table class="feature-table">
+                <thead>
+                    <tr>
+                        <th id="th_hace">Qué hace</th>
+                        <th id="th_necesita">Qué necesitas configurar</th>
+                    </tr>
+                </thead>
+                <tbody id="featureBody"></tbody>
+            </table>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-filename">gm_id_plugin.il</span>
+                <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+                    <span id="copyLabel">Copiar código</span>
+                </button>
+            </div>
+            <pre><code id="codeContent">;; =========================================================================
+;; PLUGIN: DETECTOR DE TRANSISTORES Y GENERADOR DE ECUACIONES GM/ID
+;; Recorre jerarquia (hasta gmidMaxDepth niveles) desde el esquematico activo
+;; =========================================================================
+
+unless( boundp('gmidTests) gmidTests = nil )
+unless( boundp('gmidSatMargin) gmidSatMargin = "0" )
+unless( boundp('gmidMaxDepth) gmidMaxDepth = 3 )
+
+;; -------------------------------------------------------------------------
+;; Tabla de vistas concretas para celdas cuyo nombre de vista real no es
+;; "schematic" a secas (p.ej. porque usas varias variantes segun el config).
+;; Edita esto a mano segun que config estes usando en cada momento:
+;;   gmidViewOverrides = list(cons("BufferSortida" "schematic_RailToRail"))
+;; -------------------------------------------------------------------------
+unless( boundp('gmidViewOverrides)
+    gmidViewOverrides = list(cons("BufferSortida" "schematic_RailToRail"))
+)
+
+procedure( esTransistor(cellName)
+    let( (cn)
+        cn = lowerCase(or(cellName ""))
+        (member(cn '("ne" "nmos" "nch" "nfet" "pe" "pmos" "pch" "pfet")) != nil)
+    )
+)
+
+procedure( esTransistorN(cellName)
+    let( (cn)
+        cn = lowerCase(or(cellName ""))
+        (member(cn '("ne" "nmos" "nch" "nfet")) != nil)
+    )
+)
+
+;; Devuelve el nombre de vista a usar para una celda: el override si existe,
+;; si no "schematic" por defecto.
+procedure( gmidResolverVista(cellName)
+    let( (ov)
+        ov = assoc(cellName gmidViewOverrides)
+        if( ov then cdr(ov) else "schematic")
+    )
+)
+
+;; Devuelve lista de pares (fullPath isNMOS)
+procedure( RecorrerJerarquiaGmId(cv path depth maxDepth)
+    let( (resultado fullPath subCvRes subCv vName)
+        resultado = nil
+        when( cv && cv~>instances && depth <= maxDepth
+            foreach( inst cv~>instances
+                fullPath = if( path == "" then inst~>name else sprintf(nil "%s/%s" path inst~>name))
+                if( esTransistor(inst~>cellName) then
+                    resultado = cons(list(fullPath esTransistorN(inst~>cellName)) resultado)
+                else
+                    vName = gmidResolverVista(inst~>cellName)
+                    subCvRes = errset(dbOpenCellViewByType(inst~>libName inst~>cellName vName nil "r"))
+                    subCv = if( subCvRes then car(subCvRes) else nil)
+                    when( subCv
+                        resultado = append(RecorrerJerarquiaGmId(subCv fullPath depth+1 maxDepth) resultado)
+                        dbClose(subCv)
+                    )
+                )
+            )
+        )
+        resultado
+    )
+)
+
+procedure( GenerarMaestroGmId()
+    let( (cv sess tests xtors nN nP n1 n2 r1 r2 r3 nErr)
+        cv = geGetEditCellView()
+        when( cv && cv~>cellViewType == "schematic"
+            sess = car(maeGetSessions())
+            unless( sess
+                sess = maeOpenSetup(cv~>libName cv~>cellName "maestro" ?mode "a"))
+
+            tests = if( gmidTests
+                then setof(tn maeGetSetup(?session sess) member(tn gmidTests))
+                else maeGetSetup(?session sess))
+
+            xtors = nil
+            nN = 0
+            nP = 0
+            foreach( par RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
+                xtors = cons(car(par) xtors)
+                if( cadr(par) then nN = nN + 1 else nP = nP + 1 )
+            )
+
+            nErr = 0
+            foreach( tst tests
+                foreach( nm xtors
+                    n1 = sprintf(nil "gmid_%s" nm)
+                    n2 = sprintf(nil "vdsmargin_%s" nm)
+                    errset(maeDeleteOutput(n1 tst ?session sess))
+                    errset(maeDeleteOutput(n2 tst ?session sess))
+                    r1 = maeAddOutput(n1 tst ?outputType "point"
+                        ?expr sprintf(nil "OP(\"/%s\" \"gm\") / OP(\"/%s\" \"id\")" nm nm)
+                        ?session sess)
+                    r2 = maeAddOutput(n2 tst ?outputType "point"
+                        ?expr sprintf(nil "abs(OP(\"/%s\" \"vds\")) - abs(OP(\"/%s\" \"vdsat\"))" nm nm)
+                        ?session sess)
+                    r3 = maeSetSpec(n2 tst ?gt gmidSatMargin ?session sess)
+                    unless( r1 && r2 && r3
+                        nErr = nErr + 1
+                        printf("Fallo al anadir salidas/spec de %s en %s\n" nm tst))
+                )
+            )
+
+            if( tests then
+                maeSaveSetup(?session sess)
+                printf("gm/Id: %d NMOS, %d PMOS | sesion %s | tests %L | spec vdsmargin > %s | %d fallos\n"
+                    nN nP sess tests gmidSatMargin nErr)
+            else
+                printf("Ningun test de gmidTests existe en la sesion %s: %L\n"
+                    sess maeGetSetup(?session sess))
+            )
+        )
+    )
+)
+
+procedure( RegistrarMiMenuGmId(args)
+    let( (itemMenu menuCustom win)
+        win = if( windowp(args) then args else args->window )
+        when( win && windowp(win)
+            itemMenu = hiCreateMenuItem(
+                ?name 'ItemGmId
+                ?itemText "Generar"
+                ?callback "GenerarMaestroGmId()"
+            )
+            menuCustom = hiCreatePulldownMenu(
+                'MenuGmId
+                "Crear expresiones"
+                list(itemMenu)
+            )
+            hiInsertBannerMenu(win menuCustom length(hiGetBannerMenus(win)))
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; Chequeo periodico: anade el menu a cualquier esquematico abierto que
+;; todavia no lo tenga (cubre ventanas ya abiertas y nuevas, sin depender
+;; de que el trigger de apertura se dispare).
+;; -------------------------------------------------------------------------
+procedure( ChequearMenusGmId()
+    errset(
+        foreach( w hiGetWindowList()
+            errset(
+                when( windowp(w) && geGetEditCellView(w) &&
+                      !member('MenuGmId hiGetBannerMenus(w))
+                    RegistrarMiMenuGmId(list(nil 'window w))
+                )
+            )
+        )
+    )
+    hiRegTimer("ChequearMenusGmId()" 1000)
+)
+
+;; Registro inmediato al cargar el plugin
+ChequearMenusGmId()</code></pre>
+        </div>
+
+        <div class="note" id="noteBox">
+            <strong id="note_title">Uso:</strong> <span id="note_text"></span>
+        </div>
+    </main>
+
+    <footer>
+        <p id="footer_text">© 2026 Eva Deltor — Cadence · Virtuoso Codes</p>
+    </footer>
+
+    <script>
+        const translations = {
+            es: {
+                back_link: "← Volver al sitio",
+                badge: "SKILL · Cadence Virtuoso",
+                title: "Extractor automático de gm/Id y margen de saturación",
+                lead: "Plugin en SKILL para ADE Assembler (Maestro) que detecta automáticamente los transistores de un esquemático — incluso dentro de jerarquías anidadas — y genera las expresiones de gm/Id y el margen de saturación para cada uno.",
+                th_hace: "Qué hace",
+                th_necesita: "Qué necesitas configurar",
+                features: [
+                    { hace: "Recorre la jerarquía del esquemático", necesita: "Tener abierto y activo el esquemático de nivel superior que quieres jerarquizar, y ajustar <code>gmidMaxDepth</code> (profundidad máxima, por defecto 3)." },
+                    { hace: "Clasifica cada transistor como NMOS o PMOS", necesita: "Que los nombres de celda coincidan con <code>ne/nmos/nch/nfet</code> (NMOS) o <code>pe/pmos/pch/pfet</code> (PMOS). Amplía la lista en el código si tu PDK usa otros nombres." },
+                    { hace: "Resuelve celdas con varias vistas de esquemático", necesita: "Si una celda no tiene una vista llamada simplemente <code>schematic</code> sino algo como <code>schematic_9T_OTA</code>, indícalo en <code>gmidViewOverrides</code>: <code>list(cons(\"NombreCelda\" \"schematic_9T_OTA\"))</code>." },
+                    { hace: "Genera las expresiones gm/Id y Vds − Vdsat", necesita: "Una sesión de Maestro/ADE Assembler abierta, con Save DC Operating Point activado en el test elegido." },
+                    { hace: "Aplica un spec de saturación configurable", necesita: "Ajustar <code>gmidSatMargin</code> (margen mínimo, por defecto <code>\"0\"</code>) y <code>gmidTests</code> (tests donde aplicarlo; <code>nil</code> = todos)." },
+                    { hace: "Añade el menú \"Crear expresiones\" automáticamente", necesita: "Cargar el plugin con <code>load()</code> o desde el <code>.cdsinit</code>. El menú tarda hasta ~1 minuto en aparecer en cada esquemático." }
+                ],
+                copyLabel: "Copiar código", copiedLabel: "¡Copiado!",
+                note_title: "Uso:",
+                note_text: '<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load("gm_id_plugin.il")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load("/ruta/absoluta/gm_id_plugin.il")</code>.<br><br>En ambos casos, el menú «Crear expresiones» aparecerá solo en los esquemáticos abiertos en cuestión de segundos.',
+                footer_text: "© 2026 Eva Deltor — Cadence · Virtuoso Codes"
+            },
+            ca: {
+                back_link: "← Tornar al lloc",
+                badge: "SKILL · Cadence Virtuoso",
+                title: "Extractor automàtic de gm/Id i marge de saturació",
+                lead: "Plugin en SKILL per a ADE Assembler (Maestro) que detecta automàticament els transistors d'un esquemàtic — fins i tot dins de jerarquies imbricades — i genera les expressions de gm/Id i el marge de saturació per a cadascun.",
+                th_hace: "Què fa",
+                th_necesita: "Què has de configurar",
+                features: [
+                    { hace: "Recorre la jerarquia de l'esquemàtic", necesita: "Tenir obert i actiu l'esquemàtic de nivell superior que vols jerarquitzar, i ajustar <code>gmidMaxDepth</code> (profunditat màxima, per defecte 3)." },
+                    { hace: "Classifica cada transistor com a NMOS o PMOS", necesita: "Que els noms de cel·la coincideixin amb <code>ne/nmos/nch/nfet</code> (NMOS) o <code>pe/pmos/pch/pfet</code> (PMOS). Amplia la llista al codi si el teu PDK fa servir altres noms." },
+                    { hace: "Resol cel·les amb diverses vistes d'esquemàtic", necesita: "Si una cel·la no té una vista anomenada simplement <code>schematic</code> sinó alguna cosa com <code>schematic_9T_OTA</code>, indica-ho a <code>gmidViewOverrides</code>: <code>list(cons(\"NomCel·la\" \"schematic_9T_OTA\"))</code>." },
+                    { hace: "Genera les expressions gm/Id i Vds − Vdsat", necesita: "Una sessió de Maestro/ADE Assembler oberta, amb Save DC Operating Point activat al test triat." },
+                    { hace: "Aplica un spec de saturació configurable", necesita: "Ajustar <code>gmidSatMargin</code> (marge mínim, per defecte <code>\"0\"</code>) i <code>gmidTests</code> (tests on aplicar-ho; <code>nil</code> = tots)." },
+                    { hace: "Afegeix el menú «Crear expresiones» automàticament", necesita: "Carregar el plugin amb <code>load()</code> o des del <code>.cdsinit</code>. El menú triga fins a ~1 minut a aparèixer a cada esquemàtic." }
+                ],
+                copyLabel: "Copiar codi", copiedLabel: "Copiat!",
+                note_title: "Ús:",
+                note_text: '<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load("gm_id_plugin.il")</code> al CIW (amb el CIW situat a la carpeta de l\'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load("/ruta/absoluta/gm_id_plugin.il")</code>.<br><br>En tots dos casos, el menú «Crear expresiones» apareixerà sol als esquemàtics oberts en qüestió de segons.',
+                footer_text: "© 2026 Eva Deltor — Cadence · Virtuoso Codes"
+            },
+            en: {
+                back_link: "← Back to site",
+                badge: "SKILL · Cadence Virtuoso",
+                title: "Automatic gm/Id and saturation margin extractor",
+                lead: "A SKILL plugin for ADE Assembler (Maestro) that automatically detects the transistors in a schematic — even inside nested hierarchies — and generates the gm/Id expressions and saturation margin for each one.",
+                th_hace: "What it does",
+                th_necesita: "What you need to set",
+                features: [
+                    { hace: "Walks the schematic hierarchy", necesita: "The top-level schematic you want to hierarchize must be open and active, with <code>gmidMaxDepth</code> set (max depth, default 3)." },
+                    { hace: "Classifies each transistor as NMOS or PMOS", necesita: "Cell names must match <code>ne/nmos/nch/nfet</code> (NMOS) or <code>pe/pmos/pch/pfet</code> (PMOS). Extend the list in the code if your PDK uses different names." },
+                    { hace: "Resolves cells with multiple schematic views", necesita: "If a cell's view isn't simply named <code>schematic</code> but something like <code>schematic_9T_OTA</code>, set it in <code>gmidViewOverrides</code>: <code>list(cons(\"CellName\" \"schematic_9T_OTA\"))</code>." },
+                    { hace: "Generates gm/Id and Vds − Vdsat expressions", necesita: "An open Maestro/ADE Assembler session, with Save DC Operating Point enabled on the chosen test." },
+                    { hace: "Applies a configurable saturation spec", necesita: "Set <code>gmidSatMargin</code> (minimum margin, default <code>\"0\"</code>) and <code>gmidTests</code> (tests to apply it to; <code>nil</code> = all)." },
+                    { hace: "Adds the \"Crear expresiones\" menu automatically", necesita: "Load the plugin with <code>load()</code> or from <code>.cdsinit</code>. The menu takes up to ~1 minute to appear on each schematic." }
+                ],
+                copyLabel: "Copy code", copiedLabel: "Copied!",
+                note_title: "Usage:",
+                note_text: '<strong>Option 1 — load it yourself each session:</strong> type <code>load("gm_id_plugin.il")</code> in the CIW (with the CIW located in the file\'s folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load("/absolute/path/gm_id_plugin.il")</code>.<br><br>Either way, the "Crear expresiones" menu will appear on open schematics within a few seconds.',
+                footer_text: "© 2026 Eva Deltor — Cadence · Virtuoso Codes"
+            }
+        };
+
+        function setText(id, val) {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) el.textContent = val;
+        }
+
+        function setHTML(id, val) {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) el.innerHTML = val;
+        }
+
+        function setLang(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            sessionStorage.setItem('eva_lang', lang);
+            ['ca','es','en'].forEach(l => {
+                const btn = document.getElementById('sw_' + l);
+                if (btn) btn.classList.toggle('active', l === lang);
+            });
+            setText('back_link', t.back_link);
+            setText('badge', t.badge);
+            setText('title', t.title);
+            setText('lead', t.lead);
+            setText('th_hace', t.th_hace);
+            setText('th_necesita', t.th_necesita);
+
+            const body = document.getElementById('featureBody');
+            body.innerHTML = t.features.map(f => `
+                <tr>
+                    <td data-label="${t.th_hace}">${f.hace}</td>
+                    <td data-label="${t.th_necesita}">${f.necesita}</td>
+                </tr>
+            `).join('');
+
+            setText('copyLabel', t.copyLabel);
+            setText('note_title', t.note_title);
+            setHTML('note_text', t.note_text);
+            setText('footer_text', t.footer_text);
+            document.documentElement.lang = lang;
+            window.__currentLang = lang;
+            window.__copiedLabel = t.copiedLabel;
+            window.__copyLabel = t.copyLabel;
+        }
+
+        function getUrlLang() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('lang');
+        }
+
+        window.addEventListener('load', () => {
+            const lang = getUrlLang() || sessionStorage.getItem('eva_lang') || 'es';
+            setLang(lang);
+        });
+
+        function copyCode() {
+            const code = document.getElementById('codeContent').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const label = document.getElementById('copyLabel');
+                btn.classList.add('copied');
+                label.textContent = window.__copiedLabel || 'Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    label.textContent = window.__copyLabel || 'Copy code';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
