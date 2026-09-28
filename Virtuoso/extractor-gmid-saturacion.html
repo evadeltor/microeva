@@ -77,7 +77,6 @@
         h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--dark); margin-bottom: 18px; line-height: 1.2; }
         .lead { font-size: 1.05rem; color: #666; margin-bottom: 40px; line-height: 1.8; max-width: 700px; }
 
-        /* ── Inline code (fuera de bloques <pre>) ── */
         code {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.85em;
@@ -88,9 +87,8 @@
             white-space: nowrap;
         }
 
-        /* ── Tabla qué hace / qué necesita ── */
         .feature-table-wrapper {
-            margin-bottom: 45px; border: 1px solid var(--border);
+            margin-bottom: 30px; border: 1px solid var(--border);
             border-radius: 8px; overflow: hidden; background: white;
         }
 
@@ -109,9 +107,48 @@
         }
 
         .feature-table tr:last-child td { border-bottom: none; }
-        .feature-table td:first-child { color: var(--dark); font-weight: 500; width: 45%; }
+        .feature-table td:first-child { color: var(--dark); font-weight: 500; width: 40%; }
         .feature-table td:last-child { color: #666; }
         .feature-table td code { white-space: normal; }
+
+        .popup-figure { margin: 0 auto 30px; max-width: 560px; }
+        .popup-mock {
+            background: white; border: 1px solid var(--border); border-radius: 10px;
+            box-shadow: 0 16px 36px rgba(0,0,0,0.10); overflow: hidden;
+        }
+        .popup-mock-title {
+            position: relative; text-align: center; padding: 12px 16px;
+            background: #FDFBF8; border-bottom: 1px solid var(--border);
+            font-size: 0.85rem; font-weight: 600; color: var(--dark);
+        }
+        .popup-mock-dots { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px; }
+        .popup-mock-dots span { width: 10px; height: 10px; border-radius: 50%; background: #E1DBD2; }
+        .popup-mock-body { padding: 18px 20px 6px; }
+        .popup-mock-row { display: flex; gap: 18px; padding-bottom: 14px; align-items: flex-start; }
+        .popup-mock-label { flex: 0 0 38%; font-size: 0.78rem; color: #666; }
+        .popup-mock-opts { flex: 1; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+        .popup-mock-opts.col { flex-direction: column; flex-wrap: nowrap; gap: 8px; }
+        .popup-mock-opt { display: inline-flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text); }
+        .popup-mock-box {
+            width: 15px; height: 15px; border: 1.5px solid #c9c2b8; border-radius: 3px; background: white;
+            display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+            font-size: 11px; line-height: 1; color: white;
+        }
+        .popup-mock-box.on { background: var(--primary); border-color: var(--primary); }
+        .popup-mock-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px 16px; }
+        .popup-mock-btn {
+            padding: 5px 18px; border-radius: 4px; font-size: 0.75rem; font-weight: 500;
+            border: 1px solid var(--border); background: #F5F3F0; color: var(--text);
+        }
+        .popup-mock-btn.ok { background: var(--primary); border-color: var(--primary); color: white; }
+        .popup-figure figcaption { margin-top: 12px; text-align: center; font-size: 0.8rem; color: #888; line-height: 1.6; }
+
+        .hint-box {
+            background: #FDF5EC; border: 1px dashed var(--primary); border-radius: 6px;
+            padding: 16px 20px; font-size: 0.85rem; color: #666; margin-bottom: 30px; line-height: 1.8;
+        }
+        .hint-box strong { color: var(--dark); }
+        .hint-box code { white-space: normal; }
 
         .code-block {
             position: relative; background: var(--code-bg); border-radius: 8px;
@@ -163,6 +200,8 @@
         }
 
         @media (max-width: 560px) {
+            .popup-mock-row { flex-direction: column; gap: 8px; }
+            .popup-mock-label { flex: none; }
             .feature-table, .feature-table thead, .feature-table tbody, .feature-table tr, .feature-table td { display: block; width: 100%; }
             .feature-table thead { display: none; }
             .feature-table tr { border-bottom: 1px solid var(--border); padding: 14px 18px; }
@@ -196,86 +235,283 @@
 
     <main class="container">
         <span class="badge" id="badge">SKILL · Cadence Virtuoso</span>
-        <h1 id="title">Extractor automático de gm/Id y margen de saturación</h1>
-        <p class="lead" id="lead">Plugin en SKILL para ADE Assembler (Maestro) que detecta automáticamente los transistores de un esquemático — incluso dentro de jerarquías anidadas — y genera las expresiones de gm/Id y el margen de saturación para cada uno.</p>
+        <h1 id="title"></h1>
+        <p class="lead" id="lead"></p>
 
         <div class="feature-table-wrapper">
             <table class="feature-table">
                 <thead>
                     <tr>
-                        <th id="th_hace">Qué hace</th>
-                        <th id="th_necesita">Qué necesitas configurar</th>
+                        <th id="th_hace"></th>
+                        <th id="th_necesita"></th>
                     </tr>
                 </thead>
                 <tbody id="featureBody"></tbody>
             </table>
         </div>
 
+        <figure class="popup-figure">
+            <div class="popup-mock" id="figPopup" role="img">
+                <div class="popup-mock-title"><span id="figTitle"></span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
+                <div class="popup-mock-body">
+                    <div class="popup-mock-row">
+                        <div class="popup-mock-label" id="figTests"></div>
+                        <div class="popup-mock-opts">
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span><span class="figTest" data-n="1"></span></span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box on">✓</span><span class="figTest" data-n="2"></span></span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span><span class="figTest" data-n="3"></span></span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span><span class="figTest" data-n="4"></span></span>
+                        </div>
+                    </div>
+                    <div class="popup-mock-row">
+                        <div class="popup-mock-label" id="figView"></div>
+                        <div class="popup-mock-opts col">
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>schematic_A</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box on">✓</span>schematic_B</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>schematic_C</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-mock-foot"><span class="popup-mock-btn ok">OK</span><span class="popup-mock-btn">Cancel</span><span class="popup-mock-btn">Help</span></div>
+            </div>
+            <figcaption id="figCaption"></figcaption>
+        </figure>
+
+        <div class="hint-box" id="hintBox"></div>
+
         <div class="code-block">
             <div class="code-header">
                 <span class="code-filename">extractor_gmid_saturacion.il</span>
                 <button class="copy-btn" id="copyBtn" onclick="copyCode()">
-                    <span id="copyLabel">Copiar código</span>
+                    <span id="copyLabel"></span>
                 </button>
             </div>
             <pre><code id="codeContent">;; =========================================================================
-;; PLUGIN: DETECTOR DE TRANSISTORES Y GENERADOR DE ECUACIONES GM/ID
+;; PLUGIN: DETECTOR DE TRANSISTORES, GM/ID Y SATURACION
 ;; Recorre jerarquia (hasta gmidMaxDepth niveles) desde el esquematico activo
+;;
+;; Deteccion automatica de transistores MOS: una celda hoja (sin vista
+;; schematic*) cuyo simbolo tiene pines D, G y S. La polaridad se deduce del
+;; nombre de la celda y del parametro "model". "Tipos de transistores" solo
+;; hace falta para forzar celdas concretas.
 ;; =========================================================================
 
 unless( boundp('gmidTests) gmidTests = nil )
 unless( boundp('gmidSatMargin) gmidSatMargin = "0" )
 unless( boundp('gmidMaxDepth) gmidMaxDepth = 3 )
 
-;; -------------------------------------------------------------------------
-;; Tabla de vistas concretas para celdas cuyo nombre de vista real no es
-;; "schematic" a secas (p.ej. porque usas varias variantes segun el config).
-;; Edita esto a mano segun que config estes usando en cada momento:
-;;   gmidViewOverrides = list(cons("BufferSortida" "schematic_RailToRail"))
-;; -------------------------------------------------------------------------
-unless( boundp('gmidViewOverrides)
-    gmidViewOverrides = list(cons("BufferSortida" "schematic_RailToRail"))
+;; t = detectar transistores por sus pines; nil = usar solo las listas
+unless( boundp('gmidAutoDetect) gmidAutoDetect = t )
+
+;; Celdas forzadas como transistor (nombre de celda en minusculas). Tienen
+;; prioridad sobre la deteccion automatica y fijan la polaridad.
+unless( boundp('gmidNmosCells) gmidNmosCells = '("ne" "nmos" "nch" "nfet" "nelna") )
+unless( boundp('gmidPmosCells) gmidPmosCells = '("pe" "pmos" "pch" "pfet" "pe3lna") )
+
+;; Archivo de configuracion persistente
+gmidConfigFile = strcat(getShellEnvVar("HOME") "/.gmid_tipos_transistores.il")
+when( isFile(gmidConfigFile)
+    load(gmidConfigFile)
 )
 
-procedure( esTransistor(cellName)
-    let( (cn)
-        cn = lowerCase(or(cellName ""))
-        (member(cn '("ne" "nmos" "nch" "nfet" "pe" "pmos" "pch" "pfet")) != nil)
+;; Lista de (cellName vista). Se rellena desde el popup de destino.
+unless( boundp('gmidViewOverrides) gmidViewOverrides = nil )
+
+;; Otros archivos (p.ej. mismatch_pelgrom.il) pueden anadir aqui sus propios
+;; items para que aparezcan en el mismo menu "Crear expresiones".
+unless( boundp('gmidExtraMenuItems) gmidExtraMenuItems = nil )
+
+gmidAccionPendiente = nil
+gmidDestTestsOrdered = nil
+gmidDestCeldas = nil
+gmidCeldasAcc = nil
+gmidHojasAcc = nil
+gmidDestForm = nil
+gmidTiposForm = nil
+gmidMosCache = nil
+
+;; -------------------------------------------------------------------------
+;; DETECCION DE TRANSISTORES
+;; -------------------------------------------------------------------------
+
+;; Nombres de los pines del simbolo de una instancia
+procedure( gmidTerminalesMaster(inst)
+    let( (res)
+        res = errset(inst~&gt;master~&gt;terminals~&gt;name)
+        if( res then car(res) else nil)
     )
 )
 
-procedure( esTransistorN(cellName)
-    let( (cn)
-        cn = lowerCase(or(cellName ""))
-        (member(cn '("ne" "nmos" "nch" "nfet")) != nil)
+;; Nombres de las vistas que empiezan por "schematic" de una celda
+procedure( gmidVistasSchematic(libName cellName)
+    let( (objRes obj nombres)
+        nombres = nil
+        objRes = errset(ddGetObj(libName cellName))
+        obj = if( objRes then car(objRes) else nil)
+        when( obj
+            nombres = setof(n obj~&gt;views~&gt;name rexMatchp("^schematic" n))
+        )
+        nombres
     )
 )
 
-;; Devuelve el nombre de vista a usar para una celda: el override si existe,
-;; si no "schematic" por defecto.
-procedure( gmidResolverVista(cellName)
-    let( (ov)
+;; Deteccion por pines: D, G y S, y sin vista schematic* (primitiva)
+procedure( gmidDetectarMos(inst)
+    let( (nombres l hasD hasG hasS sinSchem)
+        if( gmidAutoDetect then
+            nombres = gmidTerminalesMaster(inst)
+            l = mapcar(lambda((x) if(stringp(x) lowerCase(x) "")) nombres)
+            hasD = member("d" l) || member("drain" l)
+            hasG = member("g" l) || member("gate" l)
+            hasS = member("s" l) || member("source" l)
+            sinSchem = !gmidVistasSchematic(inst~&gt;libName inst~&gt;cellName)
+            if( hasD &amp;&amp; hasG &amp;&amp; hasS &amp;&amp; sinSchem then t else nil)
+        else
+            nil
+        )
+    )
+)
+
+;; Es transistor si esta en las listas forzadas o lo detecta por pines.
+;; El resultado se guarda en cache por lib/celda (gmidMosCache).
+procedure( gmidEsMos(inst)
+    let( (key ent res cn)
+        key = sprintf(nil "%s/%s" inst~&gt;libName inst~&gt;cellName)
+        ent = assoc(key gmidMosCache)
+        if( ent then
+            res = eq(cadr(ent) 'yes)
+        else
+            cn = lowerCase(or(inst~&gt;cellName ""))
+            if( member(cn gmidNmosCells) || member(cn gmidPmosCells) then
+                res = t
+            else
+                res = gmidDetectarMos(inst)
+            )
+            gmidMosCache = cons(list(key if(res 'yes 'no)) gmidMosCache)
+        )
+        res
+    )
+)
+
+;; Polaridad segun un texto (nombre de celda o modelo): 'n, 'p o nil
+procedure( gmidPolaridadStr(s)
+    if( stringp(s) then
+        cond(
+            ( rexMatchp("pmos" s) 'p )
+            ( rexMatchp("pfet" s) 'p )
+            ( rexMatchp("pch" s) 'p )
+            ( rexMatchp("nmos" s) 'n )
+            ( rexMatchp("nfet" s) 'n )
+            ( rexMatchp("nch" s) 'n )
+            ( rexMatchp("^p" s) 'p )
+            ( rexMatchp("^n" s) 'n )
+            ( t nil )
+        )
+    else nil)
+)
+
+;; Polaridad de una instancia: 'n, 'p o 'u (desconocida)
+procedure( gmidPolaridad(inst)
+    let( (cn val mdl)
+        cn = lowerCase(or(inst~&gt;cellName ""))
+        cond(
+            ( member(cn gmidNmosCells) 'n )
+            ( member(cn gmidPmosCells) 'p )
+            ( t
+                val = gmidGetInstParam(inst "model")
+                mdl = if( stringp(val) then lowerCase(val) else "")
+                or(gmidPolaridadStr(cn) gmidPolaridadStr(mdl) 'u)
+            )
+        )
+    )
+)
+
+;; Vista a usar para una celda: la elegida en el popup; si no hay eleccion,
+;; "schematic" si existe, o la primera vista schematic* que tenga.
+;; Devuelve nil si la celda no tiene ninguna vista schematic* (primitiva):
+;; en ese caso no se intenta abrir.
+procedure( gmidResolverVista(libName cellName)
+    let( (ov vistas)
         ov = assoc(cellName gmidViewOverrides)
-        if( ov then cdr(ov) else "schematic")
+        vistas = if( ov then nil else gmidVistasSchematic(libName cellName))
+        cond(
+            ( ov cadr(ov) )
+            ( member("schematic" vistas) "schematic" )
+            ( vistas car(vistas) )
+            ( t nil )
+        )
     )
 )
 
-;; Devuelve lista de pares (fullPath isNMOS)
+;; Parseo de valores tipo "40u" / "180.0n" / "2u" a micras (float)
+procedure( gmidParseLenToUm(str)
+    let( (n i numStr suf mult)
+        n = strlen(str)
+        i = n
+        while( i &gt; 0 &amp;&amp;
+               member(substring(str i 1) '("0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "." "e" "E" "+" "-"))
+            i = i - 1
+        )
+        numStr = substring(str 1 i)
+        suf = lowerCase(if( i &lt; n then substring(str i+1 n-i) else ""))
+        mult = case( suf
+            ("" 1.0)
+            ("f" 1.0e-15) ("p" 1.0e-12) ("n" 1.0e-9)
+            ("u" 1.0e-6) ("m" 1.0e-3)
+            ("k" 1.0e3) ("meg" 1.0e6) ("g" 1.0e9)
+            (t nil)
+        )
+        if( mult == nil then nil else (evalstring(numStr) * mult * 1.0e6))
+    )
+)
+
+;; Lee un parametro (w/l/m/model) del CDF resuelto de una instancia
+procedure( gmidGetInstParam(inst paramName)
+    let( (cdfRes cdfId p val)
+        val = nil
+        cdfRes = errset(cdfGetInstCDF(inst))
+        cdfId = if( cdfRes then car(cdfRes) else nil)
+        when( cdfId
+            foreach( p cdfId~&gt;parameters
+                when( p~&gt;name == paramName val = p~&gt;value )
+            )
+        )
+        val
+    )
+)
+
+;; Devuelve list(w_um l_um m) para una instancia de transistor
+procedure( gmidGetWLM(inst)
+    let( (wStr lStr mStr w l m)
+        wStr = gmidGetInstParam(inst "w")
+        lStr = gmidGetInstParam(inst "l")
+        mStr = gmidGetInstParam(inst "m")
+        w = if( wStr then gmidParseLenToUm(wStr) else nil)
+        l = if( lStr then gmidParseLenToUm(lStr) else nil)
+        m = if( mStr then (evalstring(mStr) * 1.0) else 1.0)
+        list(w l m)
+    )
+)
+
+;; Devuelve lista de (fullPath polaridad w_um l_um m), con polaridad 'n 'p 'u
 procedure( RecorrerJerarquiaGmId(cv path depth maxDepth)
-    let( (resultado fullPath subCvRes subCv vName)
+    let( (resultado fullPath subCvRes subCv vName wlm)
         resultado = nil
-        when( cv && cv~>instances && depth <= maxDepth
-            foreach( inst cv~>instances
-                fullPath = if( path == "" then inst~>name else sprintf(nil "%s/%s" path inst~>name))
-                if( esTransistor(inst~>cellName) then
-                    resultado = cons(list(fullPath esTransistorN(inst~>cellName)) resultado)
+        when( cv &amp;&amp; cv~&gt;instances &amp;&amp; depth &lt;= maxDepth
+            foreach( inst cv~&gt;instances
+                fullPath = if( path == "" then inst~&gt;name else sprintf(nil "%s/%s" path inst~&gt;name))
+                if( gmidEsMos(inst) then
+                    wlm = gmidGetWLM(inst)
+                    resultado = cons(list(fullPath gmidPolaridad(inst) car(wlm) cadr(wlm) caddr(wlm)) resultado)
                 else
-                    vName = gmidResolverVista(inst~>cellName)
-                    subCvRes = errset(dbOpenCellViewByType(inst~>libName inst~>cellName vName nil "r"))
-                    subCv = if( subCvRes then car(subCvRes) else nil)
-                    when( subCv
-                        resultado = append(RecorrerJerarquiaGmId(subCv fullPath depth+1 maxDepth) resultado)
-                        dbClose(subCv)
+                    vName = gmidResolverVista(inst~&gt;libName inst~&gt;cellName)
+                    when( vName
+                        subCvRes = errset(dbOpenCellViewByType(inst~&gt;libName inst~&gt;cellName vName nil "r"))
+                        subCv = if( subCvRes then car(subCvRes) else nil)
+                        when( subCv
+                            resultado = append(RecorrerJerarquiaGmId(subCv fullPath depth+1 maxDepth) resultado)
+                            dbClose(subCv)
+                        )
                     )
                 )
             )
@@ -284,87 +520,474 @@ procedure( RecorrerJerarquiaGmId(cv path depth maxDepth)
     )
 )
 
-procedure( GenerarMaestroGmId()
-    let( (cv sess tests xtors nN nP n1 n2 r1 r2 r3 nErr)
-        cv = geGetEditCellView()
-        when( cv && cv~>cellViewType == "schematic"
-            sess = car(maeGetSessions())
-            unless( sess
-                sess = maeOpenSetup(cv~>libName cv~>cellName "maestro" ?mode "a"))
-
-            tests = if( gmidTests
-                then setof(tn maeGetSetup(?session sess) member(tn gmidTests))
-                else maeGetSetup(?session sess))
-
-            xtors = nil
-            nN = 0
-            nP = 0
-            foreach( par RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
-                xtors = cons(car(par) xtors)
-                if( cadr(par) then nN = nN + 1 else nP = nP + 1 )
+;; Recorre la jerarquia y acumula en gmidCeldasAcc las celdas que tienen
+;; alguna vista schematic*: lista de (cellName listaDeVistas)
+procedure( gmidDescubrirCeldas(cv depth maxDepth)
+    let( (vistas vName subCvRes subCv)
+        when( cv &amp;&amp; cv~&gt;instances &amp;&amp; depth &lt;= maxDepth
+            foreach( inst cv~&gt;instances
+                unless( gmidEsMos(inst)
+                    vistas = gmidVistasSchematic(inst~&gt;libName inst~&gt;cellName)
+                    when( vistas
+                        unless( assoc(inst~&gt;cellName gmidCeldasAcc)
+                            gmidCeldasAcc = cons(list(inst~&gt;cellName vistas) gmidCeldasAcc)
+                            vName = gmidResolverVista(inst~&gt;libName inst~&gt;cellName)
+                            when( vName
+                                subCvRes = errset(dbOpenCellViewByType(inst~&gt;libName inst~&gt;cellName vName nil "r"))
+                                subCv = if( subCvRes then car(subCvRes) else nil)
+                                when( subCv
+                                    gmidDescubrirCeldas(subCv depth+1 maxDepth)
+                                    dbClose(subCv)
+                                )
+                            )
+                        )
+                    )
+                )
             )
+        )
+        t
+    )
+)
 
-            nErr = 0
-            foreach( tst tests
-                foreach( nm xtors
-                    n1 = sprintf(nil "gmid_%s" nm)
-                    n2 = sprintf(nil "vdsmargin_%s" nm)
-                    errset(maeDeleteOutput(n1 tst ?session sess))
-                    errset(maeDeleteOutput(n2 tst ?session sess))
-                    r1 = maeAddOutput(n1 tst ?outputType "point"
-                        ?expr sprintf(nil "OP(\"/%s\" \"gm\") / OP(\"/%s\" \"id\")" nm nm)
-                        ?session sess)
-                    r2 = maeAddOutput(n2 tst ?outputType "point"
-                        ?expr sprintf(nil "abs(OP(\"/%s\" \"vds\")) - abs(OP(\"/%s\" \"vdsat\"))" nm nm)
-                        ?session sess)
-                    r3 = maeSetSpec(n2 tst ?gt gmidSatMargin ?session sess)
-                    unless( r1 && r2 && r3
-                        nErr = nErr + 1
-                        printf("Fallo al anadir salidas/spec de %s en %s\n" nm tst))
+;; Diagnostico: acumula las celdas hoja (sin vista schematic*) que NO se han
+;; detectado como transistor, con sus pines: lista de (lib/celda pines)
+procedure( gmidRecogerHojas(cv depth maxDepth)
+    let( (vName subCvRes subCv clave nombres pines)
+        when( cv &amp;&amp; cv~&gt;instances &amp;&amp; depth &lt;= maxDepth
+            foreach( inst cv~&gt;instances
+                unless( gmidEsMos(inst)
+                    vName = gmidResolverVista(inst~&gt;libName inst~&gt;cellName)
+                    if( vName then
+                        subCvRes = errset(dbOpenCellViewByType(inst~&gt;libName inst~&gt;cellName vName nil "r"))
+                        subCv = if( subCvRes then car(subCvRes) else nil)
+                        when( subCv
+                            gmidRecogerHojas(subCv depth+1 maxDepth)
+                            dbClose(subCv)
+                        )
+                    else
+                        clave = sprintf(nil "%s/%s" inst~&gt;libName inst~&gt;cellName)
+                        unless( assoc(clave gmidHojasAcc)
+                            nombres = gmidTerminalesMaster(inst)
+                            pines = if( nombres then buildString(nombres ",") else "?")
+                            gmidHojasAcc = cons(list(clave pines) gmidHojasAcc)
+                        )
+                    )
+                )
+            )
+        )
+        t
+    )
+)
+
+;; Diagnostico: celdas hoja que NO se cuentan como transistor, con sus pines.
+;; Si ves algun transistor en la lista, anadelo desde "Tipos de transistores".
+procedure( ListarHojasGmId()
+    let( (cv)
+        cv = geGetEditCellView()
+        gmidMosCache = nil
+        gmidHojasAcc = nil
+        gmidRecogerHojas(cv 1 gmidMaxDepth)
+        printf("Celdas hoja no detectadas como transistor:\n")
+        foreach( h gmidHojasAcc
+            printf("  %s   pines: %s\n" car(h) cadr(h))
+        )
+        t
+    )
+)
+
+;; Diagnostico: transistores detectados, con polaridad y W/L/m
+procedure( ListarTransistoresGmId()
+    let( (cv xt)
+        cv = geGetEditCellView()
+        gmidMosCache = nil
+        xt = RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
+        printf("Transistores detectados: %d\n" length(xt))
+        foreach( par xt
+            printf("  %s  polaridad=%L  W=%L L=%L m=%L\n"
+                car(par) cadr(par) caddr(par) cadddr(par) car(cddddr(par)))
+        )
+        t
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; TIPOS DE TRANSISTORES (opcional): fuerza celdas y polaridad. Se guarda en
+;; disco y se carga solo en cada sesion.
+;; -------------------------------------------------------------------------
+
+;; "a b, c" -&gt; ("a" "b" "c") en minusculas
+procedure( gmidParseCeldas(str)
+    let( (res)
+        res = nil
+        when( str &amp;&amp; str != ""
+            foreach( p parseString(str " ,;")
+                when( p != ""
+                    res = cons(lowerCase(p) res)
+                )
+            )
+        )
+        reverse(res)
+    )
+)
+
+;; Escribe la configuracion actual en el archivo persistente
+procedure( gmidGuardarTipos()
+    let( (fid)
+        fid = outfile(gmidConfigFile)
+        when( fid
+            fprintf(fid ";; Configuracion de tipos de transistores (generado automaticamente)\n")
+            fprintf(fid "gmidNmosCells = '%L\n" gmidNmosCells)
+            fprintf(fid "gmidPmosCells = '%L\n" gmidPmosCells)
+            close(fid)
+            printf("Tipos de transistores guardados en %s\n" gmidConfigFile)
+        )
+        unless( fid
+            printf("No se pudo escribir %s\n" gmidConfigFile)
+        )
+        t
+    )
+)
+
+procedure( TiposTransistoresGmId()
+    let( (nStr pStr)
+        nStr = if( gmidNmosCells then buildString(gmidNmosCells " ") else "")
+        pStr = if( gmidPmosCells then buildString(gmidPmosCells " ") else "")
+        gmidTiposForm = hiCreateAppForm(
+            ?name 'gmidTiposForm
+            ?formTitle "Tipos de transistores (opcional)"
+            ?fields list(
+                hiCreateStringField(
+                    ?name 'gmidTiposNmos
+                    ?prompt "Celdas NMOS forzadas (separadas por espacios)"
+                    ?value nStr
+                )
+                hiCreateStringField(
+                    ?name 'gmidTiposPmos
+                    ?prompt "Celdas PMOS forzadas (separadas por espacios)"
+                    ?value pStr
+                )
+            )
+            ?buttonLayout 'OKCancel
+            ?callback "GuardarTiposGmId()"
+        )
+        hiDisplayForm(gmidTiposForm)
+    )
+)
+
+procedure( GuardarTiposGmId()
+    let( (f nStr pStr)
+        f = hiGetCurrentForm()
+        nStr = (f-&gt;gmidTiposNmos)~&gt;value
+        pStr = (f-&gt;gmidTiposPmos)~&gt;value
+        gmidNmosCells = gmidParseCeldas(nStr)
+        gmidPmosCells = gmidParseCeldas(pStr)
+        gmidMosCache = nil
+        printf("NMOS: %L | PMOS: %L\n" gmidNmosCells gmidPmosCells)
+        gmidGuardarTipos()
+    )
+)
+
+;; Devuelve los tests elegidos (que existan en la sesion). nil si no hay
+;; ninguno elegido: en ese caso no se crea nada.
+procedure( gmidTestsElegidos(sess)
+    if( gmidTests
+        then setof(tn maeGetSetup(?session sess) member(tn gmidTests))
+        else nil)
+)
+
+;; Resuelve sesion, tests y transistores para el esquematico activo
+procedure( gmidPrepare(cv)
+    let( (sess tests xtors)
+        gmidMosCache = nil
+        sess = car(maeGetSessions())
+        unless( sess
+            sess = maeOpenSetup(cv~&gt;libName cv~&gt;cellName "maestro" ?mode "a"))
+        tests = gmidTestsElegidos(sess)
+        xtors = RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
+        list(sess tests xtors)
+    )
+)
+
+;; Lee el valor (lista posicional t/nil) del selector de vista numero idx
+;; (campos gmidDestView0 ... gmidDestView7). Devuelve nil si no existe.
+procedure( gmidLeerVistaField(f idx)
+    let( (r)
+        r = cond(
+            ( idx == 0 errset((f-&gt;gmidDestView0)~&gt;value) )
+            ( idx == 1 errset((f-&gt;gmidDestView1)~&gt;value) )
+            ( idx == 2 errset((f-&gt;gmidDestView2)~&gt;value) )
+            ( idx == 3 errset((f-&gt;gmidDestView3)~&gt;value) )
+            ( idx == 4 errset((f-&gt;gmidDestView4)~&gt;value) )
+            ( idx == 5 errset((f-&gt;gmidDestView5)~&gt;value) )
+            ( idx == 6 errset((f-&gt;gmidDestView6)~&gt;value) )
+            ( idx == 7 errset((f-&gt;gmidDestView7)~&gt;value) )
+            ( t nil )
+        )
+        if( r then car(r) else nil)
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; POPUP DE DESTINO: test(s) + vista de esquematico. Se abre cada vez y, al
+;; pulsar OK, ejecuta la accion pedida (string con la llamada, p.ej.
+;; "GenerarGmId()").
+;; -------------------------------------------------------------------------
+procedure( gmidPedirDestino(accion)
+    let( (cv sess tests choices i sym fields c vchoices vnames j vsym nVw)
+        cv = geGetEditCellView()
+        sess = car(maeGetSessions())
+        unless( sess
+            printf("Abre primero el Maestro (ADE Assembler) de este esquematico.\n")
+        )
+        when( sess &amp;&amp; cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+            gmidAccionPendiente = accion
+            gmidMosCache = nil
+
+            ;; Campo de tests
+            tests = maeGetSetup(?session sess)
+            gmidDestTestsOrdered = nil
+            choices = nil
+            i = 0
+            foreach( tn tests
+                sym = concat('gmidTst i)
+                choices = cons(list(sym tn) choices)
+                gmidDestTestsOrdered = cons(tn gmidDestTestsOrdered)
+                i = i + 1
+            )
+            fields = list(
+                hiCreateToggleField(
+                    ?name 'gmidDestTests
+                    ?choices choices
+                    ?numSelect length(choices)
+                    ?prompt "Test(s) donde crear las expresiones"
+                    ?value nil
                 )
             )
 
+            ;; Un selector de vista por cada celda con varias vistas schematic*
+            ;; (maximo 8)
+            gmidCeldasAcc = nil
+            gmidDescubrirCeldas(cv 1 gmidMaxDepth)
+            gmidDestCeldas = nil
+            nVw = 0
+            foreach( c reverse(gmidCeldasAcc)
+                when( length(cadr(c)) &gt; 1 &amp;&amp; nVw &lt; 8
+                    vchoices = nil
+                    vnames = nil
+                    j = 0
+                    foreach( vn cadr(c)
+                        vsym = concat('gmidVw nVw 'x j)
+                        vchoices = cons(list(vsym vn) vchoices)
+                        vnames = cons(vn vnames)
+                        j = j + 1
+                    )
+                    fields = append(fields list(
+                        hiCreateToggleField(
+                            ?name concat('gmidDestView nVw)
+                            ?choices vchoices
+                            ?numSelect 1
+                            ?prompt sprintf(nil "Vista de %s" car(c))
+                            ?value nil
+                        )
+                    ))
+                    gmidDestCeldas = cons(list(car(c) vnames nVw) gmidDestCeldas)
+                    nVw = nVw + 1
+                )
+            )
+
+            gmidDestForm = hiCreateAppForm(
+                ?name 'gmidDestForm
+                ?formTitle "Destino de las expresiones"
+                ?fields fields
+                ?buttonLayout 'OKCancel
+                ?callback "GuardarDestinoGmId()"
+            )
+            hiDisplayForm(gmidDestForm)
+        )
+    )
+)
+
+procedure( GuardarDestinoGmId()
+    let( (f selT selList nameList elegidos valores entry idx vistaElegida nuevo kept)
+        f = hiGetCurrentForm()
+
+        ;; Tests elegidos (lista posicional t/nil)
+        selT = (f-&gt;gmidDestTests)~&gt;value
+        elegidos = nil
+        selList = selT
+        nameList = gmidDestTestsOrdered
+        while( selList
+            when( car(selList)
+                elegidos = cons(car(nameList) elegidos)
+            )
+            selList = cdr(selList)
+            nameList = cdr(nameList)
+        )
+        gmidTests = elegidos
+
+        ;; Vistas elegidas por celda (si no eliges ninguna, se conserva la anterior)
+        nuevo = nil
+        foreach( entry gmidDestCeldas
+            idx = caddr(entry)
+            valores = gmidLeerVistaField(f idx)
+            vistaElegida = nil
+            selList = valores
+            nameList = cadr(entry)
+            while( selList
+                when( car(selList)
+                    vistaElegida = car(nameList)
+                )
+                selList = cdr(selList)
+                nameList = cdr(nameList)
+            )
+            when( vistaElegida
+                nuevo = cons(list(car(entry) vistaElegida) nuevo)
+            )
+        )
+        kept = setof(o gmidViewOverrides !assoc(car(o) nuevo))
+        gmidViewOverrides = append(nuevo kept)
+
+        printf("Destino: tests %L | vistas %L\n" gmidTests gmidViewOverrides)
+        if( gmidTests
+            then evalstring(gmidAccionPendiente)
+            else printf("No has elegido ningun test: no se crea nada.\n"))
+    )
+)
+
+;; Entradas de menu: piden el destino y luego ejecutan la accion
+procedure( GmIdConDestino()
+    gmidPedirDestino("GenerarGmId()")
+)
+
+procedure( SaturacionConDestino()
+    gmidPedirDestino("GenerarSaturacion()")
+)
+
+;; -------------------------------------------------------------------------
+;; GM/ID
+;; -------------------------------------------------------------------------
+procedure( GenerarGmId()
+    let( (cv prep sess tests xtors nN nP nU unk n1 r1 nErr path)
+        cv = geGetEditCellView()
+        when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+            prep = gmidPrepare(cv)
+            sess = car(prep)
+            tests = cadr(prep)
+            xtors = caddr(prep)
+            nN = 0
+            nP = 0
+            nU = 0
+            unk = nil
+            foreach( par xtors
+                cond(
+                    ( eq(cadr(par) 'n) nN = nN + 1 )
+                    ( eq(cadr(par) 'p) nP = nP + 1 )
+                    ( t nU = nU + 1 unk = cons(car(par) unk) )
+                )
+            )
+            nErr = 0
+            foreach( tst tests
+                foreach( par xtors
+                    path = car(par)
+                    n1 = sprintf(nil "gmid_%s" path)
+                    errset(maeDeleteOutput(n1 tst ?session sess))
+                    r1 = maeAddOutput(n1 tst ?outputType "point"
+                        ?expr sprintf(nil "OP(\"/%s\" \"gm\") / OP(\"/%s\" \"id\")" path path)
+                        ?session sess)
+                    unless( r1
+                        nErr = nErr + 1
+                        printf("Fallo gm/Id %s en %s\n" path tst))
+                )
+            )
             if( tests then
                 maeSaveSetup(?session sess)
-                printf("gm/Id: %d NMOS, %d PMOS | sesion %s | tests %L | spec vdsmargin > %s | %d fallos\n"
-                    nN nP sess tests gmidSatMargin nErr)
+                printf("gm/Id: %d NMOS, %d PMOS, %d sin polaridad | tests %L | %d fallos\n"
+                    nN nP nU tests nErr)
+                when( nU &gt; 0
+                    printf("Aviso: polaridad desconocida en %L. gm/Id no la necesita, pero Mismatch si: anade su celda en Tipos de transistores.\n" unk)
+                )
             else
-                printf("Ningun test de gmidTests existe en la sesion %s: %L\n"
-                    sess maeGetSetup(?session sess))
+                printf("Ningun test elegido.\n")
             )
         )
     )
 )
 
-procedure( RegistrarMiMenuGmId(args)
-    let( (itemMenu menuCustom win)
-        win = if( windowp(args) then args else args->window )
-        when( win && windowp(win)
-            itemMenu = hiCreateMenuItem(
-                ?name 'ItemGmId
-                ?itemText "Generar"
-                ?callback "GenerarMaestroGmId()"
+;; -------------------------------------------------------------------------
+;; SATURACION
+;; -------------------------------------------------------------------------
+procedure( GenerarSaturacion()
+    let( (cv prep sess tests xtors n2 r2 r3 nErr path)
+        cv = geGetEditCellView()
+        when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+            prep = gmidPrepare(cv)
+            sess = car(prep)
+            tests = cadr(prep)
+            xtors = caddr(prep)
+            nErr = 0
+            foreach( tst tests
+                foreach( par xtors
+                    path = car(par)
+                    n2 = sprintf(nil "vdsmargin_%s" path)
+                    errset(maeDeleteOutput(n2 tst ?session sess))
+                    r2 = maeAddOutput(n2 tst ?outputType "point"
+                        ?expr sprintf(nil "abs(OP(\"/%s\" \"vds\")) - abs(OP(\"/%s\" \"vdsat\"))" path path)
+                        ?session sess)
+                    r3 = maeSetSpec(n2 tst ?gt gmidSatMargin ?session sess)
+                    unless( r2 &amp;&amp; r3
+                        nErr = nErr + 1
+                        printf("Fallo saturacion %s en %s\n" path tst))
+                )
             )
+            if( tests then
+                maeSaveSetup(?session sess)
+                printf("Saturacion: %d transistores | tests %L | spec &gt; %s | %d fallos\n"
+                    length(xtors) tests gmidSatMargin nErr)
+            else
+                printf("Ningun test elegido.\n")
+            )
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; MENU (admite items extra anadidos por otros archivos via gmidExtraMenuItems)
+;; -------------------------------------------------------------------------
+procedure( RegistrarMiMenuGmId(args)
+    let( (itemGmid itemSat itemTipos menuCustom win allItems)
+        win = if( windowp(args) then args else args-&gt;window )
+        when( win &amp;&amp; windowp(win)
+            itemGmid = hiCreateMenuItem(
+                ?name 'ItemGmId
+                ?itemText "gm/Id"
+                ?callback "GmIdConDestino()"
+            )
+            itemSat = hiCreateMenuItem(
+                ?name 'ItemSat
+                ?itemText "Saturación"
+                ?callback "SaturacionConDestino()"
+            )
+            itemTipos = hiCreateMenuItem(
+                ?name 'ItemTipos
+                ?itemText "Tipos de transistores"
+                ?callback "TiposTransistoresGmId()"
+            )
+            allItems = append(list(itemGmid itemSat itemTipos) gmidExtraMenuItems)
             menuCustom = hiCreatePulldownMenu(
                 'MenuGmId
                 "Crear expresiones"
-                list(itemMenu)
+                allItems
             )
             hiInsertBannerMenu(win menuCustom length(hiGetBannerMenus(win)))
         )
     )
 )
 
-;; -------------------------------------------------------------------------
-;; Chequeo periodico: anade el menu a cualquier esquematico abierto que
-;; todavia no lo tenga (cubre ventanas ya abiertas y nuevas, sin depender
-;; de que el trigger de apertura se dispare).
-;; -------------------------------------------------------------------------
 procedure( ChequearMenusGmId()
     errset(
         foreach( w hiGetWindowList()
             errset(
-                when( windowp(w) && geGetEditCellView(w) &&
+                when( windowp(w) &amp;&amp; geGetEditCellView(w) &amp;&amp;
                       !member('MenuGmId hiGetBannerMenus(w))
                     RegistrarMiMenuGmId(list(nil 'window w))
                 )
@@ -374,82 +997,184 @@ procedure( ChequearMenusGmId()
     hiRegTimer("ChequearMenusGmId()" 1000)
 )
 
-;; Registro inmediato al cargar el plugin
 ChequearMenusGmId()</code></pre>
         </div>
 
         <div class="note" id="noteBox">
-            <strong id="note_title">Uso:</strong> <span id="note_text"></span>
+            <strong id="note_title"></strong>
+            <span id="note_text"></span>
         </div>
     </main>
 
     <footer>
-        <p id="footer_text">© 2026 Eva Deltor — Cadence · Virtuoso Codes</p>
+        <p id="footer_text"></p>
     </footer>
 
     <script>
         const translations = {
-            es: {
-                back_link: "← Volver al sitio",
-                badge: "SKILL · Cadence Virtuoso",
-                title: "Extractor automático de gm/Id y margen de saturación",
-                lead: "Plugin en SKILL para ADE Assembler (Maestro) que detecta automáticamente los transistores de un esquemático — incluso dentro de jerarquías anidadas — y genera las expresiones de gm/Id y el margen de saturación para cada uno.",
-                th_hace: "Qué hace",
-                th_necesita: "Qué necesitas configurar",
-                features: [
-                    { hace: "Recorre la jerarquía del esquemático", necesita: "Tener abierto y activo el esquemático de nivel superior que quieres jerarquizar, y ajustar <code>gmidMaxDepth</code> (profundidad máxima, por defecto 3)." },
-                    { hace: "Clasifica cada transistor como NMOS o PMOS", necesita: "Que los nombres de celda coincidan con <code>ne/nmos/nch/nfet</code> (NMOS) o <code>pe/pmos/pch/pfet</code> (PMOS). Amplía la lista en el código si tu PDK usa otros nombres." },
-                    { hace: "Resuelve celdas con varias vistas de esquemático", necesita: "Si una celda no tiene una vista llamada simplemente <code>schematic</code> sino algo como <code>schematic_9T_OTA</code>, indícalo en <code>gmidViewOverrides</code>: <code>list(cons(\"NombreCelda\" \"schematic_9T_OTA\"))</code>." },
-                    { hace: "Genera las expresiones gm/Id y Vds − Vdsat", necesita: "Una sesión de Maestro/ADE Assembler abierta, con Save DC Operating Point activado en el test elegido." },
-                    { hace: "Aplica un spec de saturación configurable", necesita: "Ajustar <code>gmidSatMargin</code> (margen mínimo, por defecto <code>\"0\"</code>) y <code>gmidTests</code> (tests donde aplicarlo; <code>nil</code> = todos)." },
-                    { hace: "Añade el menú \"Crear expresiones\" automáticamente", necesita: "Cargar el plugin con <code>load()</code> o desde el <code>.cdsinit</code>. El menú tarda hasta ~1 minuto en aparecer en cada esquemático." }
-                ],
-                copyLabel: "Copiar código", copiedLabel: "¡Copiado!",
-                note_title: "Uso:",
-                note_text: '<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load("extractor_gmid_saturacion.il")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load("/ruta/absoluta/extractor_gmid_saturacion.il")</code>.<br><br>En ambos casos, el menú «Crear expresiones» aparecerá solo en los esquemáticos abiertos en cuestión de segundos.',
-                footer_text: "© 2026 Eva Deltor — Cadence · Virtuoso Codes"
+    "es": {
+        "back_link": "← Volver al sitio",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Extractor automático de gm/Id y margen de saturación",
+        "lead": "Plugin en SKILL para ADE Assembler (Maestro) que detecta automáticamente los transistores MOS de un esquemático — incluso dentro de jerarquías anidadas — sin depender de los nombres de celda de cada PDK, y genera las expresiones de gm/Id y el margen de saturación en el test de Maestro que elijas.",
+        "th_hace": "Qué hace",
+        "th_necesita": "Qué necesitas configurar",
+        "features": [
+            {
+                "hace": "Detecta los transistores MOS automáticamente, sin listas de nombres",
+                "necesita": "Nada en la mayoría de PDKs: una celda cuenta como transistor si es primitiva (sin vista <code>schematic*</code>) y su símbolo tiene pines D, G y S. Comprueba el resultado con <code>ListarTransistoresGmId()</code>."
             },
-            ca: {
-                back_link: "← Tornar al lloc",
-                badge: "SKILL · Cadence Virtuoso",
-                title: "Extractor automàtic de gm/Id i marge de saturació",
-                lead: "Plugin en SKILL per a ADE Assembler (Maestro) que detecta automàticament els transistors d'un esquemàtic — fins i tot dins de jerarquies imbricades — i genera les expressions de gm/Id i el marge de saturació per a cadascun.",
-                th_hace: "Què fa",
-                th_necesita: "Què has de configurar",
-                features: [
-                    { hace: "Recorre la jerarquia de l'esquemàtic", necesita: "Tenir obert i actiu l'esquemàtic de nivell superior que vols jerarquitzar, i ajustar <code>gmidMaxDepth</code> (profunditat màxima, per defecte 3)." },
-                    { hace: "Classifica cada transistor com a NMOS o PMOS", necesita: "Que els noms de cel·la coincideixin amb <code>ne/nmos/nch/nfet</code> (NMOS) o <code>pe/pmos/pch/pfet</code> (PMOS). Amplia la llista al codi si el teu PDK fa servir altres noms." },
-                    { hace: "Resol cel·les amb diverses vistes d'esquemàtic", necesita: "Si una cel·la no té una vista anomenada simplement <code>schematic</code> sinó alguna cosa com <code>schematic_9T_OTA</code>, indica-ho a <code>gmidViewOverrides</code>: <code>list(cons(\"NomCel·la\" \"schematic_9T_OTA\"))</code>." },
-                    { hace: "Genera les expressions gm/Id i Vds − Vdsat", necesita: "Una sessió de Maestro/ADE Assembler oberta, amb Save DC Operating Point activat al test triat." },
-                    { hace: "Aplica un spec de saturació configurable", necesita: "Ajustar <code>gmidSatMargin</code> (marge mínim, per defecte <code>\"0\"</code>) i <code>gmidTests</code> (tests on aplicar-ho; <code>nil</code> = tots)." },
-                    { hace: "Afegeix el menú «Crear expresiones» automàticament", necesita: "Carregar el plugin amb <code>load()</code> o des del <code>.cdsinit</code>. El menú triga fins a ~1 minut a aparèixer a cada esquemàtic." }
-                ],
-                copyLabel: "Copiar codi", copiedLabel: "Copiat!",
-                note_title: "Ús:",
-                note_text: '<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load("extractor_gmid_saturacion.il")</code> al CIW (amb el CIW situat a la carpeta de l\'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load("/ruta/absoluta/extractor_gmid_saturacion.il")</code>.<br><br>En tots dos casos, el menú «Crear expresiones» apareixerà sol als esquemàtics oberts en qüestió de segons.',
-                footer_text: "© 2026 Eva Deltor — Cadence · Virtuoso Codes"
+            {
+                "hace": "Recorre la jerarquía del esquemático",
+                "necesita": "Tener abierto y activo el esquemático de nivel superior y ajustar <code>gmidMaxDepth</code> (profundidad máxima, por defecto 3)."
             },
-            en: {
-                back_link: "← Back to site",
-                badge: "SKILL · Cadence Virtuoso",
-                title: "Automatic gm/Id and saturation margin extractor",
-                lead: "A SKILL plugin for ADE Assembler (Maestro) that automatically detects the transistors in a schematic — even inside nested hierarchies — and generates the gm/Id expressions and saturation margin for each one.",
-                th_hace: "What it does",
-                th_necesita: "What you need to set",
-                features: [
-                    { hace: "Walks the schematic hierarchy", necesita: "The top-level schematic you want to hierarchize must be open and active, with <code>gmidMaxDepth</code> set (max depth, default 3)." },
-                    { hace: "Classifies each transistor as NMOS or PMOS", necesita: "Cell names must match <code>ne/nmos/nch/nfet</code> (NMOS) or <code>pe/pmos/pch/pfet</code> (PMOS). Extend the list in the code if your PDK uses different names." },
-                    { hace: "Resolves cells with multiple schematic views", necesita: "If a cell's view isn't simply named <code>schematic</code> but something like <code>schematic_9T_OTA</code>, set it in <code>gmidViewOverrides</code>: <code>list(cons(\"CellName\" \"schematic_9T_OTA\"))</code>." },
-                    { hace: "Generates gm/Id and Vds − Vdsat expressions", necesita: "An open Maestro/ADE Assembler session, with Save DC Operating Point enabled on the chosen test." },
-                    { hace: "Applies a configurable saturation spec", necesita: "Set <code>gmidSatMargin</code> (minimum margin, default <code>\"0\"</code>) and <code>gmidTests</code> (tests to apply it to; <code>nil</code> = all)." },
-                    { hace: "Adds the \"Crear expresiones\" menu automatically", necesita: "Load the plugin with <code>load()</code> or from <code>.cdsinit</code>. The menu takes up to ~1 minute to appear on each schematic." }
-                ],
-                copyLabel: "Copy code", copiedLabel: "Copied!",
-                note_title: "Usage:",
-                note_text: '<strong>Option 1 — load it yourself each session:</strong> type <code>load("extractor_gmid_saturacion.il")</code> in the CIW (with the CIW located in the file\'s folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load("/absolute/path/extractor_gmid_saturacion.il")</code>.<br><br>Either way, the "Crear expresiones" menu will appear on open schematics within a few seconds.',
-                footer_text: "© 2026 Eva Deltor — Cadence · Virtuoso Codes"
+            {
+                "hace": "Deduce si cada transistor es NMOS o PMOS",
+                "necesita": "Nada: usa el nombre de la celda y el parámetro <code>model</code>. Si no hay ninguna pista, la polaridad queda desconocida: gm/Id y Saturación funcionan igual y Mismatch omite el cálculo de Pelgrom de ese transistor."
+            },
+            {
+                "hace": "Pide en cada ejecución el test de Maestro destino",
+                "necesita": "Elegir en el popup el/los test(s). Si no eliges ninguno, no se crea nada."
+            },
+            {
+                "hace": "Resuelve celdas con varias vistas de esquemático",
+                "necesita": "Elegir en el mismo popup la vista (p. ej. <code>schematic_RailToRail</code>) de cada celda que tenga varias. Sin elección usa <code>schematic</code> o la primera <code>schematic*</code>."
+            },
+            {
+                "hace": "Genera gm/Id y el margen Vds − Vdsat con su spec",
+                "necesita": "Una sesión de Maestro/ADE Assembler abierta, con Save DC Operating Point activado en el test. Ajustar <code>gmidSatMargin</code> (margen mínimo, por defecto <code>\"0\"</code>)."
+            },
+            {
+                "hace": "Tipos de transistores (opcional)",
+                "necesita": "Solo si la detección falla con alguna celda: menú «Crear expresiones → Tipos de transistores». Se guarda una vez en <code>~/.gmid_tipos_transistores.il</code> y se carga solo en cada sesión."
+            },
+            {
+                "hace": "Añade el menú «Crear expresiones» automáticamente",
+                "necesita": "Cargar el plugin con <code>load()</code> o desde el <code>.cdsinit</code>. El menú tarda hasta ~1 minuto en aparecer en cada esquemático."
             }
-        };
+        ],
+        "hint": "<strong>Comprobar la detección:</strong> con el esquemático activo, ejecuta <code>ListarTransistoresGmId()</code> en el CIW para ver cada transistor detectado con su polaridad y W/L/m. Si falta alguno, <code>ListarHojasGmId()</code> muestra las celdas hoja sin clasificar con sus pines.",
+        "copyLabel": "Copiar código",
+        "copiedLabel": "¡Copiado!",
+        "note_title": "Uso:",
+        "note_text": "<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load(\"extractor_gmid_saturacion.il\")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load(\"/ruta/absoluta/extractor_gmid_saturacion.il\")</code>.<br><br>Después, en el esquemático: <strong>Crear expresiones → gm/Id</strong> (o <strong>Saturación</strong>). Se abre un popup donde eliges el test de Maestro destino y la vista de las celdas con varias vistas; al pulsar OK las expresiones se crean solo en ese test.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_title": "Destino de las expresiones",
+        "fig_tests": "Test(s) donde crear las expresiones",
+        "fig_view": "Vista de [Nombre]",
+        "fig_test_name": "Test",
+        "fig_caption": "Ilustración del popup «Destino de las expresiones», que aparece al pulsar gm/Id, Saturación o Mismatch: eliges en qué test(s) de Maestro se crean las expresiones y, por cada celda con varias vistas, cuál usar. «[Nombre]» es el nombre de la celda.",
+        "fig_aria": "Ilustración del popup de destino: casillas para elegir el test de Maestro y la vista de esquemático de cada celda"
+    },
+    "ca": {
+        "back_link": "← Tornar al lloc",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Extractor automàtic de gm/Id i marge de saturació",
+        "lead": "Plugin en SKILL per a ADE Assembler (Maestro) que detecta automàticament els transistors MOS d'un esquemàtic — fins i tot dins de jerarquies imbricades — sense dependre dels noms de cel·la de cada PDK, i genera les expressions de gm/Id i el marge de saturació al test de Maestro que triïs.",
+        "th_hace": "Què fa",
+        "th_necesita": "Què has de configurar",
+        "features": [
+            {
+                "hace": "Detecta els transistors MOS automàticament, sense llistes de noms",
+                "necesita": "Res en la majoria de PDK: una cel·la compta com a transistor si és primitiva (sense vista <code>schematic*</code>) i el seu símbol té pins D, G i S. Comprova el resultat amb <code>ListarTransistoresGmId()</code>."
+            },
+            {
+                "hace": "Recorre la jerarquia de l'esquemàtic",
+                "necesita": "Tenir obert i actiu l'esquemàtic de nivell superior i ajustar <code>gmidMaxDepth</code> (profunditat màxima, per defecte 3)."
+            },
+            {
+                "hace": "Dedueix si cada transistor és NMOS o PMOS",
+                "necesita": "Res: fa servir el nom de la cel·la i el paràmetre <code>model</code>. Si no hi ha cap pista, la polaritat queda desconeguda: gm/Id i Saturació funcionen igual i Mismatch omet el càlcul de Pelgrom d'aquest transistor."
+            },
+            {
+                "hace": "Demana a cada execució el test de Maestro destí",
+                "necesita": "Triar al popup el/els test(s). Si no en tries cap, no es crea res."
+            },
+            {
+                "hace": "Resol cel·les amb diverses vistes d'esquemàtic",
+                "necesita": "Triar al mateix popup la vista (p. ex. <code>schematic_RailToRail</code>) de cada cel·la que en tingui diverses. Sense elecció fa servir <code>schematic</code> o la primera <code>schematic*</code>."
+            },
+            {
+                "hace": "Genera gm/Id i el marge Vds − Vdsat amb el seu spec",
+                "necesita": "Una sessió de Maestro/ADE Assembler oberta, amb Save DC Operating Point activat al test. Ajustar <code>gmidSatMargin</code> (marge mínim, per defecte <code>\"0\"</code>)."
+            },
+            {
+                "hace": "Tipus de transistors (opcional)",
+                "necesita": "Només si la detecció falla amb alguna cel·la: menú «Crear expresiones → Tipos de transistores». Es desa una vegada a <code>~/.gmid_tipos_transistores.il</code> i es carrega sol a cada sessió."
+            },
+            {
+                "hace": "Afegeix el menú «Crear expresiones» automàticament",
+                "necesita": "Carregar el plugin amb <code>load()</code> o des del <code>.cdsinit</code>. El menú triga fins a ~1 minut a aparèixer a cada esquemàtic."
+            }
+        ],
+        "hint": "<strong>Comprovar la detecció:</strong> amb l'esquemàtic actiu, executa <code>ListarTransistoresGmId()</code> al CIW per veure cada transistor detectat amb la seva polaritat i W/L/m. Si en falta algun, <code>ListarHojasGmId()</code> mostra les cel·les fulla sense classificar amb els seus pins.",
+        "copyLabel": "Copiar codi",
+        "copiedLabel": "Copiat!",
+        "note_title": "Ús:",
+        "note_text": "<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load(\"extractor_gmid_saturacion.il\")</code> al CIW (amb el CIW situat a la carpeta de l'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load(\"/ruta/absoluta/extractor_gmid_saturacion.il\")</code>.<br><br>Després, a l'esquemàtic: <strong>Crear expresiones → gm/Id</strong> (o <strong>Saturación</strong>). S'obre un popup on tries el test de Maestro destí i la vista de les cel·les amb diverses vistes; en prémer OK les expressions es creen només en aquest test.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_title": "Destí de les expressions",
+        "fig_tests": "Test(s) on crear les expressions",
+        "fig_view": "Vista de [Nom]",
+        "fig_test_name": "Test",
+        "fig_caption": "Il·lustració del popup «Destino de las expresiones», que apareix en prémer gm/Id, Saturación o Mismatch: tries en quin(s) test(s) de Maestro es creen les expressions i, per cada cel·la amb diverses vistes, quina fer servir. «[Nom]» és el nom de la cel·la. El text real del popup és en castellà.",
+        "fig_aria": "Il·lustració del popup de destí: caselles per triar el test de Maestro i la vista d'esquemàtic de cada cel·la"
+    },
+    "en": {
+        "back_link": "← Back to site",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Automatic gm/Id and saturation margin extractor",
+        "lead": "A SKILL plugin for ADE Assembler (Maestro) that automatically detects the MOS transistors in a schematic — even inside nested hierarchies — without relying on each PDK's cell names, and generates the gm/Id expressions and saturation margin in the Maestro test you choose.",
+        "th_hace": "What it does",
+        "th_necesita": "What you need to set",
+        "features": [
+            {
+                "hace": "Detects MOS transistors automatically, without name lists",
+                "necesita": "Nothing on most PDKs: a cell counts as a transistor if it is a primitive (no <code>schematic*</code> view) and its symbol has D, G and S pins. Check the result with <code>ListarTransistoresGmId()</code>."
+            },
+            {
+                "hace": "Walks the schematic hierarchy",
+                "necesita": "The top-level schematic must be open and active, with <code>gmidMaxDepth</code> set (max depth, default 3)."
+            },
+            {
+                "hace": "Infers whether each transistor is NMOS or PMOS",
+                "necesita": "Nothing: it uses the cell name and the <code>model</code> parameter. If there is no clue, the polarity stays unknown: gm/Id and Saturation work the same and Mismatch skips the Pelgrom calculation for that transistor."
+            },
+            {
+                "hace": "Asks for the target Maestro test on every run",
+                "necesita": "Pick the test(s) in the popup. If you pick none, nothing is created."
+            },
+            {
+                "hace": "Resolves cells with multiple schematic views",
+                "necesita": "Pick, in the same popup, the view (e.g. <code>schematic_RailToRail</code>) of each cell that has several. Without a choice it uses <code>schematic</code> or the first <code>schematic*</code>."
+            },
+            {
+                "hace": "Generates gm/Id and the Vds − Vdsat margin with its spec",
+                "necesita": "An open Maestro/ADE Assembler session, with Save DC Operating Point enabled on the test. Set <code>gmidSatMargin</code> (minimum margin, default <code>\"0\"</code>)."
+            },
+            {
+                "hace": "Transistor types (optional)",
+                "necesita": "Only if detection fails on some cell: menu «Crear expresiones → Tipos de transistores». It is saved once in <code>~/.gmid_tipos_transistores.il</code> and loaded automatically every session."
+            },
+            {
+                "hace": "Adds the «Crear expresiones» menu automatically",
+                "necesita": "Load the plugin with <code>load()</code> or from <code>.cdsinit</code>. The menu takes up to ~1 minute to appear on each schematic."
+            }
+        ],
+        "hint": "<strong>Checking the detection:</strong> with the schematic active, run <code>ListarTransistoresGmId()</code> in the CIW to see each detected transistor with its polarity and W/L/m. If one is missing, <code>ListarHojasGmId()</code> lists the unclassified leaf cells with their pins.",
+        "copyLabel": "Copy code",
+        "copiedLabel": "Copied!",
+        "note_title": "Usage:",
+        "note_text": "<strong>Option 1 — load it yourself each session:</strong> type <code>load(\"extractor_gmid_saturacion.il\")</code> in the CIW (with the CIW located in the file's folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load(\"/absolute/path/extractor_gmid_saturacion.il\")</code>.<br><br>Then, in the schematic: <strong>Crear expresiones → gm/Id</strong> (or <strong>Saturación</strong>). A popup opens where you choose the target Maestro test and the view of cells with several views; when you press OK the expressions are created only in that test.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_title": "Expressions target",
+        "fig_tests": "Test(s) to create the expressions in",
+        "fig_view": "View of [Name]",
+        "fig_test_name": "Test",
+        "fig_caption": "Illustration of the «Destino de las expresiones» popup, shown when you press gm/Id, Saturación or Mismatch: you choose which Maestro test(s) get the expressions and, for each cell with several views, which one to use. «[Name]» stands for the cell name. The real popup text is in Spanish.",
+        "fig_aria": "Illustration of the target popup: checkboxes to choose the Maestro test and the schematic view of each cell"
+    }
+};
 
         function setText(id, val) {
             const el = document.getElementById(id);
@@ -473,6 +1198,12 @@ ChequearMenusGmId()</code></pre>
             setText('badge', t.badge);
             setText('title', t.title);
             setText('lead', t.lead);
+            setText('figTitle', t.fig_title);
+            setText('figTests', t.fig_tests);
+            setText('figView', t.fig_view);
+            document.querySelectorAll('.figTest').forEach(el => { el.textContent = t.fig_test_name + ' ' + el.dataset.n; });
+            setText('figCaption', t.fig_caption);
+            document.getElementById('figPopup').setAttribute('aria-label', t.fig_aria);
             setText('th_hace', t.th_hace);
             setText('th_necesita', t.th_necesita);
 
@@ -483,6 +1214,10 @@ ChequearMenusGmId()</code></pre>
                     <td data-label="${t.th_necesita}">${f.necesita}</td>
                 </tr>
             `).join('');
+
+            const hint = document.getElementById('hintBox');
+            hint.innerHTML = t.hint || '';
+            hint.style.display = t.hint ? 'block' : 'none';
 
             setText('copyLabel', t.copyLabel);
             setText('note_title', t.note_title);
