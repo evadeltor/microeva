@@ -141,6 +141,12 @@
             border: 1px solid var(--border); background: #F5F3F0; color: var(--text);
         }
         .popup-mock-btn.ok { background: var(--primary); border-color: var(--primary); color: white; }
+        .popup-mock-opts.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
+        .popup-mock-input {
+            flex: 1; border: 1px solid #d8d2c8; border-radius: 4px; padding: 5px 10px;
+            font-size: 0.78rem; background: #F5F3F0; color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+        }
         .popup-figure figcaption { margin-top: 12px; text-align: center; font-size: 0.8rem; color: #888; line-height: 1.6; }
 
         .hint-box {
@@ -202,6 +208,7 @@
         @media (max-width: 560px) {
             .popup-mock-row { flex-direction: column; gap: 8px; }
             .popup-mock-label { flex: none; }
+            .popup-mock-opts.grid2 { grid-template-columns: 1fr; }
             .feature-table, .feature-table thead, .feature-table tbody, .feature-table tr, .feature-table td { display: block; width: 100%; }
             .feature-table thead { display: none; }
             .feature-table tr { border-bottom: 1px solid var(--border); padding: 14px 18px; }
@@ -275,6 +282,31 @@
                 <div class="popup-mock-foot"><span class="popup-mock-btn ok">OK</span><span class="popup-mock-btn">Cancel</span><span class="popup-mock-btn">Help</span></div>
             </div>
             <figcaption id="figCaption"></figcaption>
+        </figure>
+
+        <figure class="popup-figure">
+            <div class="popup-mock" id="figPopup2" role="img">
+                <div class="popup-mock-title"><span id="fig2Title"></span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
+                <div class="popup-mock-body">
+                    <div class="popup-mock-row">
+                        <div class="popup-mock-label" id="fig2Tx"></div>
+                        <div class="popup-mock-opts grid2">
+                            <span class="popup-mock-opt"><span class="popup-mock-box on">✓</span>X0/M1 [NMOS]</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box on">✓</span>X0/M2 [NMOS]</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>X0/M3 [PMOS]</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>X0/M4 [PMOS]</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>X1/M1 [NMOS]</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>X1/M2 [NMOS]</span>
+                        </div>
+                    </div>
+                    <div class="popup-mock-row">
+                        <div class="popup-mock-label" id="fig2Current"></div>
+                        <div class="popup-mock-input">1e-05</div>
+                    </div>
+                </div>
+                <div class="popup-mock-foot"><span class="popup-mock-btn ok">OK</span><span class="popup-mock-btn">Cancel</span><span class="popup-mock-btn">Help</span></div>
+            </div>
+            <figcaption id="fig2Caption"></figcaption>
         </figure>
 
         <div class="hint-box" id="hintBox"></div>
@@ -546,7 +578,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
                 "necesita": "Editar <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directamente en la tabla de Outputs de Maestro si el Vov real no coincide con el que usaste."
             }
         ],
-        "hint": "El coeficiente de Pelgrom no es un único número: el datasheet lo da para distintos puntos de overdrive (p. ej. <code>AIDNE01</code> @ VG−VT=0.1V, <code>AIDNE02</code> @ 0.2V…). Por eso el plugin genera siempre <code>Overdrive_&lt;transistor&gt;</code>: mira ese valor tras simular y elige la fila del datasheet que corresponda antes de fijar <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "hint": "El coeficiente de Pelgrom no es un único número: el datasheet lo da para distintos puntos de overdrive. Por eso el plugin genera siempre <code>Overdrive_&lt;transistor&gt;</code>: mira ese valor tras simular y elige la fila del datasheet que corresponda antes de fijar <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
         "copyLabel": "Copiar código",
         "copiedLabel": "¡Copiado!",
         "note_title": "Uso:",
@@ -557,7 +589,12 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
         "fig_view": "Vista de [Nombre]",
         "fig_test_name": "Test",
         "fig_caption": "Ilustración del popup «Destino de las expresiones», que aparece al pulsar gm/Id, Saturación o Mismatch: eliges en qué test(s) de Maestro se crean las expresiones y, por cada celda con varias vistas, cuál usar. «[Nombre]» es el nombre de la celda.",
-        "fig_aria": "Ilustración del popup de destino: casillas para elegir el test de Maestro y la vista de esquemático de cada celda"
+        "fig_aria": "Ilustración del popup de destino: casillas para elegir el test de Maestro y la vista de esquemático de cada celda",
+        "fig2_title": "Mismatch (Pelgrom)",
+        "fig2_tx": "Transistores a analizar",
+        "fig2_current": "Corriente esperada (A)",
+        "fig2_caption": "Ilustración del popup «Mismatch (Pelgrom)», que se abre a continuación: marcas los transistores que deben llevar la misma corriente (con la polaridad detectada) e indicas la corriente esperada en amperios.",
+        "fig2_aria": "Ilustración del popup de mismatch: casillas para elegir los transistores y campo de corriente esperada"
     },
     "ca": {
         "back_link": "← Tornar al lloc",
@@ -596,7 +633,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
                 "necesita": "Editar <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directament a la taula d'Outputs de Maestro si el Vov real no coincideix amb el que vas fer servir."
             }
         ],
-        "hint": "El coeficient de Pelgrom no és un únic número: el datasheet el dona per a diferents punts d'overdrive (p. ex. <code>AIDNE01</code> @ VG−VT=0.1V, <code>AIDNE02</code> @ 0.2V…). Per això el plugin genera sempre <code>Overdrive_&lt;transistor&gt;</code>: mira aquest valor després de simular i tria la fila del datasheet que correspongui abans de fixar <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "hint": "El coeficient de Pelgrom no és un únic número: el datasheet el dona per a diferents punts d'overdrive. Per això el plugin genera sempre <code>Overdrive_&lt;transistor&gt;</code>: mira aquest valor després de simular i tria la fila del datasheet que correspongui abans de fixar <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
         "copyLabel": "Copiar codi",
         "copiedLabel": "Copiat!",
         "note_title": "Ús:",
@@ -607,7 +644,12 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
         "fig_view": "Vista de [Nom]",
         "fig_test_name": "Test",
         "fig_caption": "Il·lustració del popup «Destino de las expresiones», que apareix en prémer gm/Id, Saturación o Mismatch: tries en quin(s) test(s) de Maestro es creen les expressions i, per cada cel·la amb diverses vistes, quina fer servir. «[Nom]» és el nom de la cel·la. El text real del popup és en castellà.",
-        "fig_aria": "Il·lustració del popup de destí: caselles per triar el test de Maestro i la vista d'esquemàtic de cada cel·la"
+        "fig_aria": "Il·lustració del popup de destí: caselles per triar el test de Maestro i la vista d'esquemàtic de cada cel·la",
+        "fig2_title": "Mismatch (Pelgrom)",
+        "fig2_tx": "Transistors a analitzar",
+        "fig2_current": "Corrent esperat (A)",
+        "fig2_caption": "Il·lustració del popup «Mismatch (Pelgrom)», que s'obre a continuació: marques els transistors que han de portar el mateix corrent (amb la polaritat detectada) i indiques el corrent esperat en amperes. El text real del popup és en castellà.",
+        "fig2_aria": "Il·lustració del popup de mismatch: caselles per triar els transistors i camp de corrent esperat"
     },
     "en": {
         "back_link": "← Back to site",
@@ -646,7 +688,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
                 "necesita": "Edit <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directly in Maestro's Outputs table if the real Vov doesn't match what you used."
             }
         ],
-        "hint": "The Pelgrom coefficient is not a single number: the datasheet gives it at different overdrive points (e.g. <code>AIDNE01</code> @ VG−VT=0.1V, <code>AIDNE02</code> @ 0.2V…). That is why the plugin always generates <code>Overdrive_&lt;transistor&gt;</code>: check that value after simulating and pick the matching datasheet row before setting <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "hint": "The Pelgrom coefficient is not a single number: the datasheet gives it at different overdrive points. That is why the plugin always generates <code>Overdrive_&lt;transistor&gt;</code>: check that value after simulating and pick the matching datasheet row before setting <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
         "copyLabel": "Copy code",
         "copiedLabel": "Copied!",
         "note_title": "Usage:",
@@ -657,7 +699,12 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
         "fig_view": "View of [Name]",
         "fig_test_name": "Test",
         "fig_caption": "Illustration of the «Destino de las expresiones» popup, shown when you press gm/Id, Saturación or Mismatch: you choose which Maestro test(s) get the expressions and, for each cell with several views, which one to use. «[Name]» stands for the cell name. The real popup text is in Spanish.",
-        "fig_aria": "Illustration of the target popup: checkboxes to choose the Maestro test and the schematic view of each cell"
+        "fig_aria": "Illustration of the target popup: checkboxes to choose the Maestro test and the schematic view of each cell",
+        "fig2_title": "Mismatch (Pelgrom)",
+        "fig2_tx": "Transistors to analyze",
+        "fig2_current": "Expected current (A)",
+        "fig2_caption": "Illustration of the «Mismatch (Pelgrom)» popup, which opens next: you check the transistors that should carry the same current (with the detected polarity) and set the expected current in amperes. The real popup text is in Spanish.",
+        "fig2_aria": "Illustration of the mismatch popup: checkboxes to choose the transistors and an expected current field"
     }
 };
 
@@ -688,6 +735,12 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
             setText('figView', t.fig_view);
             document.querySelectorAll('.figTest').forEach(el => { el.textContent = t.fig_test_name + ' ' + el.dataset.n; });
             setText('figCaption', t.fig_caption);
+            setText('fig2Title', t.fig2_title);
+            setText('fig2Tx', t.fig2_tx);
+            setText('fig2Current', t.fig2_current);
+            setText('fig2Caption', t.fig2_caption);
+            const popup2 = document.getElementById('figPopup2');
+            if (popup2) popup2.setAttribute('aria-label', t.fig2_aria);
             document.getElementById('figPopup').setAttribute('aria-label', t.fig_aria);
             setText('th_hace', t.th_hace);
             setText('th_necesita', t.th_necesita);
