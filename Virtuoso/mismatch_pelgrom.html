@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: https:;
+        base-uri 'self';
+        upgrade-insecure-requests;
+    ">
+    <title>Mismatch (Pelgrom) · Eva Deltor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #D4A574;
+            --dark: #1a1a1a;
+            --light: #F5F3F0;
+            --text: #3a3a3a;
+            --border: #E8E4DF;
+            --accent: #8B7355;
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+            --inline-code-bg: #EFE9DF;
+            --inline-code-text: #6b5233;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+
+        header {
+            padding: 25px 0;
+            border-bottom: 1px solid var(--border);
+            background: var(--light);
+        }
+
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+
+        .back-link {
+            text-decoration: none; color: var(--text); font-weight: 500;
+            font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        .lang-switcher { display: flex; gap: 4px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .lang-switcher button {
+            background: transparent; border: none; padding: 5px 10px;
+            font-family: 'Poppins', sans-serif; font-size: 0.72rem; font-weight: 600;
+            color: #aaa; cursor: pointer; transition: all 0.2s ease;
+            letter-spacing: 0.05em; border-right: 1px solid var(--border);
+        }
+        .lang-switcher button:last-child { border-right: none; }
+        .lang-switcher button:hover { color: var(--primary); background: #FDF5EC; }
+        .lang-switcher button.active { background: var(--primary); color: white; }
+
+        main { padding: 70px 0 100px; }
+
+        .badge {
+            display: inline-block; font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+            background: #FDF5EC; border: 1px solid var(--primary);
+            padding: 5px 12px; border-radius: 20px; margin-bottom: 20px;
+        }
+
+        h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--dark); margin-bottom: 18px; line-height: 1.2; }
+        .lead { font-size: 1.05rem; color: #666; margin-bottom: 40px; line-height: 1.8; max-width: 700px; }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--inline-code-bg);
+            color: var(--inline-code-text);
+            padding: 2px 7px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .feature-table-wrapper {
+            margin-bottom: 30px; border: 1px solid var(--border);
+            border-radius: 8px; overflow: hidden; background: white;
+        }
+
+        .feature-table { width: 100%; border-collapse: collapse; }
+
+        .feature-table th {
+            background: #FDFBF8; text-align: left; padding: 14px 22px;
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--accent);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-table td {
+            padding: 16px 22px; font-size: 0.9rem; vertical-align: top;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-table tr:last-child td { border-bottom: none; }
+        .feature-table td:first-child { color: var(--dark); font-weight: 500; width: 40%; }
+        .feature-table td:last-child { color: #666; }
+        .feature-table td code { white-space: normal; }
+
+        .popup-figure { margin: 0 auto 30px; max-width: 560px; }
+        .popup-mock {
+            background: white; border: 1px solid var(--border); border-radius: 10px;
+            box-shadow: 0 16px 36px rgba(0,0,0,0.10); overflow: hidden;
+        }
+        .popup-mock-title {
+            position: relative; text-align: center; padding: 12px 16px;
+            background: #FDFBF8; border-bottom: 1px solid var(--border);
+            font-size: 0.85rem; font-weight: 600; color: var(--dark);
+        }
+        .popup-mock-dots { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px; }
+        .popup-mock-dots span { width: 10px; height: 10px; border-radius: 50%; background: #E1DBD2; }
+        .popup-mock-body { padding: 18px 20px 6px; }
+        .popup-mock-row { display: flex; gap: 18px; padding-bottom: 14px; align-items: flex-start; }
+        .popup-mock-label { flex: 0 0 38%; font-size: 0.78rem; color: #666; }
+        .popup-mock-opts { flex: 1; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+        .popup-mock-opts.col { flex-direction: column; flex-wrap: nowrap; gap: 8px; }
+        .popup-mock-opt { display: inline-flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text); }
+        .popup-mock-box {
+            width: 15px; height: 15px; border: 1.5px solid #c9c2b8; border-radius: 3px; background: white;
+            display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+            font-size: 11px; line-height: 1; color: white;
+        }
+        .popup-mock-box.on { background: var(--primary); border-color: var(--primary); }
+        .popup-mock-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px 16px; }
+        .popup-mock-btn {
+            padding: 5px 18px; border-radius: 4px; font-size: 0.75rem; font-weight: 500;
+            border: 1px solid var(--border); background: #F5F3F0; color: var(--text);
+        }
+        .popup-mock-btn.ok { background: var(--primary); border-color: var(--primary); color: white; }
+        .popup-figure figcaption { margin-top: 12px; text-align: center; font-size: 0.8rem; color: #888; line-height: 1.6; }
+
+        .hint-box {
+            background: #FDF5EC; border: 1px dashed var(--primary); border-radius: 6px;
+            padding: 16px 20px; font-size: 0.85rem; color: #666; margin-bottom: 30px; line-height: 1.8;
+        }
+        .hint-box strong { color: var(--dark); }
+        .hint-box code { white-space: normal; }
+
+        .code-block {
+            position: relative; background: var(--code-bg); border-radius: 8px;
+            overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15); margin-bottom: 30px;
+        }
+
+        .code-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; background: #2a2a2a; border-bottom: 1px solid #3a3a3a;
+        }
+
+        .code-filename { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #999; }
+
+        .copy-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            color: #ddd; padding: 6px 14px; border-radius: 4px; font-size: 0.8rem;
+            font-family: 'Poppins', sans-serif; cursor: pointer; transition: all 0.2s ease;
+        }
+        .copy-btn:hover { background: var(--primary); border-color: var(--primary); color: white; }
+        .copy-btn.copied { background: #4a7c59; border-color: #4a7c59; color: white; }
+
+        pre {
+            margin: 0; padding: 24px; overflow-x: auto; max-height: 720px; overflow-y: auto;
+        }
+
+        pre code {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.7;
+            color: var(--code-text); white-space: pre;
+            background: transparent; padding: 0; border-radius: 0;
+        }
+
+        .note {
+            background: white; border: 1px solid var(--border); border-radius: 6px;
+            padding: 20px 24px; font-size: 0.88rem; color: #666; line-height: 1.9;
+        }
+        .note strong { color: var(--dark); }
+
+        footer { border-top: 1px solid var(--border); padding: 30px 0; text-align: center; color: #999; font-size: 0.85rem; }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            h1 { font-size: 1.8rem; }
+            main { padding: 40px 0 60px; }
+            pre { padding: 16px; }
+            pre code { font-size: 0.75rem; }
+            .feature-table th, .feature-table td { padding: 12px 14px; font-size: 0.84rem; }
+            .feature-table td:first-child { width: auto; }
+        }
+
+        @media (max-width: 560px) {
+            .popup-mock-row { flex-direction: column; gap: 8px; }
+            .popup-mock-label { flex: none; }
+            .feature-table, .feature-table thead, .feature-table tbody, .feature-table tr, .feature-table td { display: block; width: 100%; }
+            .feature-table thead { display: none; }
+            .feature-table tr { border-bottom: 1px solid var(--border); padding: 14px 18px; }
+            .feature-table tr:last-child { border-bottom: none; }
+            .feature-table td { border-bottom: none; padding: 4px 0; }
+            .feature-table td:first-child::before {
+                content: attr(data-label); display: block; font-size: 0.7rem;
+                text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);
+                font-weight: 600; margin-bottom: 4px;
+            }
+            .feature-table td:last-child::before {
+                content: attr(data-label); display: block; font-size: 0.7rem;
+                text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);
+                font-weight: 600; margin-top: 10px; margin-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="../index.html#cadence" class="back-link" id="back_link">← Volver al sitio</a>
+            <div class="lang-switcher">
+                <button id="sw_ca" onclick="setLang('ca')">CAT</button>
+                <button id="sw_es" onclick="setLang('es')">ES</button>
+                <button id="sw_en" onclick="setLang('en')">ENG</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <span class="badge" id="badge">SKILL · Cadence Virtuoso</span>
+        <h1 id="title"></h1>
+        <p class="lead" id="lead"></p>
+
+        <div class="feature-table-wrapper">
+            <table class="feature-table">
+                <thead>
+                    <tr>
+                        <th id="th_hace"></th>
+                        <th id="th_necesita"></th>
+                    </tr>
+                </thead>
+                <tbody id="featureBody"></tbody>
+            </table>
+        </div>
+
+        <figure class="popup-figure">
+            <div class="popup-mock" id="figPopup" role="img">
+                <div class="popup-mock-title"><span id="figTitle"></span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
+                <div class="popup-mock-body">
+                    <div class="popup-mock-row">
+                        <div class="popup-mock-label" id="figTests"></div>
+                        <div class="popup-mock-opts">
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span><span class="figTest" data-n="1"></span></span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box on">✓</span><span class="figTest" data-n="2"></span></span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span><span class="figTest" data-n="3"></span></span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span><span class="figTest" data-n="4"></span></span>
+                        </div>
+                    </div>
+                    <div class="popup-mock-row">
+                        <div class="popup-mock-label" id="figView"></div>
+                        <div class="popup-mock-opts col">
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>schematic_A</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box on">✓</span>schematic_B</span>
+                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>schematic_C</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-mock-foot"><span class="popup-mock-btn ok">OK</span><span class="popup-mock-btn">Cancel</span><span class="popup-mock-btn">Help</span></div>
+            </div>
+            <figcaption id="figCaption"></figcaption>
+        </figure>
+
+        <div class="hint-box" id="hintBox"></div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-filename">mismatch_pelgrom.il</span>
+                <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+                    <span id="copyLabel"></span>
+                </button>
+            </div>
+            <pre><code id="codeContent">;; =========================================================================
+;; PLUGIN: MISMATCH (PELGROM)
+;; Requiere haber cargado antes extractor_gmid_saturacion.il
+;;
+;; Al pulsar Mismatch se abre primero el popup de destino (test y vista de
+;; esquematico) y despues el de transistores. Se generan siempre Vgs,
+;; Overdrive (Vgs-Vth), ErrorMismatch, ActualCurrent, ExpectedCurrent y los
+;; limites Min/MaxCurrentError, solo en los tests elegidos. Los valores
+;; PelgromValue_pe/ne se crean con gmidPelgromPe/gmidPelgromNe (por defecto
+;; 0 si no los has definido); ajustalos directamente en Maestro segun el Vov
+;; real que veas en Overdrive_&lt;transistor&gt;.
+;;
+;; Si la polaridad de un transistor es desconocida solo se crean Vgs y
+;; Overdrive (el mismatch necesita saber si es NMOS o PMOS): anade su celda
+;; en Crear expresiones &gt; Tipos de transistores.
+;; =========================================================================
+
+unless( boundp('gmidPelgromPe) gmidPelgromPe = 0.0 )
+unless( boundp('gmidPelgromNe) gmidPelgromNe = 0.0 )
+unless( boundp('gmidExpectedCurrentDefault) gmidExpectedCurrentDefault = 1.0e-05 )
+
+;; Lista de tuplas (fullPath polaridad w l m), en el MISMO orden que ?choices
+;; del toggle field. El valor devuelto por el campo (~&gt;value) es una lista
+;; de t/nil posicional, no de nombres, asi que hay que casar por posicion.
+gmidMismatchOrderedInfo = nil
+gmidMismatchForm = nil
+
+procedure( gmidMismatchLabel(par)
+    sprintf(nil "%s%s" car(par)
+        cond(
+            ( eq(cadr(par) 'n) " [NMOS]" )
+            ( eq(cadr(par) 'p) " [PMOS]" )
+            ( t " [?]" )
+        )
+    )
+)
+
+;; Entrada de menu: pide destino y despues abre el popup de transistores
+procedure( MismatchConDestino()
+    gmidPedirDestino("AbrirPopupMismatchGmId()")
+)
+
+procedure( AbrirPopupMismatchGmId()
+    let( (cv xtors choices toggleField i sym)
+        cv = geGetEditCellView()
+        when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+            gmidMosCache = nil
+            xtors = RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
+            gmidMismatchOrderedInfo = nil
+            choices = nil
+            i = 0
+            foreach( par xtors
+                sym = concat('gmidTx i)
+                choices = cons(list(sym gmidMismatchLabel(par)) choices)
+                gmidMismatchOrderedInfo = cons(par gmidMismatchOrderedInfo)
+                i = i + 1
+            )
+            toggleField = hiCreateToggleField(
+                ?name 'gmidMismatchToggle
+                ?choices choices
+                ?numSelect length(choices)
+                ?prompt "Transistores a analizar"
+                ?value nil
+            )
+            gmidMismatchForm = hiCreateAppForm(
+                ?name 'gmidMismatchForm
+                ?formTitle "Mismatch (Pelgrom)"
+                ?fields list(
+                    toggleField
+                    hiCreateFloatField(
+                        ?name 'gmidExpectedCurrent
+                        ?prompt "Corriente esperada (A)"
+                        ?value gmidExpectedCurrentDefault
+                    )
+                )
+                ?buttonLayout 'OKCancel
+                ?callback "CalcularMismatchGmId()"
+            )
+            hiDisplayForm(gmidMismatchForm)
+        )
+    )
+)
+
+procedure( CalcularMismatchGmId()
+    let( (cv sess tests seleccion expCur selList infoList seleccionados
+          pathInfo path pol w l m
+          n1 n2 n3 n4 n5 n6 n7 r0a r0b r1 r2 r3 r4 r5 r6 r7
+          pref nSel nErr)
+        cv = geGetEditCellView()
+        sess = car(maeGetSessions())
+        unless( sess
+            sess = maeOpenSetup(cv~&gt;libName cv~&gt;cellName "maestro" ?mode "a"))
+
+        ;; Solo los tests elegidos en el popup de destino (nil = ninguno)
+        tests = gmidTestsElegidos(sess)
+
+        seleccion = (hiGetCurrentForm()-&gt;gmidMismatchToggle)~&gt;value
+        expCur = (hiGetCurrentForm()-&gt;gmidExpectedCurrent)~&gt;value
+
+        seleccionados = nil
+        selList = seleccion
+        infoList = gmidMismatchOrderedInfo
+        while( selList
+            when( car(selList)
+                seleccionados = cons(car(infoList) seleccionados)
+            )
+            selList = cdr(selList)
+            infoList = cdr(infoList)
+        )
+
+        nSel = length(seleccionados)
+        nErr = 0
+
+        unless( tests
+            printf("Ningun test elegido.\n")
+        )
+
+        foreach( tst tests
+            errset(maeDeleteOutput("PelgromValue_pe" tst ?session sess))
+            errset(maeDeleteOutput("PelgromValue_ne" tst ?session sess))
+            r0a = maeAddOutput("PelgromValue_pe" tst ?outputType "point"
+                ?expr sprintf(nil "%g" gmidPelgromPe) ?session sess)
+            r0b = maeAddOutput("PelgromValue_ne" tst ?outputType "point"
+                ?expr sprintf(nil "%g" gmidPelgromNe) ?session sess)
+
+            foreach( pathInfo seleccionados
+                path = car(pathInfo)
+                pol  = cadr(pathInfo)
+                w    = caddr(pathInfo)
+                l    = cadddr(pathInfo)
+                m    = car(cddddr(pathInfo))
+                pref = cond(
+                    ( eq(pol 'n) "ne" )
+                    ( eq(pol 'p) "pe" )
+                    ( t nil )
+                )
+
+                n1 = sprintf(nil "ErrorMismatch_%s" path)
+                n2 = sprintf(nil "ActualCurrent_%s" path)
+                n3 = sprintf(nil "ExpectedCurrent_%s" path)
+                n4 = sprintf(nil "MinCurrentError_%s" path)
+                n5 = sprintf(nil "MaxCurrentError_%s" path)
+                n6 = sprintf(nil "Vgs_%s" path)
+                n7 = sprintf(nil "Overdrive_%s" path)
+                errset(maeDeleteOutput(n1 tst ?session sess))
+                errset(maeDeleteOutput(n2 tst ?session sess))
+                errset(maeDeleteOutput(n3 tst ?session sess))
+                errset(maeDeleteOutput(n4 tst ?session sess))
+                errset(maeDeleteOutput(n5 tst ?session sess))
+                errset(maeDeleteOutput(n6 tst ?session sess))
+                errset(maeDeleteOutput(n7 tst ?session sess))
+
+                r6 = maeAddOutput(n6 tst ?outputType "point"
+                    ?expr sprintf(nil "OP(\"/%s\" \"vgs\")" path)
+                    ?session sess)
+                r7 = maeAddOutput(n7 tst ?outputType "point"
+                    ?expr sprintf(nil "%s - OP(\"/%s\" \"vth\")" n6 path)
+                    ?session sess)
+
+                if( !w || !l || !m || !pref then
+                    nErr = nErr + 1
+                    printf("%s: faltan W/L/m o la polaridad es desconocida; solo Vgs/Overdrive\n" path)
+                else
+                    r1 = maeAddOutput(n1 tst ?outputType "point"
+                        ?expr sprintf(nil "PelgromValue_%s / sqrt((%g * %g * %g))" pref w l m)
+                        ?session sess)
+                    r2 = maeAddOutput(n2 tst ?outputType "point"
+                        ?expr sprintf(nil "IDC(\"/%s/S\")" path)
+                        ?session sess)
+                    r3 = maeAddOutput(n3 tst ?outputType "point"
+                        ?expr sprintf(nil "%g" expCur)
+                        ?session sess)
+                    r4 = maeAddOutput(n4 tst ?outputType "point"
+                        ?expr sprintf(nil "(%s * (1 - (%s / 100)))" n3 n1)
+                        ?session sess)
+                    r5 = maeAddOutput(n5 tst ?outputType "point"
+                        ?expr sprintf(nil "(%s * (1 + (%s / 100)))" n3 n1)
+                        ?session sess)
+                    errset(maeSetSpec(n4 tst ?lt sprintf(nil "value(calcVal(\"%s\"))" n2) ?session sess))
+                    errset(maeSetSpec(n5 tst ?gt sprintf(nil "value(calcVal(\"%s\"))" n2) ?session sess))
+                    unless( r1 &amp;&amp; r2 &amp;&amp; r3 &amp;&amp; r4 &amp;&amp; r5 &amp;&amp; r6 &amp;&amp; r7
+                        nErr = nErr + 1
+                        printf("Fallo generando mismatch para %s en %s\n" path tst))
+                )
+            )
+        )
+        maeSaveSetup(?session sess)
+        printf("Mismatch Pelgrom: %d transistores seleccionados | tests %L | %d avisos/fallos | PelgromValue_pe=%g PelgromValue_ne=%g (ajustalos en Maestro si hace falta)\n"
+            nSel tests nErr gmidPelgromPe gmidPelgromNe)
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; Enganche al menu "Crear expresiones" del otro archivo
+;; -------------------------------------------------------------------------
+unless( boundp('gmidExtraMenuItems) gmidExtraMenuItems = nil )
+
+itemMismatch = hiCreateMenuItem(
+    ?name 'ItemMismatch
+    ?itemText "Mismatch"
+    ?callback "MismatchConDestino()"
+)
+
+gmidExtraMenuItems = append(
+    setof(it gmidExtraMenuItems it~&gt;itemText != "Mismatch")
+    list(itemMismatch)
+)
+
+printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquematico ya abierto para verlo.\n")</code></pre>
+        </div>
+
+        <div class="note" id="noteBox">
+            <strong id="note_title"></strong>
+            <span id="note_text"></span>
+        </div>
+    </main>
+
+    <footer>
+        <p id="footer_text"></p>
+    </footer>
+
+    <script>
+        const translations = {
+    "es": {
+        "back_link": "← Volver al sitio",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Mismatch de corriente (modelo de Pelgrom)",
+        "lead": "Plugin en SKILL que añade un popup a Maestro/ADE Assembler para seleccionar qué transistores deben llevar la misma corriente, calcular su Vgs y overdrive, y estimar el mismatch de corriente esperado según el modelo de Pelgrom.",
+        "th_hace": "Qué hace",
+        "th_necesita": "Qué necesitas configurar",
+        "features": [
+            {
+                "hace": "Requiere el extractor de gm/Id ya cargado",
+                "necesita": "Cargar primero <code>extractor_gmid_saturacion.il</code>: este plugin reutiliza su detección de transistores, la jerarquía y el popup de destino."
+            },
+            {
+                "hace": "Pide el destino y abre un popup para elegir transistores",
+                "necesita": "Elegir el test (y la vista de las celdas con varias); después marcar los transistores que deben llevar la misma corriente y fijar la corriente esperada (A)."
+            },
+            {
+                "hace": "Genera siempre Vgs y Overdrive (Vgs − Vth)",
+                "necesita": "Simular el test para ver los valores numéricos; sin simular, las expresiones quedan sin evaluar."
+            },
+            {
+                "hace": "Calcula el mismatch con el modelo de Pelgrom",
+                "necesita": "Definir <code>gmidPelgromPe</code> y <code>gmidPelgromNe</code> (constante del datasheet en mV·µm). Mira antes el <code>Overdrive_&lt;transistor&gt;</code> real para elegir la fila correcta de la tabla."
+            },
+            {
+                "hace": "Añade los límites Min/MaxCurrentError como specs",
+                "necesita": "Nada adicional: se generan automáticamente comparando contra <code>ActualCurrent_&lt;transistor&gt;</code>."
+            },
+            {
+                "hace": "Transistores de polaridad desconocida",
+                "necesita": "Solo se crean Vgs y Overdrive (el mismatch necesita saber si es NMOS o PMOS). Añade su celda en «Crear expresiones → Tipos de transistores» para el cálculo completo."
+            },
+            {
+                "hace": "Permite reajustar Pelgrom sin repetir el popup",
+                "necesita": "Editar <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directamente en la tabla de Outputs de Maestro si el Vov real no coincide con el que usaste."
+            }
+        ],
+        "hint": "El coeficiente de Pelgrom no es un único número: el datasheet lo da para distintos puntos de overdrive (p. ej. <code>AIDNE01</code> @ VG−VT=0.1V, <code>AIDNE02</code> @ 0.2V…). Por eso el plugin genera siempre <code>Overdrive_&lt;transistor&gt;</code>: mira ese valor tras simular y elige la fila del datasheet que corresponda antes de fijar <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "copyLabel": "Copiar código",
+        "copiedLabel": "¡Copiado!",
+        "note_title": "Uso:",
+        "note_text": "Carga primero <code>extractor_gmid_saturacion.il</code> y después <code>mismatch_pelgrom.il</code> (por ejemplo desde tu <code>.cdsinit</code>, en ese orden). Abre el esquemático, usa <strong>Crear expresiones → Mismatch</strong>, elige el test destino, marca los transistores, simula y revisa <code>Overdrive_&lt;transistor&gt;</code> para elegir el coeficiente de Pelgrom correcto del datasheet.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_title": "Destino de las expresiones",
+        "fig_tests": "Test(s) donde crear las expresiones",
+        "fig_view": "Vista de [Nombre]",
+        "fig_test_name": "Test",
+        "fig_caption": "Ilustración del popup «Destino de las expresiones», que aparece al pulsar gm/Id, Saturación o Mismatch: eliges en qué test(s) de Maestro se crean las expresiones y, por cada celda con varias vistas, cuál usar. «[Nombre]» es el nombre de la celda.",
+        "fig_aria": "Ilustración del popup de destino: casillas para elegir el test de Maestro y la vista de esquemático de cada celda"
+    },
+    "ca": {
+        "back_link": "← Tornar al lloc",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Mismatch de corrent (model de Pelgrom)",
+        "lead": "Plugin en SKILL que afegeix un popup a Maestro/ADE Assembler per seleccionar quins transistors han de portar el mateix corrent, calcular el seu Vgs i overdrive, i estimar el mismatch de corrent esperat segons el model de Pelgrom.",
+        "th_hace": "Què fa",
+        "th_necesita": "Què has de configurar",
+        "features": [
+            {
+                "hace": "Requereix l'extractor de gm/Id ja carregat",
+                "necesita": "Carregar primer <code>extractor_gmid_saturacion.il</code>: aquest plugin reutilitza la seva detecció de transistors, la jerarquia i el popup de destí."
+            },
+            {
+                "hace": "Demana el destí i obre un popup per triar transistors",
+                "necesita": "Triar el test (i la vista de les cel·les amb diverses); després marcar els transistors que han de portar el mateix corrent i fixar el corrent esperat (A)."
+            },
+            {
+                "hace": "Genera sempre Vgs i Overdrive (Vgs − Vth)",
+                "necesita": "Simular el test per veure els valors numèrics; sense simular, les expressions queden sense avaluar."
+            },
+            {
+                "hace": "Calcula el mismatch amb el model de Pelgrom",
+                "necesita": "Definir <code>gmidPelgromPe</code> i <code>gmidPelgromNe</code> (constant del datasheet en mV·µm). Mira abans l'<code>Overdrive_&lt;transistor&gt;</code> real per triar la fila correcta de la taula."
+            },
+            {
+                "hace": "Afegeix els límits Min/MaxCurrentError com a specs",
+                "necesita": "Res addicional: es generen automàticament comparant contra <code>ActualCurrent_&lt;transistor&gt;</code>."
+            },
+            {
+                "hace": "Transistors de polaritat desconeguda",
+                "necesita": "Només es creen Vgs i Overdrive (el mismatch necessita saber si és NMOS o PMOS). Afegeix la seva cel·la a «Crear expresiones → Tipos de transistores» per al càlcul complet."
+            },
+            {
+                "hace": "Permet reajustar Pelgrom sense repetir el popup",
+                "necesita": "Editar <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directament a la taula d'Outputs de Maestro si el Vov real no coincideix amb el que vas fer servir."
+            }
+        ],
+        "hint": "El coeficient de Pelgrom no és un únic número: el datasheet el dona per a diferents punts d'overdrive (p. ex. <code>AIDNE01</code> @ VG−VT=0.1V, <code>AIDNE02</code> @ 0.2V…). Per això el plugin genera sempre <code>Overdrive_&lt;transistor&gt;</code>: mira aquest valor després de simular i tria la fila del datasheet que correspongui abans de fixar <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "copyLabel": "Copiar codi",
+        "copiedLabel": "Copiat!",
+        "note_title": "Ús:",
+        "note_text": "Carrega primer <code>extractor_gmid_saturacion.il</code> i després <code>mismatch_pelgrom.il</code> (per exemple des del teu <code>.cdsinit</code>, en aquest ordre). Obre l'esquemàtic, fes servir <strong>Crear expresiones → Mismatch</strong>, tria el test destí, marca els transistors, simula i revisa <code>Overdrive_&lt;transistor&gt;</code> per triar el coeficient de Pelgrom correcte del datasheet.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_title": "Destí de les expressions",
+        "fig_tests": "Test(s) on crear les expressions",
+        "fig_view": "Vista de [Nom]",
+        "fig_test_name": "Test",
+        "fig_caption": "Il·lustració del popup «Destino de las expresiones», que apareix en prémer gm/Id, Saturación o Mismatch: tries en quin(s) test(s) de Maestro es creen les expressions i, per cada cel·la amb diverses vistes, quina fer servir. «[Nom]» és el nom de la cel·la. El text real del popup és en castellà.",
+        "fig_aria": "Il·lustració del popup de destí: caselles per triar el test de Maestro i la vista d'esquemàtic de cada cel·la"
+    },
+    "en": {
+        "back_link": "← Back to site",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Current mismatch (Pelgrom model)",
+        "lead": "A SKILL plugin that adds a popup to Maestro/ADE Assembler to select which transistors should carry the same current, compute their Vgs and overdrive, and estimate the expected current mismatch using the Pelgrom model.",
+        "th_hace": "What it does",
+        "th_necesita": "What you need to set",
+        "features": [
+            {
+                "hace": "Requires the gm/Id extractor already loaded",
+                "necesita": "Load <code>extractor_gmid_saturacion.il</code> first: this plugin reuses its transistor detection, hierarchy walk and target popup."
+            },
+            {
+                "hace": "Asks for the target and opens a popup to pick transistors",
+                "necesita": "Choose the test (and the view of cells with several); then check the transistors that should carry the same current and set the expected current (A)."
+            },
+            {
+                "hace": "Always generates Vgs and Overdrive (Vgs − Vth)",
+                "necesita": "Simulate the test to see the numeric values; without simulating, the expressions remain unevaluated."
+            },
+            {
+                "hace": "Computes mismatch with the Pelgrom model",
+                "necesita": "Set <code>gmidPelgromPe</code> and <code>gmidPelgromNe</code> (datasheet constant in mV·µm). Check the actual <code>Overdrive_&lt;transistor&gt;</code> first to pick the right table row."
+            },
+            {
+                "hace": "Adds Min/MaxCurrentError limits as specs",
+                "necesita": "Nothing extra: they are generated automatically against <code>ActualCurrent_&lt;transistor&gt;</code>."
+            },
+            {
+                "hace": "Transistors with unknown polarity",
+                "necesita": "Only Vgs and Overdrive are created (mismatch needs to know whether it is NMOS or PMOS). Add its cell in «Crear expresiones → Tipos de transistores» for the full calculation."
+            },
+            {
+                "hace": "Lets you re-adjust Pelgrom without reopening the popup",
+                "necesita": "Edit <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directly in Maestro's Outputs table if the real Vov doesn't match what you used."
+            }
+        ],
+        "hint": "The Pelgrom coefficient is not a single number: the datasheet gives it at different overdrive points (e.g. <code>AIDNE01</code> @ VG−VT=0.1V, <code>AIDNE02</code> @ 0.2V…). That is why the plugin always generates <code>Overdrive_&lt;transistor&gt;</code>: check that value after simulating and pick the matching datasheet row before setting <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "copyLabel": "Copy code",
+        "copiedLabel": "Copied!",
+        "note_title": "Usage:",
+        "note_text": "Load <code>extractor_gmid_saturacion.il</code> first, then <code>mismatch_pelgrom.il</code> (e.g. from your <code>.cdsinit</code>, in that order). Open the schematic, use <strong>Crear expresiones → Mismatch</strong>, choose the target test, check the transistors, simulate, and check <code>Overdrive_&lt;transistor&gt;</code> to pick the right Pelgrom coefficient from the datasheet.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_title": "Expressions target",
+        "fig_tests": "Test(s) to create the expressions in",
+        "fig_view": "View of [Name]",
+        "fig_test_name": "Test",
+        "fig_caption": "Illustration of the «Destino de las expresiones» popup, shown when you press gm/Id, Saturación or Mismatch: you choose which Maestro test(s) get the expressions and, for each cell with several views, which one to use. «[Name]» stands for the cell name. The real popup text is in Spanish.",
+        "fig_aria": "Illustration of the target popup: checkboxes to choose the Maestro test and the schematic view of each cell"
+    }
+};
+
+        function setText(id, val) {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) el.textContent = val;
+        }
+
+        function setHTML(id, val) {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) el.innerHTML = val;
+        }
+
+        function setLang(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            sessionStorage.setItem('eva_lang', lang);
+            ['ca','es','en'].forEach(l => {
+                const btn = document.getElementById('sw_' + l);
+                if (btn) btn.classList.toggle('active', l === lang);
+            });
+            setText('back_link', t.back_link);
+            setText('badge', t.badge);
+            setText('title', t.title);
+            setText('lead', t.lead);
+            setText('figTitle', t.fig_title);
+            setText('figTests', t.fig_tests);
+            setText('figView', t.fig_view);
+            document.querySelectorAll('.figTest').forEach(el => { el.textContent = t.fig_test_name + ' ' + el.dataset.n; });
+            setText('figCaption', t.fig_caption);
+            document.getElementById('figPopup').setAttribute('aria-label', t.fig_aria);
+            setText('th_hace', t.th_hace);
+            setText('th_necesita', t.th_necesita);
+
+            const body = document.getElementById('featureBody');
+            body.innerHTML = t.features.map(f => `
+                <tr>
+                    <td data-label="${t.th_hace}">${f.hace}</td>
+                    <td data-label="${t.th_necesita}">${f.necesita}</td>
+                </tr>
+            `).join('');
+
+            const hint = document.getElementById('hintBox');
+            hint.innerHTML = t.hint || '';
+            hint.style.display = t.hint ? 'block' : 'none';
+
+            setText('copyLabel', t.copyLabel);
+            setText('note_title', t.note_title);
+            setHTML('note_text', t.note_text);
+            setText('footer_text', t.footer_text);
+            document.documentElement.lang = lang;
+            window.__currentLang = lang;
+            window.__copiedLabel = t.copiedLabel;
+            window.__copyLabel = t.copyLabel;
+        }
+
+        function getUrlLang() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('lang');
+        }
+
+        window.addEventListener('load', () => {
+            const lang = getUrlLang() || sessionStorage.getItem('eva_lang') || 'es';
+            setLang(lang);
+        });
+
+        function copyCode() {
+            const code = document.getElementById('codeContent').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const label = document.getElementById('copyLabel');
+                btn.classList.add('copied');
+                label.textContent = window.__copiedLabel || 'Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    label.textContent = window.__copyLabel || 'Copy code';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
