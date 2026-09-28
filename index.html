@@ -47,7 +47,6 @@
 
         .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 
-        /* ── Header ── */
         header {
             padding: 25px 0;
             border-bottom: 1px solid var(--border);
@@ -103,7 +102,6 @@
 
         nav a:hover::after { width: 100%; }
 
-        /* ── Language Switcher ── */
         .lang-switcher {
             display: flex;
             gap: 4px;
@@ -131,7 +129,6 @@
         .lang-switcher button:hover { color: var(--primary); background: #FDF5EC; }
         .lang-switcher button.active { background: var(--primary); color: white; }
 
-        /* ── Hamburger menu (mobile only) ── */
         .nav-toggle {
             display: none;
             background: none;
@@ -152,7 +149,6 @@
             transition: all 0.3s ease;
         }
 
-        /* ── Hero ── */
         .hero {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -204,7 +200,6 @@
 
         .hero-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ── Social Section ── */
         .social-section { padding: 100px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
         .social-section h2 {
@@ -237,7 +232,6 @@
         .social-card p { font-size: 0.9rem; color: #888; margin-bottom: 15px; }
         .social-card .username { font-weight: 500; color: var(--primary); font-size: 0.9rem; }
 
-        /* ── About ── */
         .about-section {
             padding: 100px 0; display: grid;
             grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
@@ -266,7 +260,6 @@
 
         .about-image img { height: 100%; width: auto; display: block; }
 
-        /* ── Infografías / Cadence ── */
         .infografias-section { padding: 100px 0; border-top: 1px solid var(--border); }
 
         .infografias-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; color: var(--dark); text-align: center; }
@@ -289,7 +282,7 @@
         .accordion-item.open .accordion-icon { transform: rotate(180deg); }
 
         .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: #FDFBF8; border-top: 0px solid var(--border); }
-        .accordion-item.open .accordion-body { max-height: 300px; border-top: 1px solid var(--border); }
+        .accordion-item.open .accordion-body { max-height: 500px; border-top: 1px solid var(--border); }
 
         .accordion-body-inner { padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
         .accordion-body-inner p { font-size: 0.92rem; color: #666; line-height: 1.7; flex: 1; }
@@ -319,7 +312,6 @@
             font-style: italic; letter-spacing: 0.03em;
         }
 
-        /* ── Contacto ── */
         .contacto-section { padding: 100px 0; border-top: 1px solid var(--border); }
         .contacto-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; color: var(--dark); text-align: center; }
         .contacto-section .section-subtitle { text-align: center; color: #888; font-size: 0.95rem; margin-bottom: 60px; }
@@ -358,7 +350,6 @@
 
         .discover-btn-card:hover { background: transparent; color: var(--primary); }
 
-        /* ── Hablamos ── */
         .hablamos-section { padding: 100px 0; border-top: 1px solid var(--border); background: var(--light); }
 
         .hablamos-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; color: var(--dark); text-align: center; }
@@ -406,7 +397,6 @@
         .hablamos-corporate-link { font-size: 1.5rem; color: var(--primary); text-decoration: none; font-weight: 600; transition: color 0.2s; }
         .hablamos-corporate-link:hover { color: var(--accent); }
 
-        /* ── Newsletter ── */
         .newsletter-box { background: var(--dark); border-radius: 8px; padding: 40px; color: white; }
         .newsletter-box h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 10px; color: white; }
         .newsletter-box p { font-size: 0.9rem; opacity: 0.7; margin-bottom: 25px; line-height: 1.7; }
@@ -435,7 +425,6 @@
         .form-field { display: flex; flex-direction: column; gap: 6px; }
         .form-label { font-size: 0.82rem; font-weight: 600; color: var(--dark); letter-spacing: 0.3px; }
 
-        /* ── Consent checkbox ── */
         .consent-field { display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; }
         .consent-field input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; accent-color: var(--primary); }
         .consent-field label { font-size: 0.78rem; line-height: 1.5; cursor: pointer; }
@@ -445,7 +434,6 @@
         .contacto-info .consent-field label { color: #888; }
         .contacto-info .consent-field a { color: var(--accent); }
 
-        /* ── Footer ── */
         footer { background: var(--dark); color: white; padding: 50px 0 30px; margin-top: 80px; }
 
         footer .container {
@@ -470,7 +458,6 @@
         .footer-legal a { color: rgba(255,255,255,0.6); text-decoration: none; }
         .footer-legal a:hover { color: var(--primary); text-decoration: underline; }
 
-        /* ── Language Popup ── */
         .lang-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5);
             z-index: 9999; display: none;
@@ -508,15 +495,9 @@
         .lang-btn-name { font-size: 0.9rem; font-weight: 600; color: var(--dark); }
         .lang-btn-sub { font-size: 0.75rem; color: #aaa; }
 
-        /* ══════════════════════════════════════════
-           RESPONSIVE — MOBILE OPTIMISATIONS
-           ══════════════════════════════════════════ */
-
-        /* ── 768px: tablet / small mobile ── */
         @media (max-width: 768px) {
             .container { padding: 0 20px; }
 
-            /* Header: logo left, lang switcher right, nav below */
             header { padding: 16px 0; }
 
             header .container {
@@ -528,12 +509,10 @@
             .logo { flex: 1; }
 
             .header-right {
-                /* On mobile the header-right shows only lang switcher + hamburger */
                 gap: 10px;
                 align-items: center;
             }
 
-            /* Hide desktop nav by default on mobile */
             header nav {
                 display: none;
                 width: 100%;
@@ -559,10 +538,8 @@
 
             nav ul li:last-child a { border-bottom: none; }
 
-            /* Show hamburger */
             .nav-toggle { display: flex; }
 
-            /* Hero */
             .hero {
                 grid-template-columns: 1fr;
                 padding: 40px 0 50px;
@@ -586,13 +563,11 @@
                 height: 200px;
             }
 
-            /* Social */
             .social-section { padding: 60px 0; }
             .social-section h2 { font-size: 2rem; margin-bottom: 36px; }
             .social-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
             .social-card { padding: 28px 18px; }
 
-            /* About */
             .about-section {
                 grid-template-columns: 1fr;
                 padding: 60px 0;
@@ -602,7 +577,6 @@
             .about-content h2 { font-size: 2rem; }
             .about-image { height: 280px; }
 
-            /* Infografías */
             .infografias-section { padding: 60px 0; }
             .infografias-section h2 { font-size: 2rem; }
             .accordion-header { padding: 18px 20px; }
@@ -616,42 +590,35 @@
             .accordion-link,
             .accordion-soon { align-self: flex-start; }
 
-            /* Hablamos */
             .hablamos-section { padding: 60px 0; }
             .hablamos-section h2 { font-size: 2rem; }
             .hablamos-grid { grid-template-columns: 1fr; gap: 24px; }
             .hablamos-card { padding: 28px 24px; }
             .hablamos-corporate { padding: 28px 24px; }
 
-            /* Contacto */
             .contacto-section { padding: 60px 0; }
             .contacto-section h2 { font-size: 2rem; }
             .contacto-grid { grid-template-columns: 1fr; gap: 36px; }
 
-            /* Newsletter box */
             .newsletter-box { padding: 28px 24px; }
 
-            /* Footer */
             footer .container {
                 flex-direction: column;
                 gap: 24px;
                 align-items: flex-start;
             }
 
-            /* Section headings */
             .social-section h2,
             .about-content h2,
             .hero-content h1 { font-size: 2rem; }
         }
 
-        /* ── 480px: small phones ── */
         @media (max-width: 480px) {
             .hero-content h1 { font-size: 1.85rem; }
             .social-grid { grid-template-columns: 1fr; }
             .cta-buttons { flex-direction: column; align-items: center; }
             .cta-buttons .btn { width: 100%; max-width: 280px; text-align: center; }
 
-            /* Language popup: tighter on very small screens */
             .lang-popup { padding: 32px 20px; }
             .lang-popup h2 { font-size: 1.3rem; }
             .lang-popup p { font-size: 0.82rem; margin-bottom: 24px; }
@@ -661,16 +628,13 @@
             .lang-btn-name { font-size: 0.82rem; }
             .lang-btn-sub { display: none; }
 
-            /* Accordion tighter */
             .accordion-header { padding: 15px 16px; }
             .accordion-header-text h3 { font-size: 0.9rem; }
             .accordion-body-inner { padding: 14px 16px; }
 
-            /* Hablamos email wrapping */
             .hablamos-card-contact { font-size: 0.78rem; word-break: break-all; }
         }
 
-        /* ── Touch targets ── */
         @media (max-width: 768px) {
             .btn { min-height: 44px; display: flex; align-items: center; justify-content: center; }
             .accordion-header { min-height: 56px; }
@@ -681,7 +645,6 @@
 </head>
 <body>
 
-    <!-- Language Popup -->
     <div class="lang-overlay" id="langOverlay">
         <div class="lang-popup">
             <img src="logo.jpg" alt="Eva Deltor" class="lang-popup-logo">
@@ -707,7 +670,6 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header>
         <div class="container">
             <a href="#" class="logo">
@@ -738,7 +700,6 @@
         </div>
     </header>
 
-    <!-- Hero -->
     <section class="hero container">
         <div class="hero-content">
             <h1 id="hero_title">Doctoranda en Microelectrónica</h1>
@@ -755,7 +716,6 @@
         </div>
     </section>
 
-    <!-- Social Section -->
     <section id="redes" class="social-section">
         <div class="container">
             <h2 id="social_title">Mi Presencia Digital</h2>
@@ -788,7 +748,6 @@
         </div>
     </section>
 
-    <!-- Infografías -->
     <section id="infografias" class="infografias-section">
         <div class="container">
             <h2 id="infografias_title">Infografías de Microelectrónica</h2>
@@ -878,7 +837,6 @@
         </div>
     </section>
 
-    <!-- Cadence · Virtuoso Codes -->
     <section id="cadence" class="infografias-section">
         <div class="container">
             <h2 id="cadence_title">Cadence · Virtuoso Codes</h2>
@@ -894,8 +852,24 @@
                     </div>
                     <div class="accordion-body">
                         <div class="accordion-body-inner">
-                            <p id="gmid_desc">Un plugin en SKILL que detecta automáticamente los transistores de un esquemático (incluso dentro de jerarquías anidadas), identifica si son NMOS o PMOS, y genera las expresiones de gm/Id y el margen de saturación (Vds − Vdsat) directamente en Maestro/ADE Assembler.</p>
+                            <p id="gmid_desc">Un plugin en SKILL que detecta automáticamente los transistores MOS de un esquemático (incluso dentro de jerarquías anidadas) sin depender de los nombres de celda de cada PDK, deduce si son NMOS o PMOS, y genera las expresiones de gm/Id y el margen de saturación (Vds − Vdsat) en el test de Maestro/ADE Assembler que elijas.</p>
                             <a href="Virtuoso/extractor-gmid-saturacion.html" class="accordion-link" id="gmid_btn" onclick="passLang(event, this)">Ver Código →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-header-text">
+                            <h3 id="mismatch_title">Mismatch de corriente (modelo de Pelgrom)</h3>
+                            <div class="accordion-meta" id="mismatch_meta">SKILL · Plugin para ADE Assembler / Maestro</div>
+                        </div>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">
+                            <p id="mismatch_desc">Un plugin en SKILL que añade un popup a Maestro/ADE Assembler para seleccionar qué transistores deben llevar la misma corriente, calcular su Vgs y overdrive, y estimar el mismatch de corriente esperado según el modelo de Pelgrom.</p>
+                            <a href="Virtuoso/mismatch-pelgrom.html" class="accordion-link" id="mismatch_btn" onclick="passLang(event, this)">Ver Código →</a>
                         </div>
                     </div>
                 </div>
@@ -904,7 +878,6 @@
         </div>
     </section>
 
-    <!-- About -->
     <section id="sobre" class="about-section container">
         <div class="about-content">
             <h2 id="sobre_title">Sobre Mí</h2>
@@ -939,7 +912,6 @@
         </div>
     </section>
 
-    <!-- Contacto & Newsletter -->
     <section id="contacto" class="contacto-section">
         <div class="container">
             <h2 id="contacto_title">Conectemos</h2>
@@ -1011,9 +983,6 @@
         </div>
     </section>
 
-
-
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-info">
@@ -1036,7 +1005,6 @@
     </footer>
 
     <script>
-        /* ── Nav toggle (hamburger) ── */
         function toggleNav() {
             const nav = document.getElementById('mainNav');
             const btn = document.getElementById('navToggle');
@@ -1049,7 +1017,6 @@
             document.getElementById('navToggle').classList.remove('open');
         }
 
-        /* ── Accordion ── */
         function toggleAccordion(header) {
             const item = header.parentElement;
             const isOpen = item.classList.contains('open');
@@ -1057,7 +1024,6 @@
             if (!isOpen) item.classList.add('open');
         }
 
-        /* ── Translations ── */
         const translations = {
             es: {
                 nav_redes: "Redes Sociales", nav_infografias: "Infografías", nav_cadence: "Cadence · Virtuoso", nav_sobre: "Sobre Mí", nav_contacto: "Contacto",
@@ -1088,8 +1054,12 @@
                 cadence_sub: "Scripts SKILL y plugins para automatizar flujos de diseño en Cadence Virtuoso",
                 gmid_title: "Extractor automático de gm/Id y margen de saturación",
                 gmid_meta: "SKILL · Plugin para ADE Assembler / Maestro",
-                gmid_desc: "Un plugin en SKILL que detecta automáticamente los transistores de un esquemático (incluso dentro de jerarquías anidadas), identifica si son NMOS o PMOS, y genera las expresiones de gm/Id y el margen de saturación (Vds − Vdsat) directamente en Maestro/ADE Assembler.",
+                gmid_desc: "Un plugin en SKILL que detecta automáticamente los transistores MOS de un esquemático (incluso dentro de jerarquías anidadas) sin depender de los nombres de celda de cada PDK, deduce si son NMOS o PMOS, y genera las expresiones de gm/Id y el margen de saturación (Vds − Vdsat) en el test de Maestro/ADE Assembler que elijas.",
                 gmid_btn: "Ver Código →",
+                mismatch_title: "Mismatch de corriente (modelo de Pelgrom)",
+                mismatch_meta: "SKILL · Plugin para ADE Assembler / Maestro",
+                mismatch_desc: "Un plugin en SKILL que añade un popup a Maestro/ADE Assembler para seleccionar qué transistores deben llevar la misma corriente, calcular su Vgs y overdrive, y estimar el mismatch de corriente esperado según el modelo de Pelgrom.",
+                mismatch_btn: "Ver Código →",
                 cadence_more: "... y más scripts en camino ⚙️",
                 sobre_title: "Sobre Mí",
                 sobre_p1: "Como estudiante de doctorado en el Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualmente trabajo en el diseño de un circuito integrado de lectura digital (ROIC) de bajo consumo, bajo ruido y alta densidad para un sensor de imagen MWIR PbSe-CMOS de alta velocidad. Mi proyecto tiene como objetivo desarrollar la tercera generación de ROIC para cuadruplicar el número de píxeles en el array de plano focal manteniendo el mismo nodo tecnológico CMOS, debido a los requisitos de post-procesado a nivel de oblea del PbSe. Este reto implica reducir el área y el consumo del sensor de píxel digital PbSe-CMOS actual en un factor de 2, además de mejorar la resolución espacial y la sensibilidad.",
@@ -1142,8 +1112,12 @@
                 cadence_sub: "Scripts SKILL i plugins per automatitzar fluxos de disseny a Cadence Virtuoso",
                 gmid_title: "Extractor automàtic de gm/Id i marge de saturació",
                 gmid_meta: "SKILL · Plugin per a ADE Assembler / Maestro",
-                gmid_desc: "Un plugin en SKILL que detecta automàticament els transistors d'un esquemàtic (fins i tot dins de jerarquies imbricades), identifica si són NMOS o PMOS, i genera les expressions de gm/Id i marge de saturació (Vds − Vdsat) directament a Maestro/ADE Assembler.",
+                gmid_desc: "Un plugin en SKILL que detecta automàticament els transistors MOS d'un esquemàtic (fins i tot dins de jerarquies imbricades) sense dependre dels noms de cel·la de cada PDK, dedueix si són NMOS o PMOS, i genera les expressions de gm/Id i el marge de saturació (Vds − Vdsat) al test de Maestro/ADE Assembler que triïs.",
                 gmid_btn: "Veure Codi →",
+                mismatch_title: "Mismatch de corrent (model de Pelgrom)",
+                mismatch_meta: "SKILL · Plugin per a ADE Assembler / Maestro",
+                mismatch_desc: "Un plugin en SKILL que afegeix un popup a Maestro/ADE Assembler per seleccionar quins transistors han de portar el mateix corrent, calcular el seu Vgs i overdrive, i estimar el mismatch de corrent esperat segons el model de Pelgrom.",
+                mismatch_btn: "Veure Codi →",
                 cadence_more: "... i més scripts en camí ⚙️",
                 sobre_title: "Sobre Mi",
                 sobre_p1: "Com a estudiant de doctorat a l'Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualment treballo en el disseny d'un circuit integrat de lectura digital (ROIC) de baix consum, baix soroll i alta densitat per a un sensor d'imatge MWIR PbSe-CMOS d'alta velocitat. El meu projecte té com a objectiu desenvolupar la tercera generació de ROIC per quadruplicar el nombre de píxels en l'array de pla focal mantenint el mateix node tecnològic CMOS, a causa dels requisits de post-processat a nivell de oblea del PbSe. Aquest repte implica reduir l'àrea i el consum del sensor de píxel digital PbSe-CMOS actual en un factor de 2, a més de millorar la resolució espacial i la sensibilitat.",
@@ -1196,8 +1170,12 @@
                 cadence_sub: "SKILL scripts and plugins to automate design flows in Cadence Virtuoso",
                 gmid_title: "Automatic gm/Id and saturation margin extractor",
                 gmid_meta: "SKILL · ADE Assembler / Maestro Plugin",
-                gmid_desc: "A SKILL plugin that automatically detects transistors in a schematic (including nested hierarchies), identifies whether they are NMOS or PMOS, and generates the gm/Id expressions and saturation margin (Vds − Vdsat) directly in Maestro/ADE Assembler.",
+                gmid_desc: "A SKILL plugin that automatically detects the MOS transistors in a schematic (including nested hierarchies) without relying on each PDK's cell names, infers whether they are NMOS or PMOS, and generates the gm/Id expressions and saturation margin (Vds − Vdsat) in the Maestro/ADE Assembler test you choose.",
                 gmid_btn: "View Code →",
+                mismatch_title: "Current mismatch (Pelgrom model)",
+                mismatch_meta: "SKILL · ADE Assembler / Maestro Plugin",
+                mismatch_desc: "A SKILL plugin that adds a popup to Maestro/ADE Assembler to select which transistors should carry the same current, compute their Vgs and overdrive, and estimate the expected current mismatch using the Pelgrom model.",
+                mismatch_btn: "View Code →",
                 cadence_more: "... and more scripts on the way ⚙️",
                 sobre_title: "About Me",
                 sobre_p1: "As a PhD student at the Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), I am currently working on the design of a low-power, low-noise, and high-density digital readout integrated circuit (ROIC) for a high-speed MWIR PbSe-CMOS imager. My project aims to develop the third generation of ROIC to quadruple the number of pixels in the focal plane array while maintaining the same CMOS technology node due to the wafer-level post-processing requirements of PbSe. This challenge involves reducing the area and power of the current PbSe-CMOS digital pixel sensor by a factor of 2, as well as improving the spatial resolution and sensitivity.",
@@ -1237,7 +1215,6 @@
             el.innerHTML = escaped.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
         }
 
-        /* Allow a small, fixed whitelist of tags (a/br) for consent labels — content is never user-supplied. */
         function setConsentHTML(id, val) {
             const el = document.getElementById(id);
             if (el && val !== undefined) el.innerHTML = val;
@@ -1280,6 +1257,8 @@
             setText('cadence_title', t.cadence_title); setText('cadence_sub', t.cadence_sub);
             setText('gmid_title', t.gmid_title); setText('gmid_meta', t.gmid_meta);
             setText('gmid_desc', t.gmid_desc); setText('gmid_btn', t.gmid_btn);
+            setText('mismatch_title', t.mismatch_title); setText('mismatch_meta', t.mismatch_meta);
+            setText('mismatch_desc', t.mismatch_desc); setText('mismatch_btn', t.mismatch_btn);
             setText('cadence_more', t.cadence_more);
             setText('sobre_title', t.sobre_title); setText('sobre_p1', t.sobre_p1); setText('sobre_p2', t.sobre_p2);
             setText('hl1_title', t.hl1_title); setText('hl1_text', t.hl1_text);
@@ -1316,7 +1295,6 @@
             window.location.href = el.getAttribute('href') + '?lang=' + lang;
         }
 
-        /* ── Forms ── */
         const __pageLoadTime = Date.now();
         const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
         const LIMITS = { nombre: 100, email: 150, mensaje: 2000 };
