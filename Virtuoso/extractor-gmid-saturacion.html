@@ -465,6 +465,22 @@ procedure( gmidParseLenToUm(str)
     )
 )
 
+;; Sustituye "/" por "_" en un nombre, para usarlo como identificador de
+;; output en Maestro (la "/" se interpretaria como division si el nombre
+;; se referencia sin comillas en otra expresion).
+procedure( gmidSafeName(path)
+    let( (res i c)
+        res = ""
+        i = 1
+        while( i &lt;= strlen(path)
+            c = substring(path i 1)
+            res = strcat(res if( c == "/" then "_" else c))
+            i = i + 1
+        )
+        res
+    )
+)
+
 ;; Lee un parametro (w/l/m/model) del CDF resuelto de una instancia
 procedure( gmidGetInstParam(inst paramName)
     let( (cdfRes cdfId p val)
@@ -889,7 +905,7 @@ procedure( GenerarGmId()
             foreach( tst tests
                 foreach( par xtors
                     path = car(par)
-                    n1 = sprintf(nil "gmid_%s" path)
+                    n1 = sprintf(nil "gmid_%s" gmidSafeName(path))
                     errset(maeDeleteOutput(n1 tst ?session sess))
                     r1 = maeAddOutput(n1 tst ?outputType "point"
                         ?expr sprintf(nil "OP(\"/%s\" \"gm\") / OP(\"/%s\" \"id\")" path path)
@@ -928,7 +944,7 @@ procedure( GenerarSaturacion()
             foreach( tst tests
                 foreach( par xtors
                     path = car(par)
-                    n2 = sprintf(nil "vdsmargin_%s" path)
+                    n2 = sprintf(nil "vdsmargin_%s" gmidSafeName(path))
                     errset(maeDeleteOutput(n2 tst ?session sess))
                     r2 = maeAddOutput(n2 tst ?outputType "point"
                         ?expr sprintf(nil "abs(OP(\"/%s\" \"vds\")) - abs(OP(\"/%s\" \"vdsat\"))" path path)
