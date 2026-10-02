@@ -309,6 +309,8 @@
             <figcaption id="fig2Caption"></figcaption>
         </figure>
 
+        <div class="hint-box" id="physicsBox"></div>
+
         <div class="hint-box" id="hintBox"></div>
 
         <div class="code-block">
@@ -587,6 +589,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
                 "necesita": "Editar <code>PelgromValue_&lt;transistor&gt;</code> directamente en la tabla de Outputs de Maestro, uno por uno, si su Vov real no coincide con el de partida."
             }
         ],
+        "physicsHint": "<strong>Por qué importa el overdrive:</strong> la corriente de drenador tiene dos fuentes de mismatch independientes, cada una con su propio coeficiente de Pelgrom y la misma dependencia 1/√(W·L): el mismatch de tensión umbral (<code>AVT</code>) y el mismatch de factor de ganancia o beta (<code>Aβ</code>). En aproximación de ley cuadrática, el mismatch total de corriente combina ambos como <code>ΔID/ID ≈ (2/Vov)·ΔVth − Δβ/β</code>. Como el término de <code>ΔVth</code> va multiplicado por <code>2/Vov</code>, pesa mucho más en inversión débil/moderada (Vov pequeño) y cada vez menos al aumentar el overdrive, mientras que el término de <code>Δβ</code> no depende de Vov. Por eso el peso relativo de cada mecanismo cambia con el punto de polarización, y el datasheet da un coeficiente distinto (ya combinado) para cada <code>Vov</code>: no hay un único número válido para todo el rango: en inversión débil domina el mismatch de <code>Vth</code>, y en inversión fuerte pasa a dominar el de <code>β</code> — ambos son independientes entre sí, solo cambia su peso relativo según el punto de polarización.",
         "hint": "El coeficiente de Pelgrom no es un único número: el datasheet lo da para distintos puntos de overdrive, y cada transistor seleccionado puede tener un Vgs real distinto. Por eso cada transistor tiene su propio <code>PelgromValue_&lt;transistor&gt;</code>: mira su <code>Overdrive_&lt;transistor&gt;</code> tras simular y ajusta ese valor en Maestro, transistor por transistor, con la fila del datasheet que corresponda.",
         "copyLabel": "Copiar código",
         "copiedLabel": "¡Copiado!",
@@ -642,6 +645,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
                 "necesita": "Editar <code>PelgromValue_&lt;transistor&gt;</code> directament a la taula d'Outputs de Maestro, un per un, si el seu Vov real no coincideix amb el de partida."
             }
         ],
+        "physicsHint": "<strong>Per què importa l'overdrive:</strong> el corrent de drenador té dues fonts de mismatch independents, cadascuna amb el seu propi coeficient de Pelgrom i la mateixa dependència 1/√(W·L): el mismatch de tensió llindar (<code>AVT</code>) i el mismatch de factor de guany o beta (<code>Aβ</code>). En aproximació de llei quadràtica, el mismatch total de corrent combina ambdós com <code>ΔID/ID ≈ (2/Vov)·ΔVth − Δβ/β</code>. Com que el terme de <code>ΔVth</code> va multiplicat per <code>2/Vov</code>, pesa molt més en inversió feble/moderada (Vov petit) i cada vegada menys en augmentar l'overdrive, mentre que el terme de <code>Δβ</code> no depèn de Vov. Per això el pes relatiu de cada mecanisme canvia amb el punt de polarització, i el datasheet dona un coeficient diferent (ja combinat) per a cada <code>Vov</code>: no hi ha un únic número vàlid per a tot el rang: en inversió feble domina el mismatch de <code>Vth</code>, i en inversió forta passa a dominar el de <code>β</code> — tots dos són independents entre si, només canvia el seu pes relatiu segons el punt de polarització.",
         "hint": "El coeficient de Pelgrom no és un únic número: el datasheet el dona per a diferents punts d'overdrive, i cada transistor seleccionat pot tenir un Vgs real diferent. Per això cada transistor té el seu propi <code>PelgromValue_&lt;transistor&gt;</code>: mira el seu <code>Overdrive_&lt;transistor&gt;</code> després de simular i ajusta aquest valor a Maestro, transistor per transistor, amb la fila del datasheet que correspongui.",
         "copyLabel": "Copiar codi",
         "copiedLabel": "Copiat!",
@@ -697,6 +701,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
                 "necesita": "Edit <code>PelgromValue_&lt;transistor&gt;</code> directly in Maestro's Outputs table, one by one, if its real Vov doesn't match the starting value."
             }
         ],
+        "physicsHint": "<strong>Why overdrive matters:</strong> drain current has two independent mismatch sources, each with its own Pelgrom coefficient and the same 1/√(W·L) dependence: threshold voltage mismatch (<code>AVT</code>) and gain-factor or beta mismatch (<code>Aβ</code>). In the square-law approximation, total current mismatch combines both as <code>ΔID/ID ≈ (2/Vov)·ΔVth − Δβ/β</code>. Since the <code>ΔVth</code> term is scaled by <code>2/Vov</code>, it dominates in weak/moderate inversion (small Vov) and matters less as overdrive increases, while the <code>Δβ</code> term doesn't depend on Vov at all. That's why the relative weight of each mechanism shifts with the bias point, and the datasheet gives a different (already-combined) coefficient for each <code>Vov</code>: no single number is valid across the whole range: in weak inversion, <code>Vth</code> mismatch dominates, while in strong inversion <code>β</code> mismatch takes over — both are statistically independent from each other, only their relative weight changes with the bias point.",
         "hint": "The Pelgrom coefficient is not a single number: the datasheet gives it at different overdrive points, and each selected transistor can have a different real Vgs. That is why each transistor has its own <code>PelgromValue_&lt;transistor&gt;</code>: check its <code>Overdrive_&lt;transistor&gt;</code> after simulating and adjust that value in Maestro, transistor by transistor, with the matching datasheet row.",
         "copyLabel": "Copy code",
         "copiedLabel": "Copied!",
@@ -761,6 +766,10 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
                     <td data-label="${t.th_necesita}">${f.necesita}</td>
                 </tr>
             `).join('');
+
+            const physics = document.getElementById('physicsBox');
+            physics.innerHTML = t.physicsHint || '';
+            physics.style.display = t.physicsHint ? 'block' : 'none';
 
             const hint = document.getElementById('hintBox');
             hint.innerHTML = t.hint || '';
