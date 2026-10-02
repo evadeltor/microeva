@@ -325,14 +325,20 @@
 ;; Al pulsar Mismatch se abre primero el popup de destino (test y vista de
 ;; esquematico) y despues el de transistores. Se generan siempre Vgs,
 ;; Overdrive (Vgs-Vth), ErrorMismatch, ActualCurrent, ExpectedCurrent y los
-;; limites Min/MaxCurrentError, solo en los tests elegidos. Los valores
-;; PelgromValue_pe/ne se crean con gmidPelgromPe/gmidPelgromNe (por defecto
-;; 0 si no los has definido); ajustalos directamente en Maestro segun el Vov
-;; real que veas en Overdrive_&lt;transistor&gt;.
+;; limites Min/MaxCurrentError, solo en los tests elegidos.
 ;;
-;; Si la polaridad de un transistor es desconocida solo se crean Vgs y
-;; Overdrive (el mismatch necesita saber si es NMOS o PMOS): anade su celda
-;; en Crear expresiones &gt; Tipos de transistores.
+;; Cada transistor tiene SU PROPIO PelgromValue_&lt;transistor&gt; (no se
+;; comparte entre transistores): como el Vgs real difiere de uno a otro,
+;; el coeficiente de Pelgrom que toca de la tabla del datasheet tambien
+;; puede diferir. Se crea con un valor de partida (gmidPelgromPe/Ne segun
+;; la polaridad detectada, o 0.0 si es desconocida) y luego se ajusta a
+;; mano en Maestro, por transistor, mirando su Overdrive_&lt;transistor&gt;.
+;;
+;; ActualCurrent usa OP(path "id") (corriente de drenador del punto de
+;; operacion del transistor), no IDC() sobre el nodo: IDC() depende de un
+;; probe de corriente de red que puede no estar disponible o fallar segun
+;; el tipo de analisis (p.ej. AC_OP_NOISE), mientras que OP(...) siempre
+;; esta disponible si el punto de operacion DC esta guardado.
 ;; =========================================================================
 
 unless( boundp('gmidPelgromPe) gmidPelgromPe = 0.0 )
@@ -403,9 +409,9 @@ procedure( AbrirPopupMismatchGmId()
 
 procedure( CalcularMismatchGmId()
     let( (cv sess tests seleccion expCur selList infoList seleccionados
-          pathInfo path pol w l m nameSafe
-          n1 n2 n3 n4 n5 n6 n7 r0a r0b r1 r2 r3 r4 r5 r6 r7
-          pref nSel nErr)
+          pathInfo path pol w l m nameSafe pelgromDefault
+          n0 n1 n2 n3 n4 n5 n6 n7 r0 r1 r2 r3 r4 r5 r6 r7
+          nSel nErr)
         cv = geGetEditCellView()
         sess = car(maeGetSessions())
         unless( sess
@@ -436,26 +442,23 @@ procedure( CalcularMismatchGmId()
         )
 
         foreach( tst tests
-            errset(maeDeleteOutput("PelgromValue_pe" tst ?session sess))
-            errset(maeDeleteOutput("PelgromValue_ne" tst ?session sess))
-            r0a = maeAddOutput("PelgromValue_pe" tst ?outputType "point"
-                ?expr sprintf(nil "%g" gmidPelgromPe) ?session sess)
-            r0b = maeAddOutput("PelgromValue_ne" tst ?outputType "point"
-                ?expr sprintf(nil "%g" gmidPelgromNe) ?session sess)
-
             foreach( pathInfo seleccionados
                 path = car(pathInfo)
                 pol  = cadr(pathInfo)
                 w    = caddr(pathInfo)
                 l    = cadddr(pathInfo)
                 m    = car(cddddr(pathInfo))
-                pref = cond(
-                    ( eq(pol 'n) "ne" )
-                    ( eq(pol 'p) "pe" )
-                    ( t nil )
-                )
                 nameSafe = gmidSafeName(path)
+                pelgromDefault = cond(
+                    ( eq(pol 'n) gmidPelgromNe )
+                    ( eq(pol 'p) gmidPelgromPe )
+                    ( t 0.0 )
+                )
 
+                ;; PelgromValue propio de este transistor: punto de partida
+                ;; segun su polaridad, editalo despues en Maestro segun su
+                ;; Overdrive_&lt;transistor&gt; real.
+                n0 = sprintf(nil "PelgromValue_%s" nameSafe)
                 n1 = sprintf(nil "ErrorMismatch_%s" nameSafe)
                 n2 = sprintf(nil "ActualCurrent_%s" nameSafe)
                 n3 = sprintf(nil "ExpectedCurrent_%s" nameSafe)
@@ -463,6 +466,7 @@ procedure( CalcularMismatchGmId()
                 n5 = sprintf(nil "MaxCurrentError_%s" nameSafe)
                 n6 = sprintf(nil "Vgs_%s" nameSafe)
                 n7 = sprintf(nil "Overdrive_%s" nameSafe)
+                errset(maeDeleteOutput(n0 tst ?session sess))
                 errset(maeDeleteOutput(n1 tst ?session sess))
                 errset(maeDeleteOutput(n2 tst ?session sess))
                 errset(maeDeleteOutput(n3 tst ?session sess))
@@ -471,6 +475,10 @@ procedure( CalcularMismatchGmId()
                 errset(maeDeleteOutput(n6 tst ?session sess))
                 errset(maeDeleteOutput(n7 tst ?session sess))
 
+                r0 = maeAddOutput(n0 tst ?outputType "point"
+                    ?expr sprintf(nil "%g" pelgromDefault)
+                    ?session sess)
+
                 r6 = maeAddOutput(n6 tst ?outputType "point"
                     ?expr sprintf(nil "OP(\"/%s\" \"vgs\")" path)
                     ?session sess)
@@ -478,15 +486,15 @@ procedure( CalcularMismatchGmId()
                     ?expr sprintf(nil "%s - OP(\"/%s\" \"vth\")" n6 path)
                     ?session sess)
 
-                if( !w || !l || !m || !pref then
+                if( !w || !l || !m then
                     nErr = nErr + 1
-                    printf("%s: faltan W/L/m o la polaridad es desconocida; solo Vgs/Overdrive\n" path)
+                    printf("Faltan W/L/m para %s; solo Vgs/Overdrive/PelgromValue\n" path)
                 else
                     r1 = maeAddOutput(n1 tst ?outputType "point"
-                        ?expr sprintf(nil "PelgromValue_%s / sqrt((%g * %g * %g))" pref w l m)
+                        ?expr sprintf(nil "%s / sqrt((%g * %g * %g))" n0 w l m)
                         ?session sess)
                     r2 = maeAddOutput(n2 tst ?outputType "point"
-                        ?expr sprintf(nil "IDC(\"/%s/S\")" path)
+                        ?expr sprintf(nil "abs(OP(\"/%s\" \"id\"))" path)
                         ?session sess)
                     r3 = maeAddOutput(n3 tst ?outputType "point"
                         ?expr sprintf(nil "%g" expCur)
@@ -499,15 +507,15 @@ procedure( CalcularMismatchGmId()
                         ?session sess)
                     errset(maeSetSpec(n4 tst ?lt sprintf(nil "value(calcVal(\"%s\"))" n2) ?session sess))
                     errset(maeSetSpec(n5 tst ?gt sprintf(nil "value(calcVal(\"%s\"))" n2) ?session sess))
-                    unless( r1 &amp;&amp; r2 &amp;&amp; r3 &amp;&amp; r4 &amp;&amp; r5 &amp;&amp; r6 &amp;&amp; r7
+                    unless( r0 &amp;&amp; r1 &amp;&amp; r2 &amp;&amp; r3 &amp;&amp; r4 &amp;&amp; r5 &amp;&amp; r6 &amp;&amp; r7
                         nErr = nErr + 1
                         printf("Fallo generando mismatch para %s en %s\n" path tst))
                 )
             )
         )
         maeSaveSetup(?session sess)
-        printf("Mismatch Pelgrom: %d transistores seleccionados | tests %L | %d avisos/fallos | PelgromValue_pe=%g PelgromValue_ne=%g (ajustalos en Maestro si hace falta)\n"
-            nSel tests nErr gmidPelgromPe gmidPelgromNe)
+        printf("Mismatch Pelgrom: %d transistores seleccionados | tests %L | %d avisos/fallos. Cada transistor tiene su propio PelgromValue_&lt;nombre&gt;: ajustalo en Maestro segun su Overdrive real.\n"
+            nSel tests nErr)
     )
 )
 
@@ -564,7 +572,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
             },
             {
                 "hace": "Calcula el mismatch con el modelo de Pelgrom",
-                "necesita": "Definir <code>gmidPelgromPe</code> y <code>gmidPelgromNe</code> (constante del datasheet en mV·µm). Mira antes el <code>Overdrive_&lt;transistor&gt;</code> real para elegir la fila correcta de la tabla."
+                "necesita": "Cada transistor tiene su propio <code>PelgromValue_&lt;transistor&gt;</code> (no se comparte entre transistores, porque cada uno tiene un Vgs distinto). Se crea con un valor de partida (<code>gmidPelgromPe</code>/<code>gmidPelgromNe</code> según la polaridad) y se ajusta después en Maestro mirando el <code>Overdrive_&lt;transistor&gt;</code> real."
             },
             {
                 "hace": "Añade los límites Min/MaxCurrentError como specs",
@@ -572,14 +580,14 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
             },
             {
                 "hace": "Transistores de polaridad desconocida",
-                "necesita": "Solo se crean Vgs y Overdrive (el mismatch necesita saber si es NMOS o PMOS). Añade su celda en «Crear expresiones → Tipos de transistores» para el cálculo completo."
+                "necesita": "El mismatch se calcula igual (solo hace falta W/L/m); el <code>PelgromValue</code> de partida es <code>0.0</code>. Añade su celda en «Crear expresiones → Tipos de transistores» si quieres que el valor de partida sea el de su polaridad real."
             },
             {
-                "hace": "Permite reajustar Pelgrom sin repetir el popup",
-                "necesita": "Editar <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directamente en la tabla de Outputs de Maestro si el Vov real no coincide con el que usaste."
+                "hace": "Permite reajustar Pelgrom por transistor sin repetir el popup",
+                "necesita": "Editar <code>PelgromValue_&lt;transistor&gt;</code> directamente en la tabla de Outputs de Maestro, uno por uno, si su Vov real no coincide con el de partida."
             }
         ],
-        "hint": "El coeficiente de Pelgrom no es un único número: el datasheet lo da para distintos puntos de overdrive. Por eso el plugin genera siempre <code>Overdrive_&lt;transistor&gt;</code>: mira ese valor tras simular y elige la fila del datasheet que corresponda antes de fijar <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "hint": "El coeficiente de Pelgrom no es un único número: el datasheet lo da para distintos puntos de overdrive, y cada transistor seleccionado puede tener un Vgs real distinto. Por eso cada transistor tiene su propio <code>PelgromValue_&lt;transistor&gt;</code>: mira su <code>Overdrive_&lt;transistor&gt;</code> tras simular y ajusta ese valor en Maestro, transistor por transistor, con la fila del datasheet que corresponda.",
         "copyLabel": "Copiar código",
         "copiedLabel": "¡Copiado!",
         "note_title": "Uso:",
@@ -619,7 +627,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
             },
             {
                 "hace": "Calcula el mismatch amb el model de Pelgrom",
-                "necesita": "Definir <code>gmidPelgromPe</code> i <code>gmidPelgromNe</code> (constant del datasheet en mV·µm). Mira abans l'<code>Overdrive_&lt;transistor&gt;</code> real per triar la fila correcta de la taula."
+                "necesita": "Cada transistor té el seu propi <code>PelgromValue_&lt;transistor&gt;</code> (no es comparteix entre transistors, perquè cada un té un Vgs diferent). Es crea amb un valor de partida (<code>gmidPelgromPe</code>/<code>gmidPelgromNe</code> segons la polaritat) i s'ajusta després a Maestro mirant l'<code>Overdrive_&lt;transistor&gt;</code> real."
             },
             {
                 "hace": "Afegeix els límits Min/MaxCurrentError com a specs",
@@ -627,14 +635,14 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
             },
             {
                 "hace": "Transistors de polaritat desconeguda",
-                "necesita": "Només es creen Vgs i Overdrive (el mismatch necessita saber si és NMOS o PMOS). Afegeix la seva cel·la a «Crear expresiones → Tipos de transistores» per al càlcul complet."
+                "necesita": "El mismatch es calcula igual (només cal W/L/m); el <code>PelgromValue</code> de partida és <code>0.0</code>. Afegeix la seva cel·la a «Crear expresiones → Tipos de transistores» si vols que el valor de partida sigui el de la seva polaritat real."
             },
             {
-                "hace": "Permet reajustar Pelgrom sense repetir el popup",
-                "necesita": "Editar <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directament a la taula d'Outputs de Maestro si el Vov real no coincideix amb el que vas fer servir."
+                "hace": "Permet reajustar Pelgrom per transistor sense repetir el popup",
+                "necesita": "Editar <code>PelgromValue_&lt;transistor&gt;</code> directament a la taula d'Outputs de Maestro, un per un, si el seu Vov real no coincideix amb el de partida."
             }
         ],
-        "hint": "El coeficient de Pelgrom no és un únic número: el datasheet el dona per a diferents punts d'overdrive. Per això el plugin genera sempre <code>Overdrive_&lt;transistor&gt;</code>: mira aquest valor després de simular i tria la fila del datasheet que correspongui abans de fixar <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "hint": "El coeficient de Pelgrom no és un únic número: el datasheet el dona per a diferents punts d'overdrive, i cada transistor seleccionat pot tenir un Vgs real diferent. Per això cada transistor té el seu propi <code>PelgromValue_&lt;transistor&gt;</code>: mira el seu <code>Overdrive_&lt;transistor&gt;</code> després de simular i ajusta aquest valor a Maestro, transistor per transistor, amb la fila del datasheet que correspongui.",
         "copyLabel": "Copiar codi",
         "copiedLabel": "Copiat!",
         "note_title": "Ús:",
@@ -674,7 +682,7 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
             },
             {
                 "hace": "Computes mismatch with the Pelgrom model",
-                "necesita": "Set <code>gmidPelgromPe</code> and <code>gmidPelgromNe</code> (datasheet constant in mV·µm). Check the actual <code>Overdrive_&lt;transistor&gt;</code> first to pick the right table row."
+                "necesita": "Each transistor has its own <code>PelgromValue_&lt;transistor&gt;</code> (not shared between transistors, since each one has a different Vgs). It is created with a starting value (<code>gmidPelgromPe</code>/<code>gmidPelgromNe</code> based on polarity) and adjusted afterwards in Maestro by checking the real <code>Overdrive_&lt;transistor&gt;</code>."
             },
             {
                 "hace": "Adds Min/MaxCurrentError limits as specs",
@@ -682,14 +690,14 @@ printf("Mismatch enganchado al menu. Cierra y vuelve a abrir cualquier esquemati
             },
             {
                 "hace": "Transistors with unknown polarity",
-                "necesita": "Only Vgs and Overdrive are created (mismatch needs to know whether it is NMOS or PMOS). Add its cell in «Crear expresiones → Tipos de transistores» for the full calculation."
+                "necesita": "Mismatch is still computed (only W/L/m are needed); the starting <code>PelgromValue</code> is <code>0.0</code>. Add its cell in «Crear expresiones → Tipos de transistores» if you want the starting value to match its real polarity."
             },
             {
-                "hace": "Lets you re-adjust Pelgrom without reopening the popup",
-                "necesita": "Edit <code>PelgromValue_pe</code>/<code>PelgromValue_ne</code> directly in Maestro's Outputs table if the real Vov doesn't match what you used."
+                "hace": "Lets you re-adjust Pelgrom per transistor without reopening the popup",
+                "necesita": "Edit <code>PelgromValue_&lt;transistor&gt;</code> directly in Maestro's Outputs table, one by one, if its real Vov doesn't match the starting value."
             }
         ],
-        "hint": "The Pelgrom coefficient is not a single number: the datasheet gives it at different overdrive points. That is why the plugin always generates <code>Overdrive_&lt;transistor&gt;</code>: check that value after simulating and pick the matching datasheet row before setting <code>gmidPelgromPe</code>/<code>gmidPelgromNe</code>.",
+        "hint": "The Pelgrom coefficient is not a single number: the datasheet gives it at different overdrive points, and each selected transistor can have a different real Vgs. That is why each transistor has its own <code>PelgromValue_&lt;transistor&gt;</code>: check its <code>Overdrive_&lt;transistor&gt;</code> after simulating and adjust that value in Maestro, transistor by transistor, with the matching datasheet row.",
         "copyLabel": "Copy code",
         "copiedLabel": "Copied!",
         "note_title": "Usage:",
