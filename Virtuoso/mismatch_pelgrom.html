@@ -403,7 +403,7 @@ procedure( AbrirPopupMismatchGmId()
 
 procedure( CalcularMismatchGmId()
     let( (cv sess tests seleccion expCur selList infoList seleccionados
-          pathInfo path pol w l m
+          pathInfo path pol w l m nameSafe
           n1 n2 n3 n4 n5 n6 n7 r0a r0b r1 r2 r3 r4 r5 r6 r7
           pref nSel nErr)
         cv = geGetEditCellView()
@@ -454,14 +454,15 @@ procedure( CalcularMismatchGmId()
                     ( eq(pol 'p) "pe" )
                     ( t nil )
                 )
+                nameSafe = gmidSafeName(path)
 
-                n1 = sprintf(nil "ErrorMismatch_%s" path)
-                n2 = sprintf(nil "ActualCurrent_%s" path)
-                n3 = sprintf(nil "ExpectedCurrent_%s" path)
-                n4 = sprintf(nil "MinCurrentError_%s" path)
-                n5 = sprintf(nil "MaxCurrentError_%s" path)
-                n6 = sprintf(nil "Vgs_%s" path)
-                n7 = sprintf(nil "Overdrive_%s" path)
+                n1 = sprintf(nil "ErrorMismatch_%s" nameSafe)
+                n2 = sprintf(nil "ActualCurrent_%s" nameSafe)
+                n3 = sprintf(nil "ExpectedCurrent_%s" nameSafe)
+                n4 = sprintf(nil "MinCurrentError_%s" nameSafe)
+                n5 = sprintf(nil "MaxCurrentError_%s" nameSafe)
+                n6 = sprintf(nil "Vgs_%s" nameSafe)
+                n7 = sprintf(nil "Overdrive_%s" nameSafe)
                 errset(maeDeleteOutput(n1 tst ?session sess))
                 errset(maeDeleteOutput(n2 tst ?session sess))
                 errset(maeDeleteOutput(n3 tst ?session sess))
