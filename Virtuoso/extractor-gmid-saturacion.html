@@ -443,9 +443,23 @@ procedure( gmidResolverVista(libName cellName)
     )
 )
 
-;; Parseo de valores tipo "40u" / "180.0n" / "2u" a micras (float)
+;; Evalua de forma segura un string como expresion SKILL (para numeros o
+;; variables de diseno). Si la variable no existe o la evaluacion falla
+;; por cualquier motivo, devuelve nil en vez de lanzar un error que
+;; interrumpiria todo el recorrido de la jerarquia.
+procedure( gmidSafeEvalNum(s)
+    let( (r)
+        r = errset(evalstring(s))
+        if( r &amp;&amp; numberp(car(r)) then car(r) else nil)
+    )
+)
+
+;; Parseo de valores tipo "40u" / "180.0n" / "2u" a micras (float).
+;; Si el valor es una variable de diseno parametrizada (p.ej. "MULT_DIFF_PAIR",
+;; sin parte numerica reconocible, o que no se puede evaluar), devuelve nil
+;; en vez de fallar: el transistor queda sin W/L conocido para este calculo.
 procedure( gmidParseLenToUm(str)
-    let( (n i numStr suf mult)
+    let( (n i numStr suf mult numVal)
         n = strlen(str)
         i = n
         while( i &gt; 0 &amp;&amp;
@@ -461,23 +475,8 @@ procedure( gmidParseLenToUm(str)
             ("k" 1.0e3) ("meg" 1.0e6) ("g" 1.0e9)
             (t nil)
         )
-        if( mult == nil then nil else (evalstring(numStr) * mult * 1.0e6))
-    )
-)
-
-;; Sustituye "/" por "_" en un nombre, para usarlo como identificador de
-;; output en Maestro (la "/" se interpretaria como division si el nombre
-;; se referencia sin comillas en otra expresion).
-procedure( gmidSafeName(path)
-    let( (res i c)
-        res = ""
-        i = 1
-        while( i &lt;= strlen(path)
-            c = substring(path i 1)
-            res = strcat(res if( c == "/" then "_" else c))
-            i = i + 1
-        )
-        res
+        numVal = gmidSafeEvalNum(numStr)
+        if( mult == nil || numVal == nil then nil else (numVal * mult * 1.0e6))
     )
 )
 
@@ -496,15 +495,18 @@ procedure( gmidGetInstParam(inst paramName)
     )
 )
 
-;; Devuelve list(w_um l_um m) para una instancia de transistor
+;; Devuelve list(w_um l_um m) para una instancia de transistor. Si W, L o m
+;; estan parametrizados con una variable que no se puede evaluar a numero,
+;; ese campo queda en nil (no se interrumpe el calculo de los demas).
 procedure( gmidGetWLM(inst)
-    let( (wStr lStr mStr w l m)
+    let( (wStr lStr mStr w l m mVal)
         wStr = gmidGetInstParam(inst "w")
         lStr = gmidGetInstParam(inst "l")
         mStr = gmidGetInstParam(inst "m")
         w = if( wStr then gmidParseLenToUm(wStr) else nil)
         l = if( lStr then gmidParseLenToUm(lStr) else nil)
-        m = if( mStr then (evalstring(mStr) * 1.0) else 1.0)
+        mVal = if( mStr then gmidSafeEvalNum(mStr) else nil)
+        m = if( mVal then (mVal * 1.0) else if( mStr then nil else 1.0))
         list(w l m)
     )
 )
@@ -1058,7 +1060,11 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Genera gm/Id y el margen Vds − Vdsat con su spec",
-                "necesita": "Una sesión de Maestro/ADE Assembler abierta, con Save DC Operating Point activado en el test. Ajustar <code>gmidSatMargin</code> (margen mínimo, por defecto <code>\"0\"</code>)."
+                "necesita": "Una sesión de Maestro/ADE Assembler abierta, con Save DC Operating Point activado en el test. Ajustar <code>gmidSatMargin</code> (margen mínimo, por defecto <code>\"0\"</code>). Ninguna de las dos necesita W/L, así que funcionan aunque estén parametrizados."
+            },
+            {
+                "hace": "Tolera W, L o m parametrizados (variables de diseño, no valores numéricos)",
+                "necesita": "Nada: si una variable no se puede evaluar a número, ese dato queda como desconocido para ese transistor en vez de interrumpir el recorrido de toda la jerarquía. Solo afecta al mismatch de ese transistor concreto."
             },
             {
                 "hace": "Tipos de transistores (opcional)",
@@ -1112,7 +1118,11 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Genera gm/Id i el marge Vds − Vdsat amb el seu spec",
-                "necesita": "Una sessió de Maestro/ADE Assembler oberta, amb Save DC Operating Point activat al test. Ajustar <code>gmidSatMargin</code> (marge mínim, per defecte <code>\"0\"</code>)."
+                "necesita": "Una sessió de Maestro/ADE Assembler oberta, amb Save DC Operating Point activat al test. Ajustar <code>gmidSatMargin</code> (marge mínim, per defecte <code>\"0\"</code>). Cap de les dues necessita W/L, així que funcionen encara que estiguin parametritzats."
+            },
+            {
+                "hace": "Tolera W, L o m parametritzats (variables de disseny, no valors numèrics)",
+                "necesita": "Res: si una variable no es pot avaluar a número, aquesta dada queda com a desconeguda per a aquest transistor en lloc d'interrompre el recorregut de tota la jerarquia. Només afecta el mismatch d'aquest transistor concret."
             },
             {
                 "hace": "Tipus de transistors (opcional)",
@@ -1166,7 +1176,11 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Generates gm/Id and the Vds − Vdsat margin with its spec",
-                "necesita": "An open Maestro/ADE Assembler session, with Save DC Operating Point enabled on the test. Set <code>gmidSatMargin</code> (minimum margin, default <code>\"0\"</code>)."
+                "necesita": "An open Maestro/ADE Assembler session, with Save DC Operating Point enabled on the test. Set <code>gmidSatMargin</code> (minimum margin, default <code>\"0\"</code>). Neither needs W/L, so both work even when they are parametrized."
+            },
+            {
+                "hace": "Tolerates parametrized W, L or m (design variables, not numeric values)",
+                "necesita": "Nothing: if a variable can't be evaluated to a number, that value is simply unknown for that transistor instead of interrupting the whole hierarchy walk. It only affects that transistor's mismatch calculation."
             },
             {
                 "hace": "Transistor types (optional)",
