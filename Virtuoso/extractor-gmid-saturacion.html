@@ -329,6 +329,68 @@ gmidHojasAcc = nil
 gmidDestForm = nil
 gmidTiposForm = nil
 gmidMosCache = nil
+gmidCvDestino = nil
+
+;; -------------------------------------------------------------------------
+;; VENTANAS Y ESQUEMATICO ACTIVO (sin warnings GE-2067)
+;; geGetEditCellView lanza GE-2067 si la ventana no es un editor grafico
+;; (CIW, Library Manager, Maestro...). Estas funciones solo lo llaman sobre
+;; ventanas que muestran un esquematico.
+;; -------------------------------------------------------------------------
+
+;; t si w muestra un esquematico (no llama a ninguna funcion ge*)
+procedure( gmidEsVentanaSch(w)
+    let( (r)
+        r = errset(
+            windowp(w) &amp;&amp; dbobjectp(w~&gt;cellView) &amp;&amp;
+            w~&gt;cellView~&gt;cellViewType == "schematic")
+        if( r &amp;&amp; car(r) then t else nil)
+    )
+)
+
+;; Esquematico en edicion: el de la ventana actual si es un esquematico; si
+;; no (p.ej. al llamar ListarTransistoresGmId() desde el CIW), el de la
+;; primera ventana de esquematico abierta. nil si no hay ninguna.
+procedure( gmidCvActual()
+    let( (w res)
+        w = hiGetCurrentWindow()
+        if( gmidEsVentanaSch(w) then
+            res = geGetEditCellView(w)
+        else
+            res = nil
+            foreach( x hiGetWindowList()
+                when( !res &amp;&amp; gmidEsVentanaSch(x)
+                    res = geGetEditCellView(x)
+                )
+            )
+        )
+        res
+    )
+)
+
+;; Esquematico para las acciones lanzadas desde el popup de destino: el que
+;; estaba activo al abrirlo, aunque antes de pulsar OK hayas hecho clic en
+;; otra ventana (p.ej. Maestro).
+procedure( gmidCvTrabajo()
+    let( (r)
+        r = errset(
+            dbobjectp(gmidCvDestino) &amp;&amp;
+            gmidCvDestino~&gt;cellViewType == "schematic")
+        if( r &amp;&amp; car(r) then gmidCvDestino else gmidCvActual())
+    )
+)
+
+;; Nombre valido para un output de Maestro a partir de una ruta de instancia
+;; ("I0/M1&lt;3&gt;" -&gt; "I0_M1_3"). Si ya tienes tu propia version cargada en otro
+;; archivo, se respeta la tuya.
+unless( fboundp('gmidSafeName)
+    procedure( gmidSafeName(path)
+        let( (partes)
+            partes = parseString(path "/&lt;&gt;[]:.-+ ")
+            if( partes then buildString(partes "_") else "x")
+        )
+    )
+)
 
 ;; -------------------------------------------------------------------------
 ;; DETECCION DE TRANSISTORES
@@ -601,7 +663,7 @@ procedure( gmidRecogerHojas(cv depth maxDepth)
 ;; Si ves algun transistor en la lista, anadelo desde "Tipos de transistores".
 procedure( ListarHojasGmId()
     let( (cv)
-        cv = geGetEditCellView()
+        cv = gmidCvActual()
         gmidMosCache = nil
         gmidHojasAcc = nil
         gmidRecogerHojas(cv 1 gmidMaxDepth)
@@ -616,7 +678,7 @@ procedure( ListarHojasGmId()
 ;; Diagnostico: transistores detectados, con polaridad y W/L/m
 procedure( ListarTransistoresGmId()
     let( (cv xt)
-        cv = geGetEditCellView()
+        cv = gmidCvActual()
         gmidMosCache = nil
         xt = RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
         printf("Transistores detectados: %d\n" length(xt))
@@ -752,13 +814,14 @@ procedure( gmidLeerVistaField(f idx)
 ;; -------------------------------------------------------------------------
 procedure( gmidPedirDestino(accion)
     let( (cv sess tests choices i sym fields c vchoices vnames j vsym nVw)
-        cv = geGetEditCellView()
+        cv = gmidCvActual()
         sess = car(maeGetSessions())
         unless( sess
             printf("Abre primero el Maestro (ADE Assembler) de este esquematico.\n")
         )
         when( sess &amp;&amp; cv &amp;&amp; cv~&gt;cellViewType == "schematic"
             gmidAccionPendiente = accion
+            gmidCvDestino = cv
             gmidMosCache = nil
 
             ;; Campo de tests
@@ -886,7 +949,7 @@ procedure( SaturacionConDestino()
 ;; -------------------------------------------------------------------------
 procedure( GenerarGmId()
     let( (cv prep sess tests xtors nN nP nU unk n1 r1 nErr path)
-        cv = geGetEditCellView()
+        cv = gmidCvTrabajo()
         when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
             prep = gmidPrepare(cv)
             sess = car(prep)
@@ -936,7 +999,7 @@ procedure( GenerarGmId()
 ;; -------------------------------------------------------------------------
 procedure( GenerarSaturacion()
     let( (cv prep sess tests xtors n2 r2 r3 nErr path)
-        cv = geGetEditCellView()
+        cv = gmidCvTrabajo()
         when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
             prep = gmidPrepare(cv)
             sess = car(prep)
@@ -1001,21 +1064,48 @@ procedure( RegistrarMiMenuGmId(args)
     )
 )
 
-procedure( ChequearMenusGmId()
-    errset(
-        foreach( w hiGetWindowList()
-            errset(
-                when( windowp(w) &amp;&amp; geGetEditCellView(w) &amp;&amp;
-                      !member('MenuGmId hiGetBannerMenus(w))
-                    RegistrarMiMenuGmId(list(nil 'window w))
+
+;; Quita el menu de las ventanas abiertas para que se regenere (al recargar
+;; el plugin o al cargar mismatch_pelgrom.il, que anade su propio item)
+procedure( gmidQuitarMenus()
+    foreach( w hiGetWindowList()
+        errset(
+            let( (menus resto)
+                menus = hiGetBannerMenus(w)
+                resto = member('MenuGmId menus)
+                when( resto
+                    hiDeleteBannerMenu(w length(menus) - length(resto))
                 )
             )
         )
     )
-    hiRegTimer("ChequearMenusGmId()" 1000)
 )
 
-ChequearMenusGmId()</code></pre>
+;; Cada carga incrementa gmidTimerGen: el temporizador de una carga anterior
+;; ve que su numero ya no es el actual y se para, asi recargar el archivo no
+;; acumula temporizadores.
+gmidTimerGen = if( boundp('gmidTimerGen) &amp;&amp; integerp(gmidTimerGen) then gmidTimerGen + 1 else 1)
+
+procedure( ChequearMenusGmId(@optional (gen 0))
+    ;; Una llamada sin numero (temporizador de una carga anterior) se para
+    when( gen == gmidTimerGen
+        errset(
+            foreach( w hiGetWindowList()
+                errset(
+                    when( gmidEsVentanaSch(w) &amp;&amp;
+                          !member('MenuGmId hiGetBannerMenus(w))
+                        RegistrarMiMenuGmId(list(nil 'window w))
+                    )
+                )
+            )
+        )
+        ;; hiRegTimer va en decimas de segundo: 10 = 1 s
+        hiRegTimer(sprintf(nil "ChequearMenusGmId(%d)" gen) 10)
+    )
+)
+
+gmidQuitarMenus()
+ChequearMenusGmId(gmidTimerGen)</code></pre>
         </div>
 
         <div class="note" id="noteBox">
@@ -1072,7 +1162,7 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Añade el menú «Crear expresiones» automáticamente",
-                "necesita": "Cargar el plugin con <code>load()</code> o desde el <code>.cdsinit</code>. El menú tarda hasta ~1 minuto en aparecer en cada esquemático."
+                "necesita": "Cargar el plugin con <code>load()</code> o desde el <code>.cdsinit</code>. El menú aparece en ~1 s en cada esquemático."
             }
         ],
         "hint": "<strong>Comprobar la detección:</strong> con el esquemático activo, ejecuta <code>ListarTransistoresGmId()</code> en el CIW para ver cada transistor detectado con su polaridad y W/L/m. Si falta alguno, <code>ListarHojasGmId()</code> muestra las celdas hoja sin clasificar con sus pines.",
@@ -1130,7 +1220,7 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Afegeix el menú «Crear expresiones» automàticament",
-                "necesita": "Carregar el plugin amb <code>load()</code> o des del <code>.cdsinit</code>. El menú triga fins a ~1 minut a aparèixer a cada esquemàtic."
+                "necesita": "Carregar el plugin amb <code>load()</code> o des del <code>.cdsinit</code>. El menú apareix en ~1 s a cada esquemàtic."
             }
         ],
         "hint": "<strong>Comprovar la detecció:</strong> amb l'esquemàtic actiu, executa <code>ListarTransistoresGmId()</code> al CIW per veure cada transistor detectat amb la seva polaritat i W/L/m. Si en falta algun, <code>ListarHojasGmId()</code> mostra les cel·les fulla sense classificar amb els seus pins.",
@@ -1188,7 +1278,7 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Adds the «Crear expresiones» menu automatically",
-                "necesita": "Load the plugin with <code>load()</code> or from <code>.cdsinit</code>. The menu takes up to ~1 minute to appear on each schematic."
+                "necesita": "Load the plugin with <code>load()</code> or from <code>.cdsinit</code>. The menu appears within ~1 s on each schematic."
             }
         ],
         "hint": "<strong>Checking the detection:</strong> with the schematic active, run <code>ListarTransistoresGmId()</code> in the CIW to see each detected transistor with its polarity and W/L/m. If one is missing, <code>ListarHojasGmId()</code> lists the unclassified leaf cells with their pins.",
