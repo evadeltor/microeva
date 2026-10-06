@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: https:;
+        base-uri 'self';
+        upgrade-insecure-requests;
+    ">
+    <title>Seguidor de versiones · Eva Deltor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #D4A574;
+            --dark: #1a1a1a;
+            --light: #F5F3F0;
+            --text: #3a3a3a;
+            --border: #E8E4DF;
+            --accent: #8B7355;
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+            --inline-code-bg: #EFE9DF;
+            --inline-code-text: #6b5233;
+            --add: #4a7c59;
+            --del: #b5523b;
+            --mod: #8B7355;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+
+        header {
+            padding: 25px 0;
+            border-bottom: 1px solid var(--border);
+            background: var(--light);
+        }
+
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+
+        .back-link {
+            text-decoration: none; color: var(--text); font-weight: 500;
+            font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        .lang-switcher { display: flex; gap: 4px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .lang-switcher button {
+            background: transparent; border: none; padding: 5px 10px;
+            font-family: 'Poppins', sans-serif; font-size: 0.72rem; font-weight: 600;
+            color: #aaa; cursor: pointer; transition: all 0.2s ease;
+            letter-spacing: 0.05em; border-right: 1px solid var(--border);
+        }
+        .lang-switcher button:last-child { border-right: none; }
+        .lang-switcher button:hover { color: var(--primary); background: #FDF5EC; }
+        .lang-switcher button.active { background: var(--primary); color: white; }
+
+        main { padding: 70px 0 100px; }
+
+        .badge {
+            display: inline-block; font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+            background: #FDF5EC; border: 1px solid var(--primary);
+            padding: 5px 12px; border-radius: 20px; margin-bottom: 20px;
+        }
+
+        h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--dark); margin-bottom: 18px; line-height: 1.2; }
+        .lead { font-size: 1.05rem; color: #666; margin-bottom: 40px; line-height: 1.8; max-width: 700px; }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--inline-code-bg);
+            color: var(--inline-code-text);
+            padding: 2px 7px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .feature-table-wrapper {
+            margin-bottom: 30px; border: 1px solid var(--border);
+            border-radius: 8px; overflow: hidden; background: white;
+        }
+
+        .feature-table { width: 100%; border-collapse: collapse; }
+
+        .feature-table th {
+            background: #FDFBF8; text-align: left; padding: 14px 22px;
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--accent);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-table td {
+            padding: 16px 22px; font-size: 0.9rem; vertical-align: top;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-table tr:last-child td { border-bottom: none; }
+        .feature-table td:first-child { color: var(--dark); font-weight: 500; width: 40%; }
+        .feature-table td:last-child { color: #666; }
+        .feature-table td code { white-space: normal; }
+
+        /* Ilustraciones: menu + informe de diferencias */
+        .figs { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; margin-bottom: 12px; }
+
+        .popup-mock {
+            background: white; border: 1px solid var(--border); border-radius: 10px;
+            box-shadow: 0 16px 36px rgba(0,0,0,0.10); overflow: hidden;
+        }
+        .popup-mock-title {
+            position: relative; text-align: center; padding: 12px 16px;
+            background: #FDFBF8; border-bottom: 1px solid var(--border);
+            font-size: 0.85rem; font-weight: 600; color: var(--dark);
+        }
+        .popup-mock-dots { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px; }
+        .popup-mock-dots span { width: 10px; height: 10px; border-radius: 50%; background: #E1DBD2; }
+
+        .menu-mock .popup-mock-title { text-align: left; }
+        .menu-items { list-style: none; padding: 6px 0; }
+        .menu-items li { padding: 9px 18px; font-size: 0.8rem; color: var(--text); }
+        .menu-items li.hl { background: #FDF5EC; color: var(--dark); box-shadow: inset 3px 0 0 var(--primary); }
+
+        .report-body {
+            padding: 16px 20px 18px; overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; line-height: 1.8;
+            color: var(--text); white-space: pre;
+        }
+        .report-body .meta { color: #999; }
+        .report-body .add { color: var(--add); }
+        .report-body .del { color: var(--del); }
+        .report-body .mod { color: var(--mod); }
+
+        .figs-caption { margin: 0 0 30px; text-align: center; font-size: 0.8rem; color: #888; line-height: 1.6; }
+
+        .hint-box {
+            background: #FDF5EC; border: 1px dashed var(--primary); border-radius: 6px;
+            padding: 16px 20px; font-size: 0.85rem; color: #666; margin-bottom: 30px; line-height: 1.8;
+        }
+        .hint-box strong { color: var(--dark); }
+        .hint-box code { white-space: normal; }
+
+        .code-block {
+            position: relative; background: var(--code-bg); border-radius: 8px;
+            overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15); margin-bottom: 30px;
+        }
+
+        .code-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; background: #2a2a2a; border-bottom: 1px solid #3a3a3a;
+        }
+
+        .code-filename { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #999; }
+
+        .copy-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            color: #ddd; padding: 6px 14px; border-radius: 4px; font-size: 0.8rem;
+            font-family: 'Poppins', sans-serif; cursor: pointer; transition: all 0.2s ease;
+        }
+        .copy-btn:hover { background: var(--primary); border-color: var(--primary); color: white; }
+        .copy-btn.copied { background: #4a7c59; border-color: #4a7c59; color: white; }
+
+        pre {
+            margin: 0; padding: 24px; overflow-x: auto; max-height: 720px; overflow-y: auto;
+        }
+
+        pre code {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.7;
+            color: var(--code-text); white-space: pre;
+            background: transparent; padding: 0; border-radius: 0;
+        }
+
+        .note {
+            background: white; border: 1px solid var(--border); border-radius: 6px;
+            padding: 20px 24px; font-size: 0.88rem; color: #666; line-height: 1.9;
+        }
+        .note strong { color: var(--dark); }
+
+        footer { border-top: 1px solid var(--border); padding: 30px 0; text-align: center; color: #999; font-size: 0.85rem; }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            h1 { font-size: 1.8rem; }
+            main { padding: 40px 0 60px; }
+            pre { padding: 16px; }
+            pre code { font-size: 0.75rem; }
+            .feature-table th, .feature-table td { padding: 12px 14px; font-size: 0.84rem; }
+            .feature-table td:first-child { width: auto; }
+            .figs { grid-template-columns: 1fr; }
+            .menu-mock { max-width: 280px; }
+        }
+
+        @media (max-width: 560px) {
+            .feature-table, .feature-table thead, .feature-table tbody, .feature-table tr, .feature-table td { display: block; width: 100%; }
+            .feature-table thead { display: none; }
+            .feature-table tr { border-bottom: 1px solid var(--border); padding: 14px 18px; }
+            .feature-table tr:last-child { border-bottom: none; }
+            .feature-table td { border-bottom: none; padding: 4px 0; }
+            .feature-table td:first-child::before {
+                content: attr(data-label); display: block; font-size: 0.7rem;
+                text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);
+                font-weight: 600; margin-bottom: 4px;
+            }
+            .feature-table td:last-child::before {
+                content: attr(data-label); display: block; font-size: 0.7rem;
+                text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);
+                font-weight: 600; margin-top: 10px; margin-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="../index.html#cadence" class="back-link" id="back_link">← Volver al sitio</a>
+            <div class="lang-switcher">
+                <button id="sw_ca" onclick="setLang('ca')">CAT</button>
+                <button id="sw_es" onclick="setLang('es')">ES</button>
+                <button id="sw_en" onclick="setLang('en')">ENG</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <span class="badge" id="badge">SKILL · Cadence Virtuoso</span>
+        <h1 id="title"></h1>
+        <p class="lead" id="lead"></p>
+
+        <div class="feature-table-wrapper">
+            <table class="feature-table">
+                <thead>
+                    <tr>
+                        <th id="th_hace"></th>
+                        <th id="th_necesita"></th>
+                    </tr>
+                </thead>
+                <tbody id="featureBody"></tbody>
+            </table>
+        </div>
+
+        <figure>
+            <div class="figs" id="figs" role="img">
+                <div class="popup-mock menu-mock">
+                    <div class="popup-mock-title">Seguidor de versiones</div>
+                    <ul class="menu-items">
+                        <li class="hl">Diferencias con la versión anterior</li>
+                        <li>Volver a la versión anterior</li>
+                        <li>Abrir versión anterior (lectura)</li>
+                    </ul>
+                </div>
+                <div class="popup-mock">
+                    <div class="popup-mock-title"><span>Diferencias BufferSortida</span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
+<div class="report-body"><span class="meta">OPAMP/BufferSortida/schematic_RailToRail_0309
+Anterior: guardada Oct  6 11:42:10 2026
+Actual:   en edicion</span>
+
+<span class="mod">~ M3  [par] w: "2u" -&gt; "4u"</span>
+<span class="mod">~ M3  [par] m: "1" -&gt; "2"</span>
+<span class="mod">~ M5  [con] G: vbias -&gt; {M5.G M7.D}</span>
+<span class="add">+ C1  (analogLib/cap/symbol)</span>
+<span class="del">- R2  (analogLib/res/symbol)</span></div>
+                </div>
+            </div>
+            <figcaption class="figs-caption" id="figCaption"></figcaption>
+        </figure>
+
+        <div class="hint-box" id="hintBox"></div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-filename">seguidor_versiones.il</span>
+                <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+                    <span id="copyLabel"></span>
+                </button>
+            </div>
+            <pre><code id="codeContent">;; =========================================================================
+;; PLUGIN: SEGUIDOR DE VERSIONES DE ESQUEMATICOS
+;; Cada vez que se guarda un esquematico (lo detecta por la fecha del sch.oa)
+;; rota dos instantaneas dentro de la misma celda:
+;;   vtprev__&lt;vista&gt;   version guardada anterior
+;;   vtcur__&lt;vista&gt;    version guardada actual
+;; Menu "Seguidor de versiones":
+;;   - Diferencias: anterior vs estado en edicion (incluye cambios sin guardar)
+;;   - Volver: intercambia actual y anterior (repetirlo deshace)
+;;   - Abrir la anterior en solo lectura
+;; Los nombres de vista no empiezan por "schematic": el plugin gm/Id no las ve.
+;; =========================================================================
+
+;; Se reinicia en cada carga: asi un reload vuelve a crear las instantaneas
+;; que falten
+vtMtimes = makeTable('vtMtimes nil)
+;; hiRegTimer va en decimas de segundo: 10 = 1 s
+unless( boundp('vtPeriodo) vtPeriodo = 10 )
+unless( boundp('vtDirInforme) vtDirInforme = "/tmp" )
+vtBusy = nil
+
+;; -------------------------------------------------------------------------
+;; UTILIDADES
+;; -------------------------------------------------------------------------
+procedure( vtVista(view tag)
+    sprintf(nil "vt%s__%s" tag view)
+)
+
+procedure( vtEsInstantanea(view)
+    rexMatchp("^vt[a-z]+__" view)
+)
+
+procedure( vtClave(lib cell view)
+    sprintf(nil "%s/%s/%s" lib cell view)
+)
+
+procedure( vtExiste(lib cell view)
+    if( ddGetObj(lib cell view) then t else nil)
+)
+
+procedure( vtRutaOa(lib cell view)
+    let( (obj)
+        obj = ddGetObj(lib cell view "sch.oa")
+        if( obj then obj~&gt;readPath else nil)
+    )
+)
+
+procedure( vtMtime(lib cell view)
+    let( (p)
+        p = vtRutaOa(lib cell view)
+        if( p &amp;&amp; isFile(p) then fileTimeModified(p) else nil)
+    )
+)
+
+procedure( vtFecha(lib cell view)
+    let( (mt r)
+        mt = vtMtime(lib cell view)
+        r = if( mt then errset(timeToString(mt)) else nil)
+        if( r then car(r) else "?")
+    )
+)
+
+;; Copia una vista dentro de la misma celda (sobrescribe) via base de datos.
+;; Si la vista origen esta abierta en edicion se copia lo que hay en memoria,
+;; por eso vtVigilar solo copia cuando no hay cambios sin guardar.
+procedure( vtCopiar(lib cell vSrc vDst)
+    let( (srcRes src r nuevo)
+        srcRes = errset(dbOpenCellViewByType(lib cell vSrc nil "r") t)
+        src = if( srcRes then car(srcRes) else nil)
+        r = if( src then errset(dbCopyCellView(src lib cell vDst nil nil t) t) else nil)
+        nuevo = if( r then car(r) else nil)
+        when( nuevo &amp;&amp; dbobjectp(nuevo) &amp;&amp; nuevo != src
+            dbClose(nuevo)
+        )
+        ;; Si src era la vista en edicion, esto solo baja su contador de uso
+        when( src dbClose(src) )
+        unless( nuevo
+            printf("Seguidor de versiones: fallo al copiar %s -&gt; %s en %s/%s\n"
+                vSrc vDst lib cell))
+        if( nuevo then t else nil)
+    )
+)
+
+procedure( vtBorrar(lib cell view)
+    let( (obj)
+        obj = ddGetObj(lib cell view)
+        when( obj errset(ddDeleteObj(obj)) )
+    )
+)
+
+;; Esquematico editable activo, o nil con mensaje
+procedure( vtContexto()
+    let( (cv)
+        cv = geGetEditCellView()
+        cond(
+            ( !cv || cv~&gt;cellViewType != "schematic"
+                printf("Seguidor de versiones: abre un esquematico.\n")
+                nil )
+            ( vtEsInstantanea(cv~&gt;viewName)
+                printf("Seguidor de versiones: estas en una instantanea, vuelve a la vista de trabajo.\n")
+                nil )
+            ( t cv )
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; ROTACION
+;; -------------------------------------------------------------------------
+procedure( vtRotar(lib cell view)
+    let( (vPrev vCur)
+        vPrev = vtVista(view "prev")
+        vCur = vtVista(view "cur")
+        when( vtExiste(lib cell vCur)
+            vtCopiar(lib cell vCur vPrev)
+        )
+        vtCopiar(lib cell view vCur)
+        printf("Seguidor de versiones: %s guardado, versiones rotadas\n"
+            vtClave(lib cell view))
+    )
+)
+
+;; Detecta guardados comparando la fecha del sch.oa con la ultima vista
+procedure( vtVigilar(cv)
+    let( (lib cell view key mt ant vCur mc)
+        lib = cv~&gt;libName
+        cell = cv~&gt;cellName
+        view = cv~&gt;viewName
+        unless( vtEsInstantanea(view)
+            key = vtClave(lib cell view)
+            mt = vtMtime(lib cell view)
+            ant = vtMtimes[key]
+            ;; Solo con memoria == disco; si no, se reintenta en el siguiente tick
+            when( mt &amp;&amp; !cv~&gt;modifiedButNotSaved
+                cond(
+                    ;; Primera vez en esta sesion: asegura una instantanea actual
+                    ( !ant
+                        vtMtimes[key] = mt
+                        vCur = vtVista(view "cur")
+                        mc = vtMtime(lib cell vCur)
+                        cond(
+                            ( !mc vtCopiar(lib cell view vCur) )
+                            ( mc &lt; mt vtRotar(lib cell view) )
+                        )
+                    )
+                    ( mt != ant
+                        vtMtimes[key] = mt
+                        vtRotar(lib cell view)
+                    )
+                )
+            )
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; DIFERENCIAS
+;; -------------------------------------------------------------------------
+procedure( vtUnion(a b)
+    let( (tbl)
+        tbl = makeTable('vtU nil)
+        foreach( x append(a b) tbl[x] = t )
+        sort(tbl~&gt;? 'alphalessp)
+    )
+)
+
+;; Redes con nombre automatico (netNN) se identifican por lo que conectan,
+;; para que renombrados internos no aparezcan como cambios
+procedure( vtCanonNet(net)
+    let( (nm miembros)
+        nm = net~&gt;name
+        if( rexMatchp("^net[0-9]+$" nm) then
+            miembros = mapcar(lambda((it) sprintf(nil "%s.%s" it~&gt;inst~&gt;name it~&gt;name))
+                net~&gt;instTerms)
+            sprintf(nil "{%s}" buildString(sort(miembros 'alphalessp) " "))
+        else
+            nm
+        )
+    )
+)
+
+;; list(tablaInstancias alistPines)
+;; tablaInstancias[nombre] = list(master alistParams alistConexiones)
+procedure( vtExtraer(cv)
+    let( (ti pines params conns)
+        ti = makeTable('vtInst nil)
+        foreach( inst cv~&gt;instances
+            params = nil
+            foreach( p inst~&gt;prop
+                params = cons(list(p~&gt;name sprintf(nil "%L" p~&gt;value)) params)
+            )
+            conns = nil
+            foreach( it inst~&gt;instTerms
+                conns = cons(list(it~&gt;name
+                    if( it~&gt;net then vtCanonNet(it~&gt;net) else "&lt;sin red&gt;")) conns)
+            )
+            ti[inst~&gt;name] = list(
+                sprintf(nil "%s/%s/%s" inst~&gt;libName inst~&gt;cellName inst~&gt;viewName)
+                params conns)
+        )
+        pines = nil
+        foreach( term cv~&gt;terminals
+            pines = cons(list(term~&gt;name sprintf(nil "%L" term~&gt;direction)) pines)
+        )
+        list(ti pines)
+    )
+)
+
+;; Diferencias entre dos alists (nombre valor) -&gt; lista de lineas
+procedure( vtDiffAlist(pref a b)
+    let( (lin ea eb)
+        lin = nil
+        foreach( n vtUnion(mapcar('car a) mapcar('car b))
+            ea = assoc(n a)
+            eb = assoc(n b)
+            cond(
+                ( ea &amp;&amp; !eb
+                    lin = cons(sprintf(nil "%s%s: %s -&gt; (eliminado)" pref n cadr(ea)) lin) )
+                ( !ea &amp;&amp; eb
+                    lin = cons(sprintf(nil "%s%s: (nuevo) -&gt; %s" pref n cadr(eb)) lin) )
+                ( cadr(ea) != cadr(eb)
+                    lin = cons(sprintf(nil "%s%s: %s -&gt; %s" pref n cadr(ea) cadr(eb)) lin) )
+            )
+        )
+        reverse(lin)
+    )
+)
+
+procedure( vtCompararCv(cvA cvB)
+    let( (a b ia ib ea eb lin)
+        a = vtExtraer(cvA)
+        b = vtExtraer(cvB)
+        ia = car(a)
+        ib = car(b)
+        lin = nil
+        foreach( n vtUnion(ia~&gt;? ib~&gt;?)
+            ea = ia[n]
+            eb = ib[n]
+            cond(
+                ( ea &amp;&amp; !eb
+                    lin = cons(sprintf(nil "- %s  (%s)" n car(ea)) lin) )
+                ( !ea &amp;&amp; eb
+                    lin = cons(sprintf(nil "+ %s  (%s)" n car(eb)) lin) )
+                ( t
+                    when( car(ea) != car(eb)
+                        lin = cons(sprintf(nil "~ %s  celda: %s -&gt; %s" n car(ea) car(eb)) lin)
+                    )
+                    foreach( l vtDiffAlist(sprintf(nil "~ %s  [par] " n) cadr(ea) cadr(eb))
+                        lin = cons(l lin)
+                    )
+                    foreach( l vtDiffAlist(sprintf(nil "~ %s  [con] " n) caddr(ea) caddr(eb))
+                        lin = cons(l lin)
+                    )
+                )
+            )
+        )
+        foreach( l vtDiffAlist("~ [pin] " cadr(a) cadr(b))
+            lin = cons(l lin)
+        )
+        reverse(lin)
+    )
+)
+
+procedure( vtDiferencias()
+    let( (cv lib cell view vPrev prevCv lin fich fid)
+        cv = vtContexto()
+        when( cv
+            lib = cv~&gt;libName
+            cell = cv~&gt;cellName
+            view = cv~&gt;viewName
+            vPrev = vtVista(view "prev")
+            if( !vtExiste(lib cell vPrev) then
+                printf("Seguidor de versiones: aun no hay version anterior de %s.\n" cell)
+            else
+                prevCv = dbOpenCellViewByType(lib cell vPrev nil "r")
+                lin = vtCompararCv(prevCv cv)
+                dbClose(prevCv)
+
+                fich = sprintf(nil "%s/vt_diff_%s_%s_%s.txt" vtDirInforme lib cell view)
+                fid = outfile(fich)
+                when( fid
+                    fprintf(fid "%s\n" vtClave(lib cell view))
+                    fprintf(fid "Anterior: guardada %s\n" vtFecha(lib cell vPrev))
+                    fprintf(fid "Actual:   en edicion%s\n\n"
+                        if( cv~&gt;modifiedButNotSaved
+                            " (cambios sin guardar: conectividad del ultimo Check)" ""))
+                    fprintf(fid "+ anadida  - eliminada  ~ modificada | [par] parametro  [con] conexion  [pin] pin\n")
+                    fprintf(fid "{a.D b.G}: red sin nombre, identificada por lo que conecta\n\n")
+                    if( lin
+                        then foreach( l lin fprintf(fid "%s\n" l) )
+                        else fprintf(fid "Sin diferencias.\n"))
+                    close(fid)
+                    view(fich nil sprintf(nil "Diferencias %s" cell))
+                )
+                printf("Seguidor de versiones: %d diferencias -&gt; %s\n" length(lin) fich)
+            )
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; VOLVER A LA VERSION ANTERIOR (intercambio: repetirlo deshace)
+;; -------------------------------------------------------------------------
+procedure( vtRestaurar(cv lib cell view vPrev vCur)
+    let( (vTmp edit ok ref src dst)
+        vTmp = vtVista(view "tmp")
+        edit = (cv~&gt;mode != "r")
+        vtBusy = t
+        ok = errset(
+            progn(
+                ;; 1. Intercambiar instantaneas
+                vtCopiar(lib cell vCur vTmp)
+                vtCopiar(lib cell vPrev vCur)
+                vtCopiar(lib cell vTmp vPrev)
+                vtBorrar(lib cell vTmp)
+                ;; 2. Soltar el bloqueo, escribir el sch.oa y recargar
+                when( edit dbReopen(cv "r") )
+                src = vtRutaOa(lib cell vCur)
+                dst = vtRutaOa(lib cell view)
+                unless( sh(sprintf(nil "cp -f '%s' '%s'" src dst))
+                    error("cp fallo"))
+                ref = errset(dbRefreshCellView(cv))
+                when( edit dbReopen(cv "a") )
+                t
+            ) t)
+        vtMtimes[vtClave(lib cell view)] = vtMtime(lib cell view)
+        vtBusy = nil
+        foreach( w hiGetWindowList() errset(hiRedraw(w)) )
+        cond(
+            ( ok &amp;&amp; ref
+                printf("Seguidor de versiones: %s restaurado. Repite la accion para deshacer.\n"
+                    vtClave(lib cell view)) )
+            ( ok
+                printf("Seguidor de versiones: restaurado en disco; cierra y reabre la celda para verlo.\n") )
+            ( t
+                printf("Seguidor de versiones: fallo al restaurar. Las versiones estan en %s y %s.\n"
+                    vPrev vCur) )
+        )
+    )
+)
+
+procedure( vtVolverAnterior()
+    let( (cv lib cell view vPrev vCur)
+        cv = vtContexto()
+        when( cv
+            lib = cv~&gt;libName
+            cell = cv~&gt;cellName
+            view = cv~&gt;viewName
+            vPrev = vtVista(view "prev")
+            vCur = vtVista(view "cur")
+            cond(
+                ( cv~&gt;modifiedButNotSaved
+                    printf("Seguidor de versiones: hay cambios sin guardar. Guarda o usa File &gt; Discard Edits antes de volver.\n") )
+                ( !vtExiste(lib cell vPrev) || !vtExiste(lib cell vCur)
+                    printf("Seguidor de versiones: aun no hay version anterior de %s.\n" cell) )
+                ( hiDisplayAppDBox(
+                      ?name 'vtConfirmDBox
+                      ?dboxBanner "Seguidor de versiones"
+                      ?dboxText sprintf(nil
+                          "Sustituir %s por la version guardada el %s?\nLa actual pasa a ser la anterior: repetir la accion la recupera."
+                          vtClave(lib cell view) vtFecha(lib cell vPrev))
+                      ?buttonLayout 'YesNo)
+                    vtRestaurar(cv lib cell view vPrev vCur) )
+            )
+        )
+    )
+)
+
+procedure( vtAbrirAnterior()
+    let( (cv vPrev)
+        cv = vtContexto()
+        when( cv
+            vPrev = vtVista(cv~&gt;viewName "prev")
+            if( vtExiste(cv~&gt;libName cv~&gt;cellName vPrev)
+                then geOpen(?lib cv~&gt;libName ?cell cv~&gt;cellName ?view vPrev ?mode "r")
+                else printf("Seguidor de versiones: aun no hay version anterior.\n"))
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; MENU + TEMPORIZADOR
+;; -------------------------------------------------------------------------
+procedure( vtRegistrarMenu(win)
+    let( (items menu)
+        items = list(
+            hiCreateMenuItem(
+                ?name 'vtItemDiff
+                ?itemText "Diferencias con la versión anterior"
+                ?callback "vtDiferencias()"
+            )
+            hiCreateMenuItem(
+                ?name 'vtItemVolver
+                ?itemText "Volver a la versión anterior"
+                ?callback "vtVolverAnterior()"
+            )
+            hiCreateMenuItem(
+                ?name 'vtItemAbrir
+                ?itemText "Abrir versión anterior (lectura)"
+                ?callback "vtAbrirAnterior()"
+            )
+        )
+        menu = hiCreatePulldownMenu('MenuVersiones "Seguidor de versiones" items)
+        hiInsertBannerMenu(win menu length(hiGetBannerMenus(win)))
+    )
+)
+
+procedure( vtTick()
+    unless( vtBusy
+        errset(
+            foreach( w hiGetWindowList()
+                errset(
+                    let( (cv)
+                        ;; w~&gt;cellView es nil en CIW, Library Manager, ADE...:
+                        ;; asi geGetEditCellView solo se llama en ventanas graficas
+                        cv = if( windowp(w) &amp;&amp; w~&gt;cellView then geGetEditCellView(w) else nil)
+                        when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+                            unless( member('MenuVersiones hiGetBannerMenus(w))
+                                vtRegistrarMenu(w)
+                            )
+                            vtVigilar(cv)
+                        )
+                    )
+                )
+            )
+        )
+    )
+    hiRegTimer("vtTick()" vtPeriodo)
+)
+
+vtTick()</code></pre>
+        </div>
+
+        <div class="note" id="noteBox">
+            <strong id="note_title"></strong>
+            <span id="note_text"></span>
+        </div>
+    </main>
+
+    <footer>
+        <p id="footer_text"></p>
+    </footer>
+
+    <script>
+        const translations = {
+    "es": {
+        "back_link": "← Volver al sitio",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Seguidor de versiones para esquemáticos",
+        "lead": "Plugin en SKILL que guarda automáticamente la versión anterior de cada esquemático cada vez que lo guardas. Te dice qué ha cambiado entre ambas versiones (instancias, parámetros, conexiones y pines) y te deja volver a la anterior con un clic.",
+        "th_hace": "Qué hace",
+        "th_necesita": "Qué necesitas configurar",
+        "features": [
+            {
+                "hace": "Guarda la versión anterior en cada guardado",
+                "necesita": "Nada: detecta el guardado por la fecha del <code>sch.oa</code>, no hace falta simular. La primera copia se crea al abrir el esquemático; la versión anterior aparece en el siguiente guardado con cambios."
+            },
+            {
+                "hace": "Guarda las versiones dentro de la propia celda",
+                "necesita": "Nada: crea las vistas <code>vtprev__&lt;vista&gt;</code> y <code>vtcur__&lt;vista&gt;</code>. No empiezan por <code>schematic</code>, así que el extractor de gm/Id las ignora. Si la librería está en git, añade <code>vt*__*</code> al <code>.gitignore</code>."
+            },
+            {
+                "hace": "Muestra las diferencias con la versión anterior",
+                "necesita": "Menú «Seguidor de versiones → Diferencias». Compara la versión anterior con lo que tienes en edición, incluidos los cambios sin guardar (con la conectividad del último Check). El informe se guarda en <code>/tmp</code>; cámbialo con <code>vtDirInforme</code>."
+            },
+            {
+                "hace": "Detecta cambios de instancias, parámetros, conexiones y pines",
+                "necesita": "Nada: incluye W, L, m y cualquier parámetro CDF guardado en la instancia. Las variables de diseño de Maestro no aparecen, porque viven en el maestro y no en el esquemático."
+            },
+            {
+                "hace": "Ignora los renombrados automáticos de redes",
+                "necesita": "Nada: las redes <code>netNN</code> se identifican por lo que conectan, así que redibujar un cable no aparece como cambio."
+            },
+            {
+                "hace": "Vuelve a la versión anterior",
+                "necesita": "Guardar o descartar (<code>File → Discard Edits</code>) los cambios pendientes antes. Pide confirmación e intercambia las versiones: repetir la acción deshace la vuelta."
+            },
+            {
+                "hace": "Abre la versión anterior en solo lectura",
+                "necesita": "Nada: se abre en otra ventana para compararla a simple vista con la actual."
+            },
+            {
+                "hace": "Añade el menú «Seguidor de versiones» automáticamente",
+                "necesita": "Cargar el plugin con <code>load()</code> o desde el <code>.cdsinit</code>. El menú aparece en ~1 s en cada esquemático."
+            }
+        ],
+        "hint": "<strong>Comprobar que funciona:</strong> cambia algo en el esquemático y haz <strong>Check and Save</strong>. En el CIW debe aparecer <code>Seguidor de versiones: ... guardado, versiones rotadas</code>. Si una copia falla, el CIW muestra el error de Cadence con el motivo.",
+        "copyLabel": "Copiar código",
+        "copiedLabel": "¡Copiado!",
+        "note_title": "Uso:",
+        "note_text": "<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load(\"seguidor_versiones.il\")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load(\"/ruta/absoluta/seguidor_versiones.il\")</code>.<br><br>Después, guarda el esquemático como siempre y usa el menú <strong>Seguidor de versiones</strong> para ver las diferencias, volver a la versión anterior o abrirla en solo lectura.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_caption": "Ilustración del menú «Seguidor de versiones» y del informe de diferencias: + instancia añadida, − eliminada, ~ modificada; [par] parámetro, [con] conexión. {M5.G M7.D} es una red sin nombre, identificada por lo que conecta.",
+        "fig_aria": "Ilustración del menú Seguidor de versiones y de un informe de diferencias entre dos versiones de un esquemático"
+    },
+    "ca": {
+        "back_link": "← Tornar al lloc",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Seguidor de versions per a esquemàtics",
+        "lead": "Plugin en SKILL que desa automàticament la versió anterior de cada esquemàtic cada vegada que el deses. Et diu què ha canviat entre les dues versions (instàncies, paràmetres, connexions i pins) i et deixa tornar a l'anterior amb un clic.",
+        "th_hace": "Què fa",
+        "th_necesita": "Què has de configurar",
+        "features": [
+            {
+                "hace": "Desa la versió anterior a cada desament",
+                "necesita": "Res: detecta el desament per la data del <code>sch.oa</code>, no cal simular. La primera còpia es crea en obrir l'esquemàtic; la versió anterior apareix al següent desament amb canvis."
+            },
+            {
+                "hace": "Desa les versions dins de la mateixa cel·la",
+                "necesita": "Res: crea les vistes <code>vtprev__&lt;vista&gt;</code> i <code>vtcur__&lt;vista&gt;</code>. No comencen per <code>schematic</code>, així que l'extractor de gm/Id les ignora. Si la llibreria és a git, afegeix <code>vt*__*</code> al <code>.gitignore</code>."
+            },
+            {
+                "hace": "Mostra les diferències amb la versió anterior",
+                "necesita": "Menú «Seguidor de versiones → Diferencias». Compara la versió anterior amb el que tens en edició, inclosos els canvis sense desar (amb la connectivitat de l'últim Check). L'informe es desa a <code>/tmp</code>; canvia-ho amb <code>vtDirInforme</code>."
+            },
+            {
+                "hace": "Detecta canvis d'instàncies, paràmetres, connexions i pins",
+                "necesita": "Res: inclou W, L, m i qualsevol paràmetre CDF desat a la instància. Les variables de disseny de Maestro no hi apareixen, perquè viuen al maestro i no a l'esquemàtic."
+            },
+            {
+                "hace": "Ignora els canvis de nom automàtics de xarxes",
+                "necesita": "Res: les xarxes <code>netNN</code> s'identifiquen pel que connecten, així que redibuixar un cable no apareix com a canvi."
+            },
+            {
+                "hace": "Torna a la versió anterior",
+                "necesita": "Desar o descartar (<code>File → Discard Edits</code>) els canvis pendents abans. Demana confirmació i intercanvia les versions: repetir l'acció desfà la tornada."
+            },
+            {
+                "hace": "Obre la versió anterior en només lectura",
+                "necesita": "Res: s'obre en una altra finestra per comparar-la a simple vista amb l'actual."
+            },
+            {
+                "hace": "Afegeix el menú «Seguidor de versiones» automàticament",
+                "necesita": "Carregar el plugin amb <code>load()</code> o des del <code>.cdsinit</code>. El menú apareix en ~1 s a cada esquemàtic."
+            }
+        ],
+        "hint": "<strong>Comprovar que funciona:</strong> canvia alguna cosa a l'esquemàtic i fes <strong>Check and Save</strong>. Al CIW ha d'aparèixer <code>Seguidor de versiones: ... guardado, versiones rotadas</code>. Si una còpia falla, el CIW mostra l'error de Cadence amb el motiu.",
+        "copyLabel": "Copiar codi",
+        "copiedLabel": "Copiat!",
+        "note_title": "Ús:",
+        "note_text": "<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load(\"seguidor_versiones.il\")</code> al CIW (amb el CIW situat a la carpeta de l'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load(\"/ruta/absoluta/seguidor_versiones.il\")</code>.<br><br>Després, desa l'esquemàtic com sempre i fes servir el menú <strong>Seguidor de versiones</strong> per veure les diferències, tornar a la versió anterior o obrir-la en només lectura.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_caption": "Il·lustració del menú «Seguidor de versiones» i de l'informe de diferències: + instància afegida, − eliminada, ~ modificada; [par] paràmetre, [con] connexió. {M5.G M7.D} és una xarxa sense nom, identificada pel que connecta. El text real del menú i de l'informe és en castellà.",
+        "fig_aria": "Il·lustració del menú Seguidor de versiones i d'un informe de diferències entre dues versions d'un esquemàtic"
+    },
+    "en": {
+        "back_link": "← Back to site",
+        "badge": "SKILL · Cadence Virtuoso",
+        "title": "Version tracker for schematics",
+        "lead": "A SKILL plugin that automatically keeps the previous version of each schematic every time you save it. It shows what changed between the two versions (instances, parameters, connections and pins) and lets you go back to the previous one in one click.",
+        "th_hace": "What it does",
+        "th_necesita": "What you need to set",
+        "features": [
+            {
+                "hace": "Keeps the previous version on every save",
+                "necesita": "Nothing: it detects saves from the <code>sch.oa</code> timestamp, no simulation needed. The first copy is made when the schematic opens; the previous version appears on the next save with changes."
+            },
+            {
+                "hace": "Stores the versions inside the cell itself",
+                "necesita": "Nothing: it creates the <code>vtprev__&lt;view&gt;</code> and <code>vtcur__&lt;view&gt;</code> views. They don't start with <code>schematic</code>, so the gm/Id extractor ignores them. If the library is under git, add <code>vt*__*</code> to <code>.gitignore</code>."
+            },
+            {
+                "hace": "Shows the differences with the previous version",
+                "necesita": "Menu «Seguidor de versiones → Diferencias». It compares the previous version with what you are editing, unsaved changes included (using the connectivity from the last Check). The report is written to <code>/tmp</code>; change it with <code>vtDirInforme</code>."
+            },
+            {
+                "hace": "Detects changes in instances, parameters, connections and pins",
+                "necesita": "Nothing: it covers W, L, m and any CDF parameter stored on the instance. Maestro design variables don't show up, since they live in the maestro, not in the schematic."
+            },
+            {
+                "hace": "Ignores automatic net renames",
+                "necesita": "Nothing: <code>netNN</code> nets are identified by what they connect, so redrawing a wire doesn't show up as a change."
+            },
+            {
+                "hace": "Goes back to the previous version",
+                "necesita": "Save or discard (<code>File → Discard Edits</code>) pending changes first. It asks for confirmation and swaps the versions: repeating the action undoes it."
+            },
+            {
+                "hace": "Opens the previous version read-only",
+                "necesita": "Nothing: it opens in another window so you can compare it by eye with the current one."
+            },
+            {
+                "hace": "Adds the «Seguidor de versiones» menu automatically",
+                "necesita": "Load the plugin with <code>load()</code> or from <code>.cdsinit</code>. The menu appears within ~1 s on each schematic."
+            }
+        ],
+        "hint": "<strong>Checking that it works:</strong> change something in the schematic and run <strong>Check and Save</strong>. The CIW should print <code>Seguidor de versiones: ... guardado, versiones rotadas</code>. If a copy fails, the CIW shows Cadence's error with the reason.",
+        "copyLabel": "Copy code",
+        "copiedLabel": "Copied!",
+        "note_title": "Usage:",
+        "note_text": "<strong>Option 1 — load it yourself each session:</strong> type <code>load(\"seguidor_versiones.il\")</code> in the CIW (with the CIW located in the file's folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load(\"/absolute/path/seguidor_versiones.il\")</code>.<br><br>Then save the schematic as usual and use the <strong>Seguidor de versiones</strong> menu to see the differences, go back to the previous version or open it read-only.",
+        "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
+        "fig_caption": "Illustration of the «Seguidor de versiones» menu and the differences report: + added instance, − removed, ~ modified; [par] parameter, [con] connection. {M5.G M7.D} is an unnamed net, identified by what it connects. The real menu and report text is in Spanish.",
+        "fig_aria": "Illustration of the Seguidor de versiones menu and of a differences report between two versions of a schematic"
+    }
+};
+
+        function setText(id, val) {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) el.textContent = val;
+        }
+
+        function setHTML(id, val) {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) el.innerHTML = val;
+        }
+
+        function setLang(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            sessionStorage.setItem('eva_lang', lang);
+            ['ca','es','en'].forEach(l => {
+                const btn = document.getElementById('sw_' + l);
+                if (btn) btn.classList.toggle('active', l === lang);
+            });
+            setText('back_link', t.back_link);
+            setText('badge', t.badge);
+            setText('title', t.title);
+            setText('lead', t.lead);
+            setText('figCaption', t.fig_caption);
+            document.getElementById('figs').setAttribute('aria-label', t.fig_aria);
+            setText('th_hace', t.th_hace);
+            setText('th_necesita', t.th_necesita);
+
+            const body = document.getElementById('featureBody');
+            body.innerHTML = t.features.map(f => `
+                <tr>
+                    <td data-label="${t.th_hace}">${f.hace}</td>
+                    <td data-label="${t.th_necesita}">${f.necesita}</td>
+                </tr>
+            `).join('');
+
+            const hint = document.getElementById('hintBox');
+            hint.innerHTML = t.hint || '';
+            hint.style.display = t.hint ? 'block' : 'none';
+
+            setText('copyLabel', t.copyLabel);
+            setText('note_title', t.note_title);
+            setHTML('note_text', t.note_text);
+            setText('footer_text', t.footer_text);
+            document.documentElement.lang = lang;
+            window.__currentLang = lang;
+            window.__copiedLabel = t.copiedLabel;
+            window.__copyLabel = t.copyLabel;
+        }
+
+        function getUrlLang() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('lang');
+        }
+
+        window.addEventListener('load', () => {
+            const lang = getUrlLang() || sessionStorage.getItem('eva_lang') || 'es';
+            setLang(lang);
+        });
+
+        function copyCode() {
+            const code = document.getElementById('codeContent').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const label = document.getElementById('copyLabel');
+                btn.classList.add('copied');
+                label.textContent = window.__copiedLabel || 'Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    label.textContent = window.__copyLabel || 'Copy code';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
