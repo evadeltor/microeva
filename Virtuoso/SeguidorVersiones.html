@@ -144,6 +144,38 @@
         .report-body .del { color: var(--del); }
         .report-body .mod { color: var(--mod); }
 
+        .form-figure { max-width: 520px; margin: 0 auto; }
+        .form-body { padding: 18px 20px 6px; }
+        .form-row { display: flex; gap: 18px; padding-bottom: 14px; align-items: flex-start; }
+        .form-label { flex: 0 0 38%; font-size: 0.78rem; color: #666; padding-top: 2px; }
+        .form-opts { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .form-opt { display: inline-flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text); }
+        .form-radio {
+            width: 15px; height: 15px; border: 1.5px solid #c9c2b8; border-radius: 50%;
+            background: white; flex-shrink: 0; position: relative;
+        }
+        .form-radio.on { border-color: var(--primary); }
+        .form-radio.on::after {
+            content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--primary);
+        }
+        .form-input {
+            flex: 1; min-width: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.76rem;
+            color: var(--dark); background: white; border: 1.5px solid var(--primary);
+            border-radius: 4px; padding: 6px 10px; overflow-x: auto; white-space: nowrap;
+        }
+        .form-input.off { border-color: var(--border); color: #aaa; }
+        .form-caret { display: inline-block; width: 1px; height: 0.95em; background: var(--dark); vertical-align: -2px; margin-left: 1px; }
+        .form-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px 16px; }
+        .form-btn {
+            padding: 5px 18px; border-radius: 4px; font-size: 0.75rem; font-weight: 500;
+            border: 1px solid var(--border); background: #F5F3F0; color: var(--text);
+        }
+        .form-btn.ok { background: var(--primary); border-color: var(--primary); color: white; }
+        .form-result {
+            margin-top: 12px; text-align: center; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem; color: var(--add);
+        }
+
         .figs-caption { margin: 0 0 30px; text-align: center; font-size: 0.8rem; color: #888; line-height: 1.6; }
 
         .hint-box {
@@ -205,6 +237,8 @@
         }
 
         @media (max-width: 560px) {
+            .form-row { flex-direction: column; gap: 8px; }
+            .form-label { flex: none; }
             .feature-table, .feature-table thead, .feature-table tbody, .feature-table tr, .feature-table td { display: block; width: 100%; }
             .feature-table thead { display: none; }
             .feature-table tr { border-bottom: 1px solid var(--border); padding: 14px 18px; }
@@ -258,6 +292,7 @@
                 <div class="popup-mock menu-mock">
                     <div class="popup-mock-title">Seguidor de versiones</div>
                     <ul class="menu-items">
+                        <li>Guardar versión actual</li>
                         <li class="hl">Diferencias con la versión anterior</li>
                         <li>Volver a la versión anterior</li>
                         <li>Abrir versión anterior (lectura)</li>
@@ -279,11 +314,33 @@ Actual:   en edicion</span>
             <figcaption class="figs-caption" id="figCaption"></figcaption>
         </figure>
 
+        <figure class="form-figure">
+            <div class="popup-mock" id="figGuardar" role="img">
+                <div class="popup-mock-title"><span>Guardar versión actual</span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
+                <div class="form-body">
+                    <div class="form-row">
+                        <div class="form-label">Nombre de la vista</div>
+                        <div class="form-opts">
+                            <span class="form-opt"><span class="form-radio on"></span>Fecha y hora actual</span>
+                            <span class="form-opt"><span class="form-radio"></span>Nombre especial</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label">Nombre especial</div>
+                        <div class="form-input off">schematic_</div>
+                    </div>
+                </div>
+                <div class="form-foot"><span class="form-btn ok">OK</span><span class="form-btn">Cancel</span></div>
+            </div>
+            <div class="form-result">→ OPAMP/BufferSortida/schematic_20261006T114210</div>
+            <figcaption class="figs-caption" id="fig2Caption"></figcaption>
+        </figure>
+
         <div class="hint-box" id="hintBox"></div>
 
         <div class="code-block">
             <div class="code-header">
-                <span class="code-filename">seguidor_versiones.il</span>
+                <span class="code-filename">SeguidorVersiones.il</span>
                 <button class="copy-btn" id="copyBtn" onclick="copyCode()">
                     <span id="copyLabel"></span>
                 </button>
@@ -295,6 +352,7 @@ Actual:   en edicion</span>
 ;;   vtprev__&lt;vista&gt;   version guardada anterior
 ;;   vtcur__&lt;vista&gt;    version guardada actual
 ;; Menu "Seguidor de versiones":
+;;   - Guardar version actual como vista con fecha ISO 8601 o nombre propio
 ;;   - Diferencias: anterior vs estado en edicion (incluye cambios sin guardar)
 ;;   - Volver: intercambia actual y anterior (repetirlo deshace)
 ;;   - Abrir la anterior en solo lectura
@@ -378,10 +436,40 @@ procedure( vtBorrar(lib cell view)
     )
 )
 
+;; t si w es una ventana grafica que muestra un esquematico. No llama a
+;; ninguna funcion ge*, asi que no genera warnings en otras ventanas.
+procedure( vtEsVentanaSch(w)
+    let( (r)
+        r = errset(
+            windowp(w) &amp;&amp; dbobjectp(w~&gt;cellView) &amp;&amp;
+            w~&gt;cellView~&gt;cellViewType == "schematic")
+        if( r &amp;&amp; car(r) then t else nil)
+    )
+)
+
+;; Esquematico en edicion de la ventana actual o, si no es un esquematico,
+;; de la primera ventana de esquematico abierta
+procedure( vtCvActual()
+    let( (w res)
+        w = hiGetCurrentWindow()
+        if( vtEsVentanaSch(w) then
+            res = geGetEditCellView(w)
+        else
+            res = nil
+            foreach( x hiGetWindowList()
+                when( !res &amp;&amp; vtEsVentanaSch(x)
+                    res = geGetEditCellView(x)
+                )
+            )
+        )
+        res
+    )
+)
+
 ;; Esquematico editable activo, o nil con mensaje
 procedure( vtContexto()
     let( (cv)
-        cv = geGetEditCellView()
+        cv = vtCvActual()
         cond(
             ( !cv || cv~&gt;cellViewType != "schematic"
                 printf("Seguidor de versiones: abre un esquematico.\n")
@@ -669,11 +757,117 @@ procedure( vtAbrirAnterior()
 )
 
 ;; -------------------------------------------------------------------------
+;; GUARDAR VERSION ACTUAL CON NOMBRE
+;; Fecha y hora en ISO 8601 formato basico (20261006T114210): sin ":" ni
+;; "-", que dan problemas en nombres de vista. Nombre final:
+;; &lt;vista&gt;_&lt;fecha&gt; (p.ej. schematic_20261006T114210) o el nombre especial.
+;; Se copia el estado en edicion, incluidos los cambios sin guardar.
+;; -------------------------------------------------------------------------
+vtGuardarCv = nil
+
+;; getCurrentTime() -&gt; "Oct  6 11:42:10 2026" -&gt; "20261006T114210"
+procedure( vtFechaIso()
+    let( (p meses mes)
+        p = parseString(getCurrentTime() " ")
+        meses = '("Jan" "Feb" "Mar" "Apr" "May" "Jun" "Jul" "Aug" "Sep" "Oct" "Nov" "Dec")
+        mes = length(meses) - length(member(car(p) meses)) + 1
+        sprintf(nil "%s%02d%02dT%s" nth(3 p) mes atoi(cadr(p))
+            buildString(parseString(caddr(p) ":") ""))
+    )
+)
+
+procedure( vtGuardarVersion()
+    let( (cv form)
+        cv = vtContexto()
+        when( cv
+            vtGuardarCv = cv
+            form = hiCreateAppForm(
+                ?name 'vtGuardarForm
+                ?formTitle "Guardar versión actual"
+                ?fields list(
+                    hiCreateRadioField(
+                        ?name 'vtGuardarModo
+                        ?prompt "Nombre de la vista"
+                        ?choices list("Fecha y hora actual" "Nombre especial")
+                        ?value "Fecha y hora actual"
+                    )
+                    hiCreateStringField(
+                        ?name 'vtGuardarNombre
+                        ?prompt "Nombre especial"
+                        ?value sprintf(nil "%s_" cv~&gt;viewName)
+                    )
+                )
+                ?buttonLayout 'OKCancel
+                ?callback "vtGuardarVersionCB()"
+            )
+            hiDisplayForm(form)
+        )
+    )
+)
+
+procedure( vtGuardarVersionCB()
+    let( (f cv lib cell view modo nombre)
+        f = hiGetCurrentForm()
+        cv = vtGuardarCv
+        lib = cv~&gt;libName
+        cell = cv~&gt;cellName
+        view = cv~&gt;viewName
+        modo = (f-&gt;vtGuardarModo)~&gt;value
+        nombre = if( modo == "Nombre especial"
+            then (f-&gt;vtGuardarNombre)~&gt;value
+            else sprintf(nil "%s_%s" view vtFechaIso()))
+        cond(
+            ( !stringp(nombre) || !rexMatchp("^[A-Za-z0-9_]+$" nombre)
+                printf("Seguidor de versiones: nombre no valido \"%L\" (solo letras, numeros y _).\n" nombre) )
+            ( nombre == view
+                printf("Seguidor de versiones: el nombre coincide con la vista de trabajo.\n") )
+            ( vtEsInstantanea(nombre)
+                printf("Seguidor de versiones: los nombres vt*__ estan reservados.\n") )
+            ( vtExiste(lib cell nombre) &amp;&amp;
+              !hiDisplayAppDBox(
+                  ?name 'vtSobrescribirDBox
+                  ?dboxBanner "Guardar versión actual"
+                  ?dboxText sprintf(nil "La vista %s ya existe en %s/%s. Sobrescribir?" nombre lib cell)
+                  ?buttonLayout 'YesNo)
+                printf("Seguidor de versiones: cancelado.\n") )
+            ( t
+                when( vtCopiar(lib cell view nombre)
+                    printf("Seguidor de versiones: version guardada como %s%s\n"
+                        vtClave(lib cell nombre)
+                        if( cv~&gt;modifiedButNotSaved " (incluye cambios sin guardar)" ""))
+                )
+            )
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
 ;; MENU + TEMPORIZADOR
 ;; -------------------------------------------------------------------------
+
+;; Quita el menu de las ventanas abiertas para que un reload lo regenere
+procedure( vtQuitarMenus()
+    foreach( w hiGetWindowList()
+        errset(
+            let( (menus resto)
+                menus = hiGetBannerMenus(w)
+                resto = member('MenuVersiones menus)
+                when( resto
+                    hiDeleteBannerMenu(w length(menus) - length(resto))
+                )
+            )
+        )
+    )
+)
+
 procedure( vtRegistrarMenu(win)
     let( (items menu)
         items = list(
+            hiCreateMenuItem(
+                ?name 'vtItemGuardar
+                ?itemText "Guardar versión actual"
+                ?callback "vtGuardarVersion()"
+            )
             hiCreateMenuItem(
                 ?name 'vtItemDiff
                 ?itemText "Diferencias con la versión anterior"
@@ -695,30 +889,39 @@ procedure( vtRegistrarMenu(win)
     )
 )
 
-procedure( vtTick()
-    unless( vtBusy
-        errset(
-            foreach( w hiGetWindowList()
-                errset(
-                    let( (cv)
-                        ;; w~&gt;cellView es nil en CIW, Library Manager, ADE...:
-                        ;; asi geGetEditCellView solo se llama en ventanas graficas
-                        cv = if( windowp(w) &amp;&amp; w~&gt;cellView then geGetEditCellView(w) else nil)
-                        when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
-                            unless( member('MenuVersiones hiGetBannerMenus(w))
-                                vtRegistrarMenu(w)
+procedure( vtTick(@optional (gen 0))
+    ;; Una llamada sin numero (temporizador de una carga anterior) se para
+    when( gen == vtTimerGen
+        unless( vtBusy
+            errset(
+                foreach( w hiGetWindowList()
+                    errset(
+                        let( (cv)
+                            ;; geGetEditCellView solo en ventanas de esquematico:
+                            ;; en el CIW, Library Manager o Maestro (que si tiene
+                            ;; cellView, de tipo "maestro") lanza el warning GE-2067
+                            cv = if( vtEsVentanaSch(w) then geGetEditCellView(w) else nil)
+                            when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+                                unless( member('MenuVersiones hiGetBannerMenus(w))
+                                    vtRegistrarMenu(w)
+                                )
+                                vtVigilar(cv)
                             )
-                            vtVigilar(cv)
                         )
                     )
                 )
             )
         )
+        hiRegTimer(sprintf(nil "vtTick(%d)" gen) vtPeriodo)
     )
-    hiRegTimer("vtTick()" vtPeriodo)
 )
 
-vtTick()</code></pre>
+;; Cada carga incrementa vtTimerGen: el temporizador de una carga anterior
+;; se para solo, asi recargar el archivo no acumula temporizadores
+vtTimerGen = if( boundp('vtTimerGen) &amp;&amp; integerp(vtTimerGen) then vtTimerGen + 1 else 1)
+
+vtQuitarMenus()
+vtTick(vtTimerGen)</code></pre>
         </div>
 
         <div class="note" id="noteBox">
@@ -750,6 +953,10 @@ vtTick()</code></pre>
                 "necesita": "Nada: crea las vistas <code>vtprev__&lt;vista&gt;</code> y <code>vtcur__&lt;vista&gt;</code>. No empiezan por <code>schematic</code>, así que el extractor de gm/Id las ignora. Si la librería está en git, añade <code>vt*__*</code> al <code>.gitignore</code>."
             },
             {
+                "hace": "Guarda la versión actual con fecha o con un nombre propio",
+                "necesita": "Menú «Seguidor de versiones → Guardar versión actual». Eliges «Fecha y hora actual» (crea p. ej. <code>schematic_20261006T114210</code>, ISO 8601 en formato básico, sin <code>:</code> que darían problemas en el nombre de vista) o «Nombre especial». Copia lo que tienes en edición, incluidos los cambios sin guardar."
+            },
+            {
                 "hace": "Muestra las diferencias con la versión anterior",
                 "necesita": "Menú «Seguidor de versiones → Diferencias». Compara la versión anterior con lo que tienes en edición, incluidos los cambios sin guardar (con la conectividad del último Check). El informe se guarda en <code>/tmp</code>; cámbialo con <code>vtDirInforme</code>."
             },
@@ -778,10 +985,12 @@ vtTick()</code></pre>
         "copyLabel": "Copiar código",
         "copiedLabel": "¡Copiado!",
         "note_title": "Uso:",
-        "note_text": "<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load(\"seguidor_versiones.il\")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load(\"/ruta/absoluta/seguidor_versiones.il\")</code>.<br><br>Después, guarda el esquemático como siempre y usa el menú <strong>Seguidor de versiones</strong> para ver las diferencias, volver a la versión anterior o abrirla en solo lectura.",
+        "note_text": "<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load(\"SeguidorVersiones.il\")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load(\"/ruta/absoluta/SeguidorVersiones.il\")</code>.<br><br>Después, guarda el esquemático como siempre y usa el menú <strong>Seguidor de versiones</strong> para ver las diferencias, volver a la versión anterior o abrirla en solo lectura.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_caption": "Ilustración del menú «Seguidor de versiones» y del informe de diferencias: + instancia añadida, − eliminada, ~ modificada; [par] parámetro, [con] conexión. {M5.G M7.D} es una red sin nombre, identificada por lo que conecta.",
-        "fig_aria": "Ilustración del menú Seguidor de versiones y de un informe de diferencias entre dos versiones de un esquemático"
+        "fig_aria": "Ilustración del menú Seguidor de versiones y de un informe de diferencias entre dos versiones de un esquemático",
+        "fig2_caption": "Ilustración de «Guardar versión actual»: con «Fecha y hora actual» la vista se llama schematic_20261006T114210 (6 de octubre de 2026, 11:42:10, en ISO 8601). Con «Nombre especial» puedes escribir el nombre que quieras (letras, números y _).",
+        "fig2_aria": "Ilustración del formulario Guardar versión actual con la opción de fecha y hora"
     },
     "ca": {
         "back_link": "← Tornar al lloc",
@@ -798,6 +1007,10 @@ vtTick()</code></pre>
             {
                 "hace": "Desa les versions dins de la mateixa cel·la",
                 "necesita": "Res: crea les vistes <code>vtprev__&lt;vista&gt;</code> i <code>vtcur__&lt;vista&gt;</code>. No comencen per <code>schematic</code>, així que l'extractor de gm/Id les ignora. Si la llibreria és a git, afegeix <code>vt*__*</code> al <code>.gitignore</code>."
+            },
+            {
+                "hace": "Desa la versió actual amb data o amb un nom propi",
+                "necesita": "Menú «Seguidor de versiones → Guardar versión actual». Tries «Fecha y hora actual» (crea p. ex. <code>schematic_20261006T114210</code>, ISO 8601 en format bàsic, sense <code>:</code> que donarien problemes al nom de vista) o «Nombre especial». Copia el que tens en edició, inclosos els canvis sense desar."
             },
             {
                 "hace": "Mostra les diferències amb la versió anterior",
@@ -828,10 +1041,12 @@ vtTick()</code></pre>
         "copyLabel": "Copiar codi",
         "copiedLabel": "Copiat!",
         "note_title": "Ús:",
-        "note_text": "<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load(\"seguidor_versiones.il\")</code> al CIW (amb el CIW situat a la carpeta de l'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load(\"/ruta/absoluta/seguidor_versiones.il\")</code>.<br><br>Després, desa l'esquemàtic com sempre i fes servir el menú <strong>Seguidor de versiones</strong> per veure les diferències, tornar a la versió anterior o obrir-la en només lectura.",
+        "note_text": "<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load(\"SeguidorVersiones.il\")</code> al CIW (amb el CIW situat a la carpeta de l'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load(\"/ruta/absoluta/SeguidorVersiones.il\")</code>.<br><br>Després, desa l'esquemàtic com sempre i fes servir el menú <strong>Seguidor de versiones</strong> per veure les diferències, tornar a la versió anterior o obrir-la en només lectura.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_caption": "Il·lustració del menú «Seguidor de versiones» i de l'informe de diferències: + instància afegida, − eliminada, ~ modificada; [par] paràmetre, [con] connexió. {M5.G M7.D} és una xarxa sense nom, identificada pel que connecta. El text real del menú i de l'informe és en castellà.",
-        "fig_aria": "Il·lustració del menú Seguidor de versiones i d'un informe de diferències entre dues versions d'un esquemàtic"
+        "fig_aria": "Il·lustració del menú Seguidor de versiones i d'un informe de diferències entre dues versions d'un esquemàtic",
+        "fig2_caption": "Il·lustració de «Guardar versión actual»: amb «Fecha y hora actual» la vista es diu schematic_20261006T114210 (6 d'octubre de 2026, 11:42:10, en ISO 8601). Amb «Nombre especial» pots escriure el nom que vulguis (lletres, números i _). El text real del formulari és en castellà.",
+        "fig2_aria": "Il·lustració del formulari Guardar versión actual amb l'opció de data i hora"
     },
     "en": {
         "back_link": "← Back to site",
@@ -848,6 +1063,10 @@ vtTick()</code></pre>
             {
                 "hace": "Stores the versions inside the cell itself",
                 "necesita": "Nothing: it creates the <code>vtprev__&lt;view&gt;</code> and <code>vtcur__&lt;view&gt;</code> views. They don't start with <code>schematic</code>, so the gm/Id extractor ignores them. If the library is under git, add <code>vt*__*</code> to <code>.gitignore</code>."
+            },
+            {
+                "hace": "Saves the current version with a timestamp or a custom name",
+                "necesita": "Menu «Seguidor de versiones → Guardar versión actual». Choose «Fecha y hora actual» (creates e.g. <code>schematic_20261006T114210</code>, ISO 8601 basic format, with no <code>:</code>, which would break the view name) or «Nombre especial». It copies what you are editing, unsaved changes included."
             },
             {
                 "hace": "Shows the differences with the previous version",
@@ -878,10 +1097,12 @@ vtTick()</code></pre>
         "copyLabel": "Copy code",
         "copiedLabel": "Copied!",
         "note_title": "Usage:",
-        "note_text": "<strong>Option 1 — load it yourself each session:</strong> type <code>load(\"seguidor_versiones.il\")</code> in the CIW (with the CIW located in the file's folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load(\"/absolute/path/seguidor_versiones.il\")</code>.<br><br>Then save the schematic as usual and use the <strong>Seguidor de versiones</strong> menu to see the differences, go back to the previous version or open it read-only.",
+        "note_text": "<strong>Option 1 — load it yourself each session:</strong> type <code>load(\"SeguidorVersiones.il\")</code> in the CIW (with the CIW located in the file's folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load(\"/absolute/path/SeguidorVersiones.il\")</code>.<br><br>Then save the schematic as usual and use the <strong>Seguidor de versiones</strong> menu to see the differences, go back to the previous version or open it read-only.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_caption": "Illustration of the «Seguidor de versiones» menu and the differences report: + added instance, − removed, ~ modified; [par] parameter, [con] connection. {M5.G M7.D} is an unnamed net, identified by what it connects. The real menu and report text is in Spanish.",
-        "fig_aria": "Illustration of the Seguidor de versiones menu and of a differences report between two versions of a schematic"
+        "fig_aria": "Illustration of the Seguidor de versiones menu and of a differences report between two versions of a schematic",
+        "fig2_caption": "Illustration of «Guardar versión actual»: with «Fecha y hora actual» the view is named schematic_20261006T114210 (6 October 2026, 11:42:10, in ISO 8601). With «Nombre especial» you can type any name you like (letters, digits and _). The real form text is in Spanish.",
+        "fig2_aria": "Illustration of the Guardar versión actual form with the date and time option"
     }
 };
 
@@ -909,6 +1130,8 @@ vtTick()</code></pre>
             setText('lead', t.lead);
             setText('figCaption', t.fig_caption);
             document.getElementById('figs').setAttribute('aria-label', t.fig_aria);
+            setText('fig2Caption', t.fig2_caption);
+            document.getElementById('figGuardar').setAttribute('aria-label', t.fig2_aria);
             setText('th_hace', t.th_hace);
             setText('th_necesita', t.th_necesita);
 
