@@ -848,7 +848,7 @@
                         <div class="accordion-header-text">
                             <h3 id="gmid_title">Extractor automático de gm/Id y margen de saturación</h3>
                             <div class="accordion-meta" id="gmid_meta">SKILL · Plugin para ADE Assembler / Maestro</div>
-                            <!-- Cambia la fecha (AAAA-MM-DD) cada vez que actualices el codigo -->
+                            <!-- Fallback si no se puede leer Last-Modified del archivo (AAAA-MM-DD) -->
                             <div class="accordion-updated" data-updated="2026-10-06"></div>
                         </div>
                         <span class="accordion-icon">▼</span>
@@ -866,7 +866,7 @@
                         <div class="accordion-header-text">
                             <h3 id="mismatch_title">Mismatch de corriente (modelo de Pelgrom)</h3>
                             <div class="accordion-meta" id="mismatch_meta">SKILL · Plugin para ADE Assembler / Maestro</div>
-                            <!-- Cambia la fecha (AAAA-MM-DD) cada vez que actualices el codigo -->
+                            <!-- Fallback si no se puede leer Last-Modified del archivo (AAAA-MM-DD) -->
                             <div class="accordion-updated" data-updated="2026-10-06"></div>
                         </div>
                         <span class="accordion-icon">▼</span>
@@ -884,7 +884,7 @@
                         <div class="accordion-header-text">
                             <h3 id="versiones_title">Seguidor de versiones para esquemáticos</h3>
                             <div class="accordion-meta" id="versiones_meta">SKILL · Plugin para Schematic Editor</div>
-                            <!-- Cambia la fecha (AAAA-MM-DD) cada vez que actualices el codigo -->
+                            <!-- Fallback si no se puede leer Last-Modified del archivo (AAAA-MM-DD) -->
                             <div class="accordion-updated" data-updated="2026-10-06"></div>
                         </div>
                         <span class="accordion-icon">▼</span>
@@ -904,8 +904,8 @@
     <section id="sobre" class="about-section container">
         <div class="about-content">
             <h2 id="sobre_title">Sobre Mí</h2>
-            <p id="sobre_p1">Como estudiante de doctorado en el Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualmente trabajo en el diseño de un circuito integrado de lectura digital (ROIC) de bajo consumo, bajo ruido y alta densidad para un sensor de imagen MWIR PbSe-CMOS de alta velocidad.</p>
-            <p id="sobre_p2">Además de mi trabajo de investigación, imparto diversos cursos de electrónica e inteligencia artificial en la Universitat Politècnica de Catalunya (UPC) desde septiembre de 2023.</p>
+            <p id="sobre_p1">Como estudiante de doctorado en el Institut de Microelectrònica de Barcelona (IMB-CNM, CSIC), actualmente trabajo en el diseño de un circuito integrado de lectura digital (ROIC) de bajo consumo, bajo ruido y alta densidad para un sensor de imagen MWIR PbSe-CMOS de alta velocidad. Mi proyecto tiene como objetivo desarrollar la tercera generación de ROIC para cuadruplicar el número de píxeles en el array de plano focal manteniendo el mismo nodo tecnológico CMOS, debido a los requisitos de post-procesado a nivel de oblea del PbSe. Este reto implica reducir el área y el consumo del sensor de píxel digital PbSe-CMOS actual en un factor de 2, además de mejorar la resolución espacial y la sensibilidad.</p>
+            <p id="sobre_p2">Además de mi trabajo de investigación, imparto diversos cursos de electrónica e inteligencia artificial en la Universitat Politècnica de Catalunya (UPC) desde septiembre de 2023. También soy instructora en Saturdays.AI y EPITECH desde diciembre de 2020, donde he impartido temas como PLN, aprendizaje por refuerzo, visión por computador, ciencia de datos y aprendizaje profundo a más de 300 estudiantes. Tengo un Máster en Ingeniería Electrónica por la UPC y un Grado en Electrónica Industrial y Automática por la misma institución. Me apasiona el avance en el campo de la electrónica y la inteligencia artificial, y disfruto compartiendo mis conocimientos con los demás.</p>
             <div class="about-highlights">
                 <div class="highlight">
                     <div class="highlight-icon">✓</div>
@@ -1263,13 +1263,38 @@
             if (el && val !== undefined) el.placeholder = val;
         }
 
-        // Fecha de ultima actualizacion de cada codigo de Virtuoso (data-updated)
+        // Fecha de ultima actualizacion de cada codigo de Virtuoso: se lee del
+        // header HTTP Last-Modified del propio archivo enlazado (mismo origen),
+        // asi que se actualiza sola en cuanto subes una version nueva del
+        // archivo, sin tocar este HTML. Si el hosting no manda esa cabecera
+        // (o falla la peticion), usa data-updated como respaldo fijo.
         function setUpdatedDates(t) {
-            document.querySelectorAll('.accordion-updated').forEach(el => {
-                const d = new Date(el.dataset.updated + 'T12:00:00');
-                if (isNaN(d)) { el.textContent = ''; return; }
-                const fecha = new Intl.DateTimeFormat(t.date_locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
-                el.textContent = t.updated_label + ' ' + fecha;
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                const el = item.querySelector('.accordion-updated');
+                const link = item.querySelector('.accordion-link');
+                if (!el) return;
+
+                const showFallback = () => {
+                    const raw = el.dataset.updated;
+                    if (!raw) { el.textContent = ''; return; }
+                    const d = new Date(raw + 'T12:00:00');
+                    if (isNaN(d)) { el.textContent = ''; return; }
+                    const fecha = new Intl.DateTimeFormat(t.date_locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+                    el.textContent = t.updated_label + ' ' + fecha;
+                };
+
+                if (!link) { showFallback(); return; }
+
+                fetch(link.getAttribute('href'), { method: 'HEAD', cache: 'no-store' })
+                    .then(res => {
+                        const lm = res.headers.get('Last-Modified');
+                        if (!lm) throw new Error('sin Last-Modified');
+                        const d = new Date(lm);
+                        if (isNaN(d)) throw new Error('fecha invalida');
+                        const fecha = new Intl.DateTimeFormat(t.date_locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+                        el.textContent = t.updated_label + ' ' + fecha;
+                    })
+                    .catch(showFallback);
             });
         }
 
