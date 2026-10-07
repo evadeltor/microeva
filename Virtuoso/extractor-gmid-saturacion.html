@@ -12,7 +12,7 @@
         base-uri 'self';
         upgrade-insecure-requests;
     ">
-    <title>Mismatch (Pelgrom) · Eva Deltor</title>
+    <title>Extractor gm/Id · Eva Deltor</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -141,12 +141,6 @@
             border: 1px solid var(--border); background: #F5F3F0; color: var(--text);
         }
         .popup-mock-btn.ok { background: var(--primary); border-color: var(--primary); color: white; }
-        .popup-mock-opts.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
-        .popup-mock-input {
-            flex: 1; border: 1px solid #d8d2c8; border-radius: 4px; padding: 5px 10px;
-            font-size: 0.78rem; background: #F5F3F0; color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-        }
         .popup-figure figcaption { margin-top: 12px; text-align: center; font-size: 0.8rem; color: #888; line-height: 1.6; }
 
         .hint-box {
@@ -208,7 +202,6 @@
         @media (max-width: 560px) {
             .popup-mock-row { flex-direction: column; gap: 8px; }
             .popup-mock-label { flex: none; }
-            .popup-mock-opts.grid2 { grid-template-columns: 1fr; }
             .feature-table, .feature-table thead, .feature-table tbody, .feature-table tr, .feature-table td { display: block; width: 100%; }
             .feature-table thead { display: none; }
             .feature-table tr { border-bottom: 1px solid var(--border); padding: 14px 18px; }
@@ -284,266 +277,745 @@
             <figcaption id="figCaption"></figcaption>
         </figure>
 
-        <figure class="popup-figure">
-            <div class="popup-mock" id="figPopup2" role="img">
-                <div class="popup-mock-title"><span id="fig2Title"></span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
-                <div class="popup-mock-body">
-                    <div class="popup-mock-row">
-                        <div class="popup-mock-label" id="fig2Tx"></div>
-                        <div class="popup-mock-opts grid2">
-                            <span class="popup-mock-opt"><span class="popup-mock-box on">✓</span>X0/M1 [NMOS]</span>
-                            <span class="popup-mock-opt"><span class="popup-mock-box on">✓</span>X0/M2 [NMOS]</span>
-                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>X0/M3 [PMOS]</span>
-                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>X0/M4 [PMOS]</span>
-                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>X1/M1 [NMOS]</span>
-                            <span class="popup-mock-opt"><span class="popup-mock-box"></span>X1/M2 [NMOS]</span>
-                        </div>
-                    </div>
-                    <div class="popup-mock-row">
-                        <div class="popup-mock-label" id="fig2Current"></div>
-                        <div class="popup-mock-input">1e-05</div>
-                    </div>
-                </div>
-                <div class="popup-mock-foot"><span class="popup-mock-btn ok">OK</span><span class="popup-mock-btn">Cancel</span><span class="popup-mock-btn">Help</span></div>
-            </div>
-            <figcaption id="fig2Caption"></figcaption>
-        </figure>
-
-        <div class="hint-box" id="physicsBox"></div>
-
         <div class="hint-box" id="hintBox"></div>
 
         <div class="code-block">
             <div class="code-header">
-                <span class="code-filename">mismatch_pelgrom.il</span>
+                <span class="code-filename">extractor_gmid_saturacion.il</span>
                 <button class="copy-btn" id="copyBtn" onclick="copyCode()">
                     <span id="copyLabel"></span>
                 </button>
             </div>
             <pre><code id="codeContent">;; =========================================================================
-;; PLUGIN: MISMATCH (PELGROM)
-;; Requiere haber cargado antes extractor_gmid_saturacion.il
+;; PLUGIN: DETECTOR DE TRANSISTORES, GM/ID Y SATURACION
+;; Recorre jerarquia (hasta gmidMaxDepth niveles) desde el esquematico activo
 ;;
-;; Al pulsar Mismatch se abre primero el popup de destino (test y vista de
-;; esquematico) y despues el de transistores. Se generan siempre Vgs,
-;; Overdrive (Vgs-Vth), ErrorMismatch, ActualCurrent, ExpectedCurrent y los
-;; limites Min/MaxCurrentError, solo en los tests elegidos.
-;;
-;; Cada transistor tiene SU PROPIO PelgromValue_&lt;transistor&gt; (no se
-;; comparte entre transistores): como el Vgs real difiere de uno a otro,
-;; el coeficiente de Pelgrom que toca de la tabla del datasheet tambien
-;; puede diferir. Se crea con un valor de partida (gmidPelgromPe/Ne segun
-;; la polaridad detectada, o 0.0 si es desconocida) y luego se ajusta a
-;; mano en Maestro, por transistor, mirando su Overdrive_&lt;transistor&gt;.
-;;
-;; ActualCurrent usa OP(path "id") (corriente de drenador del punto de
-;; operacion del transistor), no IDC() sobre el nodo: IDC() depende de un
-;; probe de corriente de red que puede no estar disponible o fallar segun
-;; el tipo de analisis (p.ej. AC_OP_NOISE), mientras que OP(...) siempre
-;; esta disponible si el punto de operacion DC esta guardado.
+;; Deteccion automatica de transistores MOS: una celda hoja (sin vista
+;; schematic*) cuyo simbolo tiene pines D, G y S. La polaridad se deduce del
+;; nombre de la celda y del parametro "model". "Tipos de transistores" solo
+;; hace falta para forzar celdas concretas.
 ;; =========================================================================
 
-unless( boundp('gmidPelgromPe) gmidPelgromPe = 0.0 )
-unless( boundp('gmidPelgromNe) gmidPelgromNe = 0.0 )
-unless( boundp('gmidExpectedCurrentDefault) gmidExpectedCurrentDefault = 1.0e-05 )
+unless( boundp('gmidTests) gmidTests = nil )
+unless( boundp('gmidSatMargin) gmidSatMargin = "0" )
+unless( boundp('gmidMaxDepth) gmidMaxDepth = 3 )
 
-;; Lista de tuplas (fullPath polaridad w l m), en el MISMO orden que ?choices
-;; del toggle field. El valor devuelto por el campo (~&gt;value) es una lista
-;; de t/nil posicional, no de nombres, asi que hay que casar por posicion.
-gmidMismatchOrderedInfo = nil
-gmidMismatchForm = nil
+;; t = detectar transistores por sus pines; nil = usar solo las listas
+unless( boundp('gmidAutoDetect) gmidAutoDetect = t )
 
-procedure( gmidMismatchLabel(par)
-    sprintf(nil "%s%s" car(par)
-        cond(
-            ( eq(cadr(par) 'n) " [NMOS]" )
-            ( eq(cadr(par) 'p) " [PMOS]" )
-            ( t " [?]" )
-        )
-    )
+;; Celdas forzadas como transistor (nombre de celda en minusculas). Tienen
+;; prioridad sobre la deteccion automatica y fijan la polaridad.
+unless( boundp('gmidNmosCells) gmidNmosCells = '("ne" "nmos" "nch" "nfet" "nelna") )
+unless( boundp('gmidPmosCells) gmidPmosCells = '("pe" "pmos" "pch" "pfet" "pe3lna") )
+
+;; Archivo de configuracion persistente
+gmidConfigFile = strcat(getShellEnvVar("HOME") "/.gmid_tipos_transistores.il")
+when( isFile(gmidConfigFile)
+    load(gmidConfigFile)
 )
 
-;; Entrada de menu: pide destino y despues abre el popup de transistores
-procedure( MismatchConDestino()
-    gmidPedirDestino("AbrirPopupMismatchGmId()")
-)
+;; Lista de (cellName vista). Se rellena desde el popup de destino.
+unless( boundp('gmidViewOverrides) gmidViewOverrides = nil )
 
-procedure( AbrirPopupMismatchGmId()
-    let( (cv xtors choices toggleField i sym)
-        cv = gmidCvTrabajo()
-        when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
-            gmidMosCache = nil
-            xtors = RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
-            gmidMismatchOrderedInfo = nil
-            choices = nil
-            i = 0
-            foreach( par xtors
-                sym = concat('gmidTx i)
-                choices = cons(list(sym gmidMismatchLabel(par)) choices)
-                gmidMismatchOrderedInfo = cons(par gmidMismatchOrderedInfo)
-                i = i + 1
-            )
-            toggleField = hiCreateToggleField(
-                ?name 'gmidMismatchToggle
-                ?choices choices
-                ?numSelect length(choices)
-                ?prompt "Transistores a analizar"
-                ?value nil
-            )
-            gmidMismatchForm = hiCreateAppForm(
-                ?name 'gmidMismatchForm
-                ?formTitle "Mismatch (Pelgrom)"
-                ?fields list(
-                    toggleField
-                    hiCreateFloatField(
-                        ?name 'gmidExpectedCurrent
-                        ?prompt "Corriente esperada (A)"
-                        ?value gmidExpectedCurrentDefault
-                    )
-                )
-                ?buttonLayout 'OKCancel
-                ?callback "CalcularMismatchGmId()"
-            )
-            hiDisplayForm(gmidMismatchForm)
-        )
-    )
-)
-
-procedure( CalcularMismatchGmId()
-    let( (cv sess tests seleccion expCur selList infoList seleccionados
-          pathInfo path pol w l m nameSafe pelgromDefault
-          n0 n1 n2 n3 n4 n5 n6 n7 r0 r1 r2 r3 r4 r5 r6 r7
-          nSel nErr)
-        cv = gmidCvTrabajo()
-        sess = car(maeGetSessions())
-        unless( sess || !cv
-            sess = maeOpenSetup(cv~&gt;libName cv~&gt;cellName "maestro" ?mode "a"))
-        unless( sess
-            printf("Mismatch: no hay sesion de Maestro ni esquematico activo.\n"))
-        when( sess
-
-            ;; Solo los tests elegidos en el popup de destino (nil = ninguno)
-            tests = gmidTestsElegidos(sess)
-
-            seleccion = (hiGetCurrentForm()-&gt;gmidMismatchToggle)~&gt;value
-            expCur = (hiGetCurrentForm()-&gt;gmidExpectedCurrent)~&gt;value
-
-            seleccionados = nil
-            selList = seleccion
-            infoList = gmidMismatchOrderedInfo
-            while( selList
-                when( car(selList)
-                    seleccionados = cons(car(infoList) seleccionados)
-                )
-                selList = cdr(selList)
-                infoList = cdr(infoList)
-            )
-
-            nSel = length(seleccionados)
-            nErr = 0
-
-            unless( tests
-                printf("Ningun test elegido.\n")
-            )
-
-            foreach( tst tests
-                foreach( pathInfo seleccionados
-                    path = car(pathInfo)
-                    pol  = cadr(pathInfo)
-                    w    = caddr(pathInfo)
-                    l    = cadddr(pathInfo)
-                    m    = car(cddddr(pathInfo))
-                    nameSafe = gmidSafeName(path)
-                    pelgromDefault = cond(
-                        ( eq(pol 'n) gmidPelgromNe )
-                        ( eq(pol 'p) gmidPelgromPe )
-                        ( t 0.0 )
-                    )
-
-                    ;; PelgromValue propio de este transistor: punto de partida
-                    ;; segun su polaridad, editalo despues en Maestro segun su
-                    ;; Overdrive_&lt;transistor&gt; real.
-                    n0 = sprintf(nil "PelgromValue_%s" nameSafe)
-                    n1 = sprintf(nil "ErrorMismatch_%s" nameSafe)
-                    n2 = sprintf(nil "ActualCurrent_%s" nameSafe)
-                    n3 = sprintf(nil "ExpectedCurrent_%s" nameSafe)
-                    n4 = sprintf(nil "MinCurrentError_%s" nameSafe)
-                    n5 = sprintf(nil "MaxCurrentError_%s" nameSafe)
-                    n6 = sprintf(nil "Vgs_%s" nameSafe)
-                    n7 = sprintf(nil "Overdrive_%s" nameSafe)
-                    errset(maeDeleteOutput(n0 tst ?session sess))
-                    errset(maeDeleteOutput(n1 tst ?session sess))
-                    errset(maeDeleteOutput(n2 tst ?session sess))
-                    errset(maeDeleteOutput(n3 tst ?session sess))
-                    errset(maeDeleteOutput(n4 tst ?session sess))
-                    errset(maeDeleteOutput(n5 tst ?session sess))
-                    errset(maeDeleteOutput(n6 tst ?session sess))
-                    errset(maeDeleteOutput(n7 tst ?session sess))
-
-                    r0 = maeAddOutput(n0 tst ?outputType "point"
-                        ?expr sprintf(nil "%g" pelgromDefault)
-                        ?session sess)
-
-                    r6 = maeAddOutput(n6 tst ?outputType "point"
-                        ?expr sprintf(nil "OP(\"/%s\" \"vgs\")" path)
-                        ?session sess)
-                    r7 = maeAddOutput(n7 tst ?outputType "point"
-                        ?expr sprintf(nil "%s - OP(\"/%s\" \"vth\")" n6 path)
-                        ?session sess)
-
-                    if( !w || !l || !m then
-                        nErr = nErr + 1
-                        printf("Faltan W/L/m para %s; solo Vgs/Overdrive/PelgromValue\n" path)
-                    else
-                        r1 = maeAddOutput(n1 tst ?outputType "point"
-                            ?expr sprintf(nil "%s / sqrt((%g * %g * %g))" n0 w l m)
-                            ?session sess)
-                        r2 = maeAddOutput(n2 tst ?outputType "point"
-                            ?expr sprintf(nil "abs(OP(\"/%s\" \"id\"))" path)
-                            ?session sess)
-                        r3 = maeAddOutput(n3 tst ?outputType "point"
-                            ?expr sprintf(nil "%g" expCur)
-                            ?session sess)
-                        r4 = maeAddOutput(n4 tst ?outputType "point"
-                            ?expr sprintf(nil "(%s * (1 - (%s / 100)))" n3 n1)
-                            ?session sess)
-                        r5 = maeAddOutput(n5 tst ?outputType "point"
-                            ?expr sprintf(nil "(%s * (1 + (%s / 100)))" n3 n1)
-                            ?session sess)
-                        errset(maeSetSpec(n4 tst ?lt sprintf(nil "value(calcVal(\"%s\"))" n2) ?session sess))
-                        errset(maeSetSpec(n5 tst ?gt sprintf(nil "value(calcVal(\"%s\"))" n2) ?session sess))
-                        unless( r0 &amp;&amp; r1 &amp;&amp; r2 &amp;&amp; r3 &amp;&amp; r4 &amp;&amp; r5 &amp;&amp; r6 &amp;&amp; r7
-                            nErr = nErr + 1
-                            printf("Fallo generando mismatch para %s en %s\n" path tst))
-                    )
-                )
-            )
-            maeSaveSetup(?session sess)
-            printf("Mismatch Pelgrom: %d transistores seleccionados | tests %L | %d avisos/fallos. Cada transistor tiene su propio PelgromValue_&lt;nombre&gt;: ajustalo en Maestro segun su Overdrive real.\n"
-                nSel tests nErr)
-        )
-    )
-)
-
-;; -------------------------------------------------------------------------
-;; Enganche al menu "Crear expresiones" del otro archivo
-;; -------------------------------------------------------------------------
+;; Otros archivos (p.ej. mismatch_pelgrom.il) pueden anadir aqui sus propios
+;; items para que aparezcan en el mismo menu "Crear expresiones".
 unless( boundp('gmidExtraMenuItems) gmidExtraMenuItems = nil )
 
-itemMismatch = hiCreateMenuItem(
-    ?name 'ItemMismatch
-    ?itemText "Mismatch"
-    ?callback "MismatchConDestino()"
+gmidAccionPendiente = nil
+gmidDestTestsOrdered = nil
+gmidDestCeldas = nil
+gmidCeldasAcc = nil
+gmidHojasAcc = nil
+gmidDestForm = nil
+gmidTiposForm = nil
+gmidMosCache = nil
+
+;; -------------------------------------------------------------------------
+;; DETECCION DE TRANSISTORES
+;; -------------------------------------------------------------------------
+
+;; Nombres de los pines del simbolo de una instancia
+procedure( gmidTerminalesMaster(inst)
+    let( (res)
+        res = errset(inst~&gt;master~&gt;terminals~&gt;name)
+        if( res then car(res) else nil)
+    )
 )
 
-gmidExtraMenuItems = append(
-    setof(it gmidExtraMenuItems it~&gt;itemText != "Mismatch")
-    list(itemMismatch)
+;; Nombres de las vistas que empiezan por "schematic" de una celda
+procedure( gmidVistasSchematic(libName cellName)
+    let( (objRes obj nombres)
+        nombres = nil
+        objRes = errset(ddGetObj(libName cellName))
+        obj = if( objRes then car(objRes) else nil)
+        when( obj
+            nombres = setof(n obj~&gt;views~&gt;name rexMatchp("^schematic" n))
+        )
+        nombres
+    )
 )
 
-;; Regenera el menu en los esquematicos ya abiertos para que aparezca Mismatch
-when( fboundp('gmidQuitarMenus) gmidQuitarMenus() )
-printf("Mismatch enganchado al menu \"Crear expresiones\".\n")</code></pre>
+;; Deteccion por pines: D, G y S, y sin vista schematic* (primitiva)
+procedure( gmidDetectarMos(inst)
+    let( (nombres l hasD hasG hasS sinSchem)
+        if( gmidAutoDetect then
+            nombres = gmidTerminalesMaster(inst)
+            l = mapcar(lambda((x) if(stringp(x) lowerCase(x) "")) nombres)
+            hasD = member("d" l) || member("drain" l)
+            hasG = member("g" l) || member("gate" l)
+            hasS = member("s" l) || member("source" l)
+            sinSchem = !gmidVistasSchematic(inst~&gt;libName inst~&gt;cellName)
+            if( hasD &amp;&amp; hasG &amp;&amp; hasS &amp;&amp; sinSchem then t else nil)
+        else
+            nil
+        )
+    )
+)
+
+;; Es transistor si esta en las listas forzadas o lo detecta por pines.
+;; El resultado se guarda en cache por lib/celda (gmidMosCache).
+procedure( gmidEsMos(inst)
+    let( (key ent res cn)
+        key = sprintf(nil "%s/%s" inst~&gt;libName inst~&gt;cellName)
+        ent = assoc(key gmidMosCache)
+        if( ent then
+            res = eq(cadr(ent) 'yes)
+        else
+            cn = lowerCase(or(inst~&gt;cellName ""))
+            if( member(cn gmidNmosCells) || member(cn gmidPmosCells) then
+                res = t
+            else
+                res = gmidDetectarMos(inst)
+            )
+            gmidMosCache = cons(list(key if(res 'yes 'no)) gmidMosCache)
+        )
+        res
+    )
+)
+
+;; Polaridad segun un texto (nombre de celda o modelo): 'n, 'p o nil
+procedure( gmidPolaridadStr(s)
+    if( stringp(s) then
+        cond(
+            ( rexMatchp("pmos" s) 'p )
+            ( rexMatchp("pfet" s) 'p )
+            ( rexMatchp("pch" s) 'p )
+            ( rexMatchp("nmos" s) 'n )
+            ( rexMatchp("nfet" s) 'n )
+            ( rexMatchp("nch" s) 'n )
+            ( rexMatchp("^p" s) 'p )
+            ( rexMatchp("^n" s) 'n )
+            ( t nil )
+        )
+    else nil)
+)
+
+;; Polaridad de una instancia: 'n, 'p o 'u (desconocida)
+procedure( gmidPolaridad(inst)
+    let( (cn val mdl)
+        cn = lowerCase(or(inst~&gt;cellName ""))
+        cond(
+            ( member(cn gmidNmosCells) 'n )
+            ( member(cn gmidPmosCells) 'p )
+            ( t
+                val = gmidGetInstParam(inst "model")
+                mdl = if( stringp(val) then lowerCase(val) else "")
+                or(gmidPolaridadStr(cn) gmidPolaridadStr(mdl) 'u)
+            )
+        )
+    )
+)
+
+;; Vista a usar para una celda: la elegida en el popup; si no hay eleccion,
+;; "schematic" si existe, o la primera vista schematic* que tenga.
+;; Devuelve nil si la celda no tiene ninguna vista schematic* (primitiva):
+;; en ese caso no se intenta abrir.
+procedure( gmidResolverVista(libName cellName)
+    let( (ov vistas)
+        ov = assoc(cellName gmidViewOverrides)
+        vistas = if( ov then nil else gmidVistasSchematic(libName cellName))
+        cond(
+            ( ov cadr(ov) )
+            ( member("schematic" vistas) "schematic" )
+            ( vistas car(vistas) )
+            ( t nil )
+        )
+    )
+)
+
+;; Evalua de forma segura un string como expresion SKILL (para numeros o
+;; variables de diseno). Si la variable no existe o la evaluacion falla
+;; por cualquier motivo, devuelve nil en vez de lanzar un error que
+;; interrumpiria todo el recorrido de la jerarquia.
+procedure( gmidSafeEvalNum(s)
+    let( (r)
+        r = errset(evalstring(s))
+        if( r &amp;&amp; numberp(car(r)) then car(r) else nil)
+    )
+)
+
+;; Parseo de valores tipo "40u" / "180.0n" / "2u" a micras (float).
+;; Si el valor es una variable de diseno parametrizada (p.ej. "MULT_DIFF_PAIR",
+;; sin parte numerica reconocible, o que no se puede evaluar), devuelve nil
+;; en vez de fallar: el transistor queda sin W/L conocido para este calculo.
+procedure( gmidParseLenToUm(str)
+    let( (n i numStr suf mult numVal)
+        n = strlen(str)
+        i = n
+        while( i &gt; 0 &amp;&amp;
+               member(substring(str i 1) '("0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "." "e" "E" "+" "-"))
+            i = i - 1
+        )
+        numStr = substring(str 1 i)
+        suf = lowerCase(if( i &lt; n then substring(str i+1 n-i) else ""))
+        mult = case( suf
+            ("" 1.0)
+            ("f" 1.0e-15) ("p" 1.0e-12) ("n" 1.0e-9)
+            ("u" 1.0e-6) ("m" 1.0e-3)
+            ("k" 1.0e3) ("meg" 1.0e6) ("g" 1.0e9)
+            (t nil)
+        )
+        numVal = gmidSafeEvalNum(numStr)
+        if( mult == nil || numVal == nil then nil else (numVal * mult * 1.0e6))
+    )
+)
+
+;; Lee un parametro (w/l/m/model) del CDF resuelto de una instancia
+procedure( gmidGetInstParam(inst paramName)
+    let( (cdfRes cdfId p val)
+        val = nil
+        cdfRes = errset(cdfGetInstCDF(inst))
+        cdfId = if( cdfRes then car(cdfRes) else nil)
+        when( cdfId
+            foreach( p cdfId~&gt;parameters
+                when( p~&gt;name == paramName val = p~&gt;value )
+            )
+        )
+        val
+    )
+)
+
+;; Devuelve list(w_um l_um m) para una instancia de transistor. Si W, L o m
+;; estan parametrizados con una variable que no se puede evaluar a numero,
+;; ese campo queda en nil (no se interrumpe el calculo de los demas).
+procedure( gmidGetWLM(inst)
+    let( (wStr lStr mStr w l m mVal)
+        wStr = gmidGetInstParam(inst "w")
+        lStr = gmidGetInstParam(inst "l")
+        mStr = gmidGetInstParam(inst "m")
+        w = if( wStr then gmidParseLenToUm(wStr) else nil)
+        l = if( lStr then gmidParseLenToUm(lStr) else nil)
+        mVal = if( mStr then gmidSafeEvalNum(mStr) else nil)
+        m = if( mVal then (mVal * 1.0) else if( mStr then nil else 1.0))
+        list(w l m)
+    )
+)
+
+;; Devuelve lista de (fullPath polaridad w_um l_um m), con polaridad 'n 'p 'u
+procedure( RecorrerJerarquiaGmId(cv path depth maxDepth)
+    let( (resultado fullPath subCvRes subCv vName wlm)
+        resultado = nil
+        when( cv &amp;&amp; cv~&gt;instances &amp;&amp; depth &lt;= maxDepth
+            foreach( inst cv~&gt;instances
+                fullPath = if( path == "" then inst~&gt;name else sprintf(nil "%s/%s" path inst~&gt;name))
+                if( gmidEsMos(inst) then
+                    wlm = gmidGetWLM(inst)
+                    resultado = cons(list(fullPath gmidPolaridad(inst) car(wlm) cadr(wlm) caddr(wlm)) resultado)
+                else
+                    vName = gmidResolverVista(inst~&gt;libName inst~&gt;cellName)
+                    when( vName
+                        subCvRes = errset(dbOpenCellViewByType(inst~&gt;libName inst~&gt;cellName vName nil "r"))
+                        subCv = if( subCvRes then car(subCvRes) else nil)
+                        when( subCv
+                            resultado = append(RecorrerJerarquiaGmId(subCv fullPath depth+1 maxDepth) resultado)
+                            dbClose(subCv)
+                        )
+                    )
+                )
+            )
+        )
+        resultado
+    )
+)
+
+;; Recorre la jerarquia y acumula en gmidCeldasAcc las celdas que tienen
+;; alguna vista schematic*: lista de (cellName listaDeVistas)
+procedure( gmidDescubrirCeldas(cv depth maxDepth)
+    let( (vistas vName subCvRes subCv)
+        when( cv &amp;&amp; cv~&gt;instances &amp;&amp; depth &lt;= maxDepth
+            foreach( inst cv~&gt;instances
+                unless( gmidEsMos(inst)
+                    vistas = gmidVistasSchematic(inst~&gt;libName inst~&gt;cellName)
+                    when( vistas
+                        unless( assoc(inst~&gt;cellName gmidCeldasAcc)
+                            gmidCeldasAcc = cons(list(inst~&gt;cellName vistas) gmidCeldasAcc)
+                            vName = gmidResolverVista(inst~&gt;libName inst~&gt;cellName)
+                            when( vName
+                                subCvRes = errset(dbOpenCellViewByType(inst~&gt;libName inst~&gt;cellName vName nil "r"))
+                                subCv = if( subCvRes then car(subCvRes) else nil)
+                                when( subCv
+                                    gmidDescubrirCeldas(subCv depth+1 maxDepth)
+                                    dbClose(subCv)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        t
+    )
+)
+
+;; Diagnostico: acumula las celdas hoja (sin vista schematic*) que NO se han
+;; detectado como transistor, con sus pines: lista de (lib/celda pines)
+procedure( gmidRecogerHojas(cv depth maxDepth)
+    let( (vName subCvRes subCv clave nombres pines)
+        when( cv &amp;&amp; cv~&gt;instances &amp;&amp; depth &lt;= maxDepth
+            foreach( inst cv~&gt;instances
+                unless( gmidEsMos(inst)
+                    vName = gmidResolverVista(inst~&gt;libName inst~&gt;cellName)
+                    if( vName then
+                        subCvRes = errset(dbOpenCellViewByType(inst~&gt;libName inst~&gt;cellName vName nil "r"))
+                        subCv = if( subCvRes then car(subCvRes) else nil)
+                        when( subCv
+                            gmidRecogerHojas(subCv depth+1 maxDepth)
+                            dbClose(subCv)
+                        )
+                    else
+                        clave = sprintf(nil "%s/%s" inst~&gt;libName inst~&gt;cellName)
+                        unless( assoc(clave gmidHojasAcc)
+                            nombres = gmidTerminalesMaster(inst)
+                            pines = if( nombres then buildString(nombres ",") else "?")
+                            gmidHojasAcc = cons(list(clave pines) gmidHojasAcc)
+                        )
+                    )
+                )
+            )
+        )
+        t
+    )
+)
+
+;; Diagnostico: celdas hoja que NO se cuentan como transistor, con sus pines.
+;; Si ves algun transistor en la lista, anadelo desde "Tipos de transistores".
+procedure( ListarHojasGmId()
+    let( (cv)
+        cv = geGetEditCellView()
+        gmidMosCache = nil
+        gmidHojasAcc = nil
+        gmidRecogerHojas(cv 1 gmidMaxDepth)
+        printf("Celdas hoja no detectadas como transistor:\n")
+        foreach( h gmidHojasAcc
+            printf("  %s   pines: %s\n" car(h) cadr(h))
+        )
+        t
+    )
+)
+
+;; Diagnostico: transistores detectados, con polaridad y W/L/m
+procedure( ListarTransistoresGmId()
+    let( (cv xt)
+        cv = geGetEditCellView()
+        gmidMosCache = nil
+        xt = RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
+        printf("Transistores detectados: %d\n" length(xt))
+        foreach( par xt
+            printf("  %s  polaridad=%L  W=%L L=%L m=%L\n"
+                car(par) cadr(par) caddr(par) cadddr(par) car(cddddr(par)))
+        )
+        t
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; TIPOS DE TRANSISTORES (opcional): fuerza celdas y polaridad. Se guarda en
+;; disco y se carga solo en cada sesion.
+;; -------------------------------------------------------------------------
+
+;; "a b, c" -&gt; ("a" "b" "c") en minusculas
+procedure( gmidParseCeldas(str)
+    let( (res)
+        res = nil
+        when( str &amp;&amp; str != ""
+            foreach( p parseString(str " ,;")
+                when( p != ""
+                    res = cons(lowerCase(p) res)
+                )
+            )
+        )
+        reverse(res)
+    )
+)
+
+;; Escribe la configuracion actual en el archivo persistente
+procedure( gmidGuardarTipos()
+    let( (fid)
+        fid = outfile(gmidConfigFile)
+        when( fid
+            fprintf(fid ";; Configuracion de tipos de transistores (generado automaticamente)\n")
+            fprintf(fid "gmidNmosCells = '%L\n" gmidNmosCells)
+            fprintf(fid "gmidPmosCells = '%L\n" gmidPmosCells)
+            close(fid)
+            printf("Tipos de transistores guardados en %s\n" gmidConfigFile)
+        )
+        unless( fid
+            printf("No se pudo escribir %s\n" gmidConfigFile)
+        )
+        t
+    )
+)
+
+procedure( TiposTransistoresGmId()
+    let( (nStr pStr)
+        nStr = if( gmidNmosCells then buildString(gmidNmosCells " ") else "")
+        pStr = if( gmidPmosCells then buildString(gmidPmosCells " ") else "")
+        gmidTiposForm = hiCreateAppForm(
+            ?name 'gmidTiposForm
+            ?formTitle "Tipos de transistores (opcional)"
+            ?fields list(
+                hiCreateStringField(
+                    ?name 'gmidTiposNmos
+                    ?prompt "Celdas NMOS forzadas (separadas por espacios)"
+                    ?value nStr
+                )
+                hiCreateStringField(
+                    ?name 'gmidTiposPmos
+                    ?prompt "Celdas PMOS forzadas (separadas por espacios)"
+                    ?value pStr
+                )
+            )
+            ?buttonLayout 'OKCancel
+            ?callback "GuardarTiposGmId()"
+        )
+        hiDisplayForm(gmidTiposForm)
+    )
+)
+
+procedure( GuardarTiposGmId()
+    let( (f nStr pStr)
+        f = hiGetCurrentForm()
+        nStr = (f-&gt;gmidTiposNmos)~&gt;value
+        pStr = (f-&gt;gmidTiposPmos)~&gt;value
+        gmidNmosCells = gmidParseCeldas(nStr)
+        gmidPmosCells = gmidParseCeldas(pStr)
+        gmidMosCache = nil
+        printf("NMOS: %L | PMOS: %L\n" gmidNmosCells gmidPmosCells)
+        gmidGuardarTipos()
+    )
+)
+
+;; Devuelve los tests elegidos (que existan en la sesion). nil si no hay
+;; ninguno elegido: en ese caso no se crea nada.
+procedure( gmidTestsElegidos(sess)
+    if( gmidTests
+        then setof(tn maeGetSetup(?session sess) member(tn gmidTests))
+        else nil)
+)
+
+;; Resuelve sesion, tests y transistores para el esquematico activo
+procedure( gmidPrepare(cv)
+    let( (sess tests xtors)
+        gmidMosCache = nil
+        sess = car(maeGetSessions())
+        unless( sess
+            sess = maeOpenSetup(cv~&gt;libName cv~&gt;cellName "maestro" ?mode "a"))
+        tests = gmidTestsElegidos(sess)
+        xtors = RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
+        list(sess tests xtors)
+    )
+)
+
+;; Lee el valor (lista posicional t/nil) del selector de vista numero idx
+;; (campos gmidDestView0 ... gmidDestView7). Devuelve nil si no existe.
+procedure( gmidLeerVistaField(f idx)
+    let( (r)
+        r = cond(
+            ( idx == 0 errset((f-&gt;gmidDestView0)~&gt;value) )
+            ( idx == 1 errset((f-&gt;gmidDestView1)~&gt;value) )
+            ( idx == 2 errset((f-&gt;gmidDestView2)~&gt;value) )
+            ( idx == 3 errset((f-&gt;gmidDestView3)~&gt;value) )
+            ( idx == 4 errset((f-&gt;gmidDestView4)~&gt;value) )
+            ( idx == 5 errset((f-&gt;gmidDestView5)~&gt;value) )
+            ( idx == 6 errset((f-&gt;gmidDestView6)~&gt;value) )
+            ( idx == 7 errset((f-&gt;gmidDestView7)~&gt;value) )
+            ( t nil )
+        )
+        if( r then car(r) else nil)
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; POPUP DE DESTINO: test(s) + vista de esquematico. Se abre cada vez y, al
+;; pulsar OK, ejecuta la accion pedida (string con la llamada, p.ej.
+;; "GenerarGmId()").
+;; -------------------------------------------------------------------------
+procedure( gmidPedirDestino(accion)
+    let( (cv sess tests choices i sym fields c vchoices vnames j vsym nVw)
+        cv = geGetEditCellView()
+        sess = car(maeGetSessions())
+        unless( sess
+            printf("Abre primero el Maestro (ADE Assembler) de este esquematico.\n")
+        )
+        when( sess &amp;&amp; cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+            gmidAccionPendiente = accion
+            gmidMosCache = nil
+
+            ;; Campo de tests
+            tests = maeGetSetup(?session sess)
+            gmidDestTestsOrdered = nil
+            choices = nil
+            i = 0
+            foreach( tn tests
+                sym = concat('gmidTst i)
+                choices = cons(list(sym tn) choices)
+                gmidDestTestsOrdered = cons(tn gmidDestTestsOrdered)
+                i = i + 1
+            )
+            fields = list(
+                hiCreateToggleField(
+                    ?name 'gmidDestTests
+                    ?choices choices
+                    ?numSelect length(choices)
+                    ?prompt "Test(s) donde crear las expresiones"
+                    ?value nil
+                )
+            )
+
+            ;; Un selector de vista por cada celda con varias vistas schematic*
+            ;; (maximo 8)
+            gmidCeldasAcc = nil
+            gmidDescubrirCeldas(cv 1 gmidMaxDepth)
+            gmidDestCeldas = nil
+            nVw = 0
+            foreach( c reverse(gmidCeldasAcc)
+                when( length(cadr(c)) &gt; 1 &amp;&amp; nVw &lt; 8
+                    vchoices = nil
+                    vnames = nil
+                    j = 0
+                    foreach( vn cadr(c)
+                        vsym = concat('gmidVw nVw 'x j)
+                        vchoices = cons(list(vsym vn) vchoices)
+                        vnames = cons(vn vnames)
+                        j = j + 1
+                    )
+                    fields = append(fields list(
+                        hiCreateToggleField(
+                            ?name concat('gmidDestView nVw)
+                            ?choices vchoices
+                            ?numSelect 1
+                            ?prompt sprintf(nil "Vista de %s" car(c))
+                            ?value nil
+                        )
+                    ))
+                    gmidDestCeldas = cons(list(car(c) vnames nVw) gmidDestCeldas)
+                    nVw = nVw + 1
+                )
+            )
+
+            gmidDestForm = hiCreateAppForm(
+                ?name 'gmidDestForm
+                ?formTitle "Destino de las expresiones"
+                ?fields fields
+                ?buttonLayout 'OKCancel
+                ?callback "GuardarDestinoGmId()"
+            )
+            hiDisplayForm(gmidDestForm)
+        )
+    )
+)
+
+procedure( GuardarDestinoGmId()
+    let( (f selT selList nameList elegidos valores entry idx vistaElegida nuevo kept)
+        f = hiGetCurrentForm()
+
+        ;; Tests elegidos (lista posicional t/nil)
+        selT = (f-&gt;gmidDestTests)~&gt;value
+        elegidos = nil
+        selList = selT
+        nameList = gmidDestTestsOrdered
+        while( selList
+            when( car(selList)
+                elegidos = cons(car(nameList) elegidos)
+            )
+            selList = cdr(selList)
+            nameList = cdr(nameList)
+        )
+        gmidTests = elegidos
+
+        ;; Vistas elegidas por celda (si no eliges ninguna, se conserva la anterior)
+        nuevo = nil
+        foreach( entry gmidDestCeldas
+            idx = caddr(entry)
+            valores = gmidLeerVistaField(f idx)
+            vistaElegida = nil
+            selList = valores
+            nameList = cadr(entry)
+            while( selList
+                when( car(selList)
+                    vistaElegida = car(nameList)
+                )
+                selList = cdr(selList)
+                nameList = cdr(nameList)
+            )
+            when( vistaElegida
+                nuevo = cons(list(car(entry) vistaElegida) nuevo)
+            )
+        )
+        kept = setof(o gmidViewOverrides !assoc(car(o) nuevo))
+        gmidViewOverrides = append(nuevo kept)
+
+        printf("Destino: tests %L | vistas %L\n" gmidTests gmidViewOverrides)
+        if( gmidTests
+            then evalstring(gmidAccionPendiente)
+            else printf("No has elegido ningun test: no se crea nada.\n"))
+    )
+)
+
+;; Entradas de menu: piden el destino y luego ejecutan la accion
+procedure( GmIdConDestino()
+    gmidPedirDestino("GenerarGmId()")
+)
+
+procedure( SaturacionConDestino()
+    gmidPedirDestino("GenerarSaturacion()")
+)
+
+;; -------------------------------------------------------------------------
+;; GM/ID
+;; -------------------------------------------------------------------------
+procedure( GenerarGmId()
+    let( (cv prep sess tests xtors nN nP nU unk n1 r1 nErr path)
+        cv = geGetEditCellView()
+        when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+            prep = gmidPrepare(cv)
+            sess = car(prep)
+            tests = cadr(prep)
+            xtors = caddr(prep)
+            nN = 0
+            nP = 0
+            nU = 0
+            unk = nil
+            foreach( par xtors
+                cond(
+                    ( eq(cadr(par) 'n) nN = nN + 1 )
+                    ( eq(cadr(par) 'p) nP = nP + 1 )
+                    ( t nU = nU + 1 unk = cons(car(par) unk) )
+                )
+            )
+            nErr = 0
+            foreach( tst tests
+                foreach( par xtors
+                    path = car(par)
+                    n1 = sprintf(nil "gmid_%s" gmidSafeName(path))
+                    errset(maeDeleteOutput(n1 tst ?session sess))
+                    r1 = maeAddOutput(n1 tst ?outputType "point"
+                        ?expr sprintf(nil "OP(\"/%s\" \"gm\") / OP(\"/%s\" \"id\")" path path)
+                        ?session sess)
+                    unless( r1
+                        nErr = nErr + 1
+                        printf("Fallo gm/Id %s en %s\n" path tst))
+                )
+            )
+            if( tests then
+                maeSaveSetup(?session sess)
+                printf("gm/Id: %d NMOS, %d PMOS, %d sin polaridad | tests %L | %d fallos\n"
+                    nN nP nU tests nErr)
+                when( nU &gt; 0
+                    printf("Aviso: polaridad desconocida en %L. gm/Id no la necesita, pero Mismatch si: anade su celda en Tipos de transistores.\n" unk)
+                )
+            else
+                printf("Ningun test elegido.\n")
+            )
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; SATURACION
+;; -------------------------------------------------------------------------
+procedure( GenerarSaturacion()
+    let( (cv prep sess tests xtors n2 r2 r3 nErr path)
+        cv = geGetEditCellView()
+        when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
+            prep = gmidPrepare(cv)
+            sess = car(prep)
+            tests = cadr(prep)
+            xtors = caddr(prep)
+            nErr = 0
+            foreach( tst tests
+                foreach( par xtors
+                    path = car(par)
+                    n2 = sprintf(nil "vdsmargin_%s" gmidSafeName(path))
+                    errset(maeDeleteOutput(n2 tst ?session sess))
+                    r2 = maeAddOutput(n2 tst ?outputType "point"
+                        ?expr sprintf(nil "abs(OP(\"/%s\" \"vds\")) - abs(OP(\"/%s\" \"vdsat\"))" path path)
+                        ?session sess)
+                    r3 = maeSetSpec(n2 tst ?gt gmidSatMargin ?session sess)
+                    unless( r2 &amp;&amp; r3
+                        nErr = nErr + 1
+                        printf("Fallo saturacion %s en %s\n" path tst))
+                )
+            )
+            if( tests then
+                maeSaveSetup(?session sess)
+                printf("Saturacion: %d transistores | tests %L | spec &gt; %s | %d fallos\n"
+                    length(xtors) tests gmidSatMargin nErr)
+            else
+                printf("Ningun test elegido.\n")
+            )
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; MENU (admite items extra anadidos por otros archivos via gmidExtraMenuItems)
+;; -------------------------------------------------------------------------
+procedure( RegistrarMiMenuGmId(args)
+    let( (itemGmid itemSat itemTipos menuCustom win allItems)
+        win = if( windowp(args) then args else args-&gt;window )
+        when( win &amp;&amp; windowp(win)
+            itemGmid = hiCreateMenuItem(
+                ?name 'ItemGmId
+                ?itemText "gm/Id"
+                ?callback "GmIdConDestino()"
+            )
+            itemSat = hiCreateMenuItem(
+                ?name 'ItemSat
+                ?itemText "Saturación"
+                ?callback "SaturacionConDestino()"
+            )
+            itemTipos = hiCreateMenuItem(
+                ?name 'ItemTipos
+                ?itemText "Tipos de transistores"
+                ?callback "TiposTransistoresGmId()"
+            )
+            allItems = append(list(itemGmid itemSat itemTipos) gmidExtraMenuItems)
+            menuCustom = hiCreatePulldownMenu(
+                'MenuGmId
+                "Crear expresiones"
+                allItems
+            )
+            hiInsertBannerMenu(win menuCustom length(hiGetBannerMenus(win)))
+        )
+    )
+)
+
+procedure( ChequearMenusGmId()
+    errset(
+        foreach( w hiGetWindowList()
+            errset(
+                when( windowp(w) &amp;&amp; geGetEditCellView(w) &amp;&amp;
+                      !member('MenuGmId hiGetBannerMenus(w))
+                    RegistrarMiMenuGmId(list(nil 'window w))
+                )
+            )
+        )
+    )
+    hiRegTimer("ChequearMenusGmId()" 1000)
+)
+
+ChequearMenusGmId()</code></pre>
         </div>
 
         <div class="note" id="noteBox">
@@ -561,170 +1033,176 @@ printf("Mismatch enganchado al menu \"Crear expresiones\".\n")</code></pre>
     "es": {
         "back_link": "← Volver al sitio",
         "badge": "SKILL · Cadence Virtuoso",
-        "title": "Mismatch de corriente (modelo de Pelgrom)",
-        "lead": "Plugin en SKILL que añade un popup a Maestro/ADE Assembler para seleccionar qué transistores deben llevar la misma corriente, calcular su Vgs y overdrive, y estimar el mismatch de corriente esperado según el modelo de Pelgrom.",
+        "title": "Extractor automático de gm/Id y margen de saturación",
+        "lead": "Plugin en SKILL para ADE Assembler (Maestro) que detecta automáticamente los transistores MOS de un esquemático — incluso dentro de jerarquías anidadas — sin depender de los nombres de celda de cada PDK, y genera las expresiones de gm/Id y el margen de saturación en el test de Maestro que elijas.",
         "th_hace": "Qué hace",
         "th_necesita": "Qué necesitas configurar",
         "features": [
             {
-                "hace": "Requiere el extractor de gm/Id ya cargado",
-                "necesita": "Cargar primero <code>extractor_gmid_saturacion.il</code>: este plugin reutiliza su detección de transistores, la jerarquía y el popup de destino."
+                "hace": "Detecta los transistores MOS automáticamente, sin listas de nombres",
+                "necesita": "Nada en la mayoría de PDKs: una celda cuenta como transistor si es primitiva (sin vista <code>schematic*</code>) y su símbolo tiene pines D, G y S. Comprueba el resultado con <code>ListarTransistoresGmId()</code>."
             },
             {
-                "hace": "Pide el destino y abre un popup para elegir transistores",
-                "necesita": "Elegir el test (y la vista de las celdas con varias); después marcar los transistores que deben llevar la misma corriente y fijar la corriente esperada (A)."
+                "hace": "Recorre la jerarquía del esquemático",
+                "necesita": "Tener abierto y activo el esquemático de nivel superior y ajustar <code>gmidMaxDepth</code> (profundidad máxima, por defecto 3)."
             },
             {
-                "hace": "Genera siempre Vgs y Overdrive (Vgs − Vth)",
-                "necesita": "Simular el test para ver los valores numéricos; sin simular, las expresiones quedan sin evaluar."
+                "hace": "Deduce si cada transistor es NMOS o PMOS",
+                "necesita": "Nada: usa el nombre de la celda y el parámetro <code>model</code>. Si no hay ninguna pista, la polaridad queda desconocida: gm/Id y Saturación funcionan igual y Mismatch omite el cálculo de Pelgrom de ese transistor."
             },
             {
-                "hace": "Calcula el mismatch con el modelo de Pelgrom",
-                "necesita": "Cada transistor tiene su propio <code>PelgromValue_&lt;transistor&gt;</code> (no se comparte entre transistores, porque cada uno tiene un Vgs distinto). Se crea con un valor de partida (<code>gmidPelgromPe</code>/<code>gmidPelgromNe</code> según la polaridad) y se ajusta después en Maestro mirando el <code>Overdrive_&lt;transistor&gt;</code> real."
+                "hace": "Pide en cada ejecución el test de Maestro destino",
+                "necesita": "Elegir en el popup el/los test(s). Si no eliges ninguno, no se crea nada."
             },
             {
-                "hace": "Añade los límites Min/MaxCurrentError como specs",
-                "necesita": "Nada adicional: se generan automáticamente comparando contra <code>ActualCurrent_&lt;transistor&gt;</code>."
+                "hace": "Resuelve celdas con varias vistas de esquemático",
+                "necesita": "Elegir en el mismo popup la vista (p. ej. <code>schematic_RailToRail</code>) de cada celda que tenga varias. Sin elección usa <code>schematic</code> o la primera <code>schematic*</code>."
             },
             {
-                "hace": "Transistores de polaridad desconocida",
-                "necesita": "El mismatch se calcula igual (solo hace falta W/L/m); el <code>PelgromValue</code> de partida es <code>0.0</code>. Añade su celda en «Crear expresiones → Tipos de transistores» si quieres que el valor de partida sea el de su polaridad real."
+                "hace": "Genera gm/Id y el margen Vds − Vdsat con su spec",
+                "necesita": "Una sesión de Maestro/ADE Assembler abierta, con Save DC Operating Point activado en el test. Ajustar <code>gmidSatMargin</code> (margen mínimo, por defecto <code>\"0\"</code>). Ninguna de las dos necesita W/L, así que funcionan aunque estén parametrizados."
             },
             {
-                "hace": "Permite reajustar Pelgrom por transistor sin repetir el popup",
-                "necesita": "Editar <code>PelgromValue_&lt;transistor&gt;</code> directamente en la tabla de Outputs de Maestro, uno por uno, si su Vov real no coincide con el de partida."
+                "hace": "Tolera W, L o m parametrizados (variables de diseño, no valores numéricos)",
+                "necesita": "Nada: si una variable no se puede evaluar a número, ese dato queda como desconocido para ese transistor en vez de interrumpir el recorrido de toda la jerarquía. Solo afecta al mismatch de ese transistor concreto."
+            },
+            {
+                "hace": "Tipos de transistores (opcional)",
+                "necesita": "Solo si la detección falla con alguna celda: menú «Crear expresiones → Tipos de transistores». Se guarda una vez en <code>~/.gmid_tipos_transistores.il</code> y se carga solo en cada sesión."
+            },
+            {
+                "hace": "Añade el menú «Crear expresiones» automáticamente",
+                "necesita": "Cargar el plugin con <code>load()</code> o desde el <code>.cdsinit</code>. El menú tarda hasta ~1 minuto en aparecer en cada esquemático."
             }
         ],
-        "physicsHint": "<strong>Por qué importa el overdrive:</strong> la corriente de drenador tiene dos fuentes de mismatch independientes, cada una con su propio coeficiente de Pelgrom y la misma dependencia 1/√(W·L): el mismatch de tensión umbral (<code>AVT</code>) y el mismatch de factor de ganancia o beta (<code>Aβ</code>). En aproximación de ley cuadrática, el mismatch total de corriente combina ambos como <code>ΔID/ID ≈ (2/Vov)·ΔVth − Δβ/β</code>. Como el término de <code>ΔVth</code> va multiplicado por <code>2/Vov</code>, pesa mucho más en inversión débil/moderada (Vov pequeño) y cada vez menos al aumentar el overdrive, mientras que el término de <code>Δβ</code> no depende de Vov. Por eso el peso relativo de cada mecanismo cambia con el punto de polarización, y el datasheet da un coeficiente distinto (ya combinado) para cada <code>Vov</code>: no hay un único número válido para todo el rango: en inversión débil domina el mismatch de <code>Vth</code>, y en inversión fuerte pasa a dominar el de <code>β</code> — ambos son independientes entre sí, solo cambia su peso relativo según el punto de polarización.",
-        "hint": "El coeficiente de Pelgrom no es un único número: el datasheet lo da para distintos puntos de overdrive, y cada transistor seleccionado puede tener un Vgs real distinto. Por eso cada transistor tiene su propio <code>PelgromValue_&lt;transistor&gt;</code>: mira su <code>Overdrive_&lt;transistor&gt;</code> tras simular y ajusta ese valor en Maestro, transistor por transistor, con la fila del datasheet que corresponda.",
+        "hint": "<strong>Comprobar la detección:</strong> con el esquemático activo, ejecuta <code>ListarTransistoresGmId()</code> en el CIW para ver cada transistor detectado con su polaridad y W/L/m. Si falta alguno, <code>ListarHojasGmId()</code> muestra las celdas hoja sin clasificar con sus pines.",
         "copyLabel": "Copiar código",
         "copiedLabel": "¡Copiado!",
         "note_title": "Uso:",
-        "note_text": "Carga primero <code>extractor_gmid_saturacion.il</code> y después <code>mismatch_pelgrom.il</code> (por ejemplo desde tu <code>.cdsinit</code>, en ese orden). Abre el esquemático, usa <strong>Crear expresiones → Mismatch</strong>, elige el test destino, marca los transistores, simula y revisa <code>Overdrive_&lt;transistor&gt;</code> para elegir el coeficiente de Pelgrom correcto del datasheet.",
+        "note_text": "<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load(\"extractor_gmid_saturacion.il\")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load(\"/ruta/absoluta/extractor_gmid_saturacion.il\")</code>.<br><br>Después, en el esquemático: <strong>Crear expresiones → gm/Id</strong> (o <strong>Saturación</strong>). Se abre un popup donde eliges el test de Maestro destino y la vista de las celdas con varias vistas; al pulsar OK las expresiones se crean solo en ese test.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_title": "Destino de las expresiones",
         "fig_tests": "Test(s) donde crear las expresiones",
         "fig_view": "Vista de [Nombre]",
         "fig_test_name": "Test",
         "fig_caption": "Ilustración del popup «Destino de las expresiones», que aparece al pulsar gm/Id, Saturación o Mismatch: eliges en qué test(s) de Maestro se crean las expresiones y, por cada celda con varias vistas, cuál usar. «[Nombre]» es el nombre de la celda.",
-        "fig_aria": "Ilustración del popup de destino: casillas para elegir el test de Maestro y la vista de esquemático de cada celda",
-        "fig2_title": "Mismatch (Pelgrom)",
-        "fig2_tx": "Transistores a analizar",
-        "fig2_current": "Corriente esperada (A)",
-        "fig2_caption": "Ilustración del popup «Mismatch (Pelgrom)», que se abre a continuación: marcas los transistores que deben llevar la misma corriente (con la polaridad detectada) e indicas la corriente esperada en amperios.",
-        "fig2_aria": "Ilustración del popup de mismatch: casillas para elegir los transistores y campo de corriente esperada"
+        "fig_aria": "Ilustración del popup de destino: casillas para elegir el test de Maestro y la vista de esquemático de cada celda"
     },
     "ca": {
         "back_link": "← Tornar al lloc",
         "badge": "SKILL · Cadence Virtuoso",
-        "title": "Mismatch de corrent (model de Pelgrom)",
-        "lead": "Plugin en SKILL que afegeix un popup a Maestro/ADE Assembler per seleccionar quins transistors han de portar el mateix corrent, calcular el seu Vgs i overdrive, i estimar el mismatch de corrent esperat segons el model de Pelgrom.",
+        "title": "Extractor automàtic de gm/Id i marge de saturació",
+        "lead": "Plugin en SKILL per a ADE Assembler (Maestro) que detecta automàticament els transistors MOS d'un esquemàtic — fins i tot dins de jerarquies imbricades — sense dependre dels noms de cel·la de cada PDK, i genera les expressions de gm/Id i el marge de saturació al test de Maestro que triïs.",
         "th_hace": "Què fa",
         "th_necesita": "Què has de configurar",
         "features": [
             {
-                "hace": "Requereix l'extractor de gm/Id ja carregat",
-                "necesita": "Carregar primer <code>extractor_gmid_saturacion.il</code>: aquest plugin reutilitza la seva detecció de transistors, la jerarquia i el popup de destí."
+                "hace": "Detecta els transistors MOS automàticament, sense llistes de noms",
+                "necesita": "Res en la majoria de PDK: una cel·la compta com a transistor si és primitiva (sense vista <code>schematic*</code>) i el seu símbol té pins D, G i S. Comprova el resultat amb <code>ListarTransistoresGmId()</code>."
             },
             {
-                "hace": "Demana el destí i obre un popup per triar transistors",
-                "necesita": "Triar el test (i la vista de les cel·les amb diverses); després marcar els transistors que han de portar el mateix corrent i fixar el corrent esperat (A)."
+                "hace": "Recorre la jerarquia de l'esquemàtic",
+                "necesita": "Tenir obert i actiu l'esquemàtic de nivell superior i ajustar <code>gmidMaxDepth</code> (profunditat màxima, per defecte 3)."
             },
             {
-                "hace": "Genera sempre Vgs i Overdrive (Vgs − Vth)",
-                "necesita": "Simular el test per veure els valors numèrics; sense simular, les expressions queden sense avaluar."
+                "hace": "Dedueix si cada transistor és NMOS o PMOS",
+                "necesita": "Res: fa servir el nom de la cel·la i el paràmetre <code>model</code>. Si no hi ha cap pista, la polaritat queda desconeguda: gm/Id i Saturació funcionen igual i Mismatch omet el càlcul de Pelgrom d'aquest transistor."
             },
             {
-                "hace": "Calcula el mismatch amb el model de Pelgrom",
-                "necesita": "Cada transistor té el seu propi <code>PelgromValue_&lt;transistor&gt;</code> (no es comparteix entre transistors, perquè cada un té un Vgs diferent). Es crea amb un valor de partida (<code>gmidPelgromPe</code>/<code>gmidPelgromNe</code> segons la polaritat) i s'ajusta després a Maestro mirant l'<code>Overdrive_&lt;transistor&gt;</code> real."
+                "hace": "Demana a cada execució el test de Maestro destí",
+                "necesita": "Triar al popup el/els test(s). Si no en tries cap, no es crea res."
             },
             {
-                "hace": "Afegeix els límits Min/MaxCurrentError com a specs",
-                "necesita": "Res addicional: es generen automàticament comparant contra <code>ActualCurrent_&lt;transistor&gt;</code>."
+                "hace": "Resol cel·les amb diverses vistes d'esquemàtic",
+                "necesita": "Triar al mateix popup la vista (p. ex. <code>schematic_RailToRail</code>) de cada cel·la que en tingui diverses. Sense elecció fa servir <code>schematic</code> o la primera <code>schematic*</code>."
             },
             {
-                "hace": "Transistors de polaritat desconeguda",
-                "necesita": "El mismatch es calcula igual (només cal W/L/m); el <code>PelgromValue</code> de partida és <code>0.0</code>. Afegeix la seva cel·la a «Crear expresiones → Tipos de transistores» si vols que el valor de partida sigui el de la seva polaritat real."
+                "hace": "Genera gm/Id i el marge Vds − Vdsat amb el seu spec",
+                "necesita": "Una sessió de Maestro/ADE Assembler oberta, amb Save DC Operating Point activat al test. Ajustar <code>gmidSatMargin</code> (marge mínim, per defecte <code>\"0\"</code>). Cap de les dues necessita W/L, així que funcionen encara que estiguin parametritzats."
             },
             {
-                "hace": "Permet reajustar Pelgrom per transistor sense repetir el popup",
-                "necesita": "Editar <code>PelgromValue_&lt;transistor&gt;</code> directament a la taula d'Outputs de Maestro, un per un, si el seu Vov real no coincideix amb el de partida."
+                "hace": "Tolera W, L o m parametritzats (variables de disseny, no valors numèrics)",
+                "necesita": "Res: si una variable no es pot avaluar a número, aquesta dada queda com a desconeguda per a aquest transistor en lloc d'interrompre el recorregut de tota la jerarquia. Només afecta el mismatch d'aquest transistor concret."
+            },
+            {
+                "hace": "Tipus de transistors (opcional)",
+                "necesita": "Només si la detecció falla amb alguna cel·la: menú «Crear expresiones → Tipos de transistores». Es desa una vegada a <code>~/.gmid_tipos_transistores.il</code> i es carrega sol a cada sessió."
+            },
+            {
+                "hace": "Afegeix el menú «Crear expresiones» automàticament",
+                "necesita": "Carregar el plugin amb <code>load()</code> o des del <code>.cdsinit</code>. El menú triga fins a ~1 minut a aparèixer a cada esquemàtic."
             }
         ],
-        "physicsHint": "<strong>Per què importa l'overdrive:</strong> el corrent de drenador té dues fonts de mismatch independents, cadascuna amb el seu propi coeficient de Pelgrom i la mateixa dependència 1/√(W·L): el mismatch de tensió llindar (<code>AVT</code>) i el mismatch de factor de guany o beta (<code>Aβ</code>). En aproximació de llei quadràtica, el mismatch total de corrent combina ambdós com <code>ΔID/ID ≈ (2/Vov)·ΔVth − Δβ/β</code>. Com que el terme de <code>ΔVth</code> va multiplicat per <code>2/Vov</code>, pesa molt més en inversió feble/moderada (Vov petit) i cada vegada menys en augmentar l'overdrive, mentre que el terme de <code>Δβ</code> no depèn de Vov. Per això el pes relatiu de cada mecanisme canvia amb el punt de polarització, i el datasheet dona un coeficient diferent (ja combinat) per a cada <code>Vov</code>: no hi ha un únic número vàlid per a tot el rang: en inversió feble domina el mismatch de <code>Vth</code>, i en inversió forta passa a dominar el de <code>β</code> — tots dos són independents entre si, només canvia el seu pes relatiu segons el punt de polarització.",
-        "hint": "El coeficient de Pelgrom no és un únic número: el datasheet el dona per a diferents punts d'overdrive, i cada transistor seleccionat pot tenir un Vgs real diferent. Per això cada transistor té el seu propi <code>PelgromValue_&lt;transistor&gt;</code>: mira el seu <code>Overdrive_&lt;transistor&gt;</code> després de simular i ajusta aquest valor a Maestro, transistor per transistor, amb la fila del datasheet que correspongui.",
+        "hint": "<strong>Comprovar la detecció:</strong> amb l'esquemàtic actiu, executa <code>ListarTransistoresGmId()</code> al CIW per veure cada transistor detectat amb la seva polaritat i W/L/m. Si en falta algun, <code>ListarHojasGmId()</code> mostra les cel·les fulla sense classificar amb els seus pins.",
         "copyLabel": "Copiar codi",
         "copiedLabel": "Copiat!",
         "note_title": "Ús:",
-        "note_text": "Carrega primer <code>extractor_gmid_saturacion.il</code> i després <code>mismatch_pelgrom.il</code> (per exemple des del teu <code>.cdsinit</code>, en aquest ordre). Obre l'esquemàtic, fes servir <strong>Crear expresiones → Mismatch</strong>, tria el test destí, marca els transistors, simula i revisa <code>Overdrive_&lt;transistor&gt;</code> per triar el coeficient de Pelgrom correcte del datasheet.",
+        "note_text": "<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load(\"extractor_gmid_saturacion.il\")</code> al CIW (amb el CIW situat a la carpeta de l'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load(\"/ruta/absoluta/extractor_gmid_saturacion.il\")</code>.<br><br>Després, a l'esquemàtic: <strong>Crear expresiones → gm/Id</strong> (o <strong>Saturación</strong>). S'obre un popup on tries el test de Maestro destí i la vista de les cel·les amb diverses vistes; en prémer OK les expressions es creen només en aquest test.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_title": "Destí de les expressions",
         "fig_tests": "Test(s) on crear les expressions",
         "fig_view": "Vista de [Nom]",
         "fig_test_name": "Test",
         "fig_caption": "Il·lustració del popup «Destino de las expresiones», que apareix en prémer gm/Id, Saturación o Mismatch: tries en quin(s) test(s) de Maestro es creen les expressions i, per cada cel·la amb diverses vistes, quina fer servir. «[Nom]» és el nom de la cel·la. El text real del popup és en castellà.",
-        "fig_aria": "Il·lustració del popup de destí: caselles per triar el test de Maestro i la vista d'esquemàtic de cada cel·la",
-        "fig2_title": "Mismatch (Pelgrom)",
-        "fig2_tx": "Transistors a analitzar",
-        "fig2_current": "Corrent esperat (A)",
-        "fig2_caption": "Il·lustració del popup «Mismatch (Pelgrom)», que s'obre a continuació: marques els transistors que han de portar el mateix corrent (amb la polaritat detectada) i indiques el corrent esperat en amperes. El text real del popup és en castellà.",
-        "fig2_aria": "Il·lustració del popup de mismatch: caselles per triar els transistors i camp de corrent esperat"
+        "fig_aria": "Il·lustració del popup de destí: caselles per triar el test de Maestro i la vista d'esquemàtic de cada cel·la"
     },
     "en": {
         "back_link": "← Back to site",
         "badge": "SKILL · Cadence Virtuoso",
-        "title": "Current mismatch (Pelgrom model)",
-        "lead": "A SKILL plugin that adds a popup to Maestro/ADE Assembler to select which transistors should carry the same current, compute their Vgs and overdrive, and estimate the expected current mismatch using the Pelgrom model.",
+        "title": "Automatic gm/Id and saturation margin extractor",
+        "lead": "A SKILL plugin for ADE Assembler (Maestro) that automatically detects the MOS transistors in a schematic — even inside nested hierarchies — without relying on each PDK's cell names, and generates the gm/Id expressions and saturation margin in the Maestro test you choose.",
         "th_hace": "What it does",
         "th_necesita": "What you need to set",
         "features": [
             {
-                "hace": "Requires the gm/Id extractor already loaded",
-                "necesita": "Load <code>extractor_gmid_saturacion.il</code> first: this plugin reuses its transistor detection, hierarchy walk and target popup."
+                "hace": "Detects MOS transistors automatically, without name lists",
+                "necesita": "Nothing on most PDKs: a cell counts as a transistor if it is a primitive (no <code>schematic*</code> view) and its symbol has D, G and S pins. Check the result with <code>ListarTransistoresGmId()</code>."
             },
             {
-                "hace": "Asks for the target and opens a popup to pick transistors",
-                "necesita": "Choose the test (and the view of cells with several); then check the transistors that should carry the same current and set the expected current (A)."
+                "hace": "Walks the schematic hierarchy",
+                "necesita": "The top-level schematic must be open and active, with <code>gmidMaxDepth</code> set (max depth, default 3)."
             },
             {
-                "hace": "Always generates Vgs and Overdrive (Vgs − Vth)",
-                "necesita": "Simulate the test to see the numeric values; without simulating, the expressions remain unevaluated."
+                "hace": "Infers whether each transistor is NMOS or PMOS",
+                "necesita": "Nothing: it uses the cell name and the <code>model</code> parameter. If there is no clue, the polarity stays unknown: gm/Id and Saturation work the same and Mismatch skips the Pelgrom calculation for that transistor."
             },
             {
-                "hace": "Computes mismatch with the Pelgrom model",
-                "necesita": "Each transistor has its own <code>PelgromValue_&lt;transistor&gt;</code> (not shared between transistors, since each one has a different Vgs). It is created with a starting value (<code>gmidPelgromPe</code>/<code>gmidPelgromNe</code> based on polarity) and adjusted afterwards in Maestro by checking the real <code>Overdrive_&lt;transistor&gt;</code>."
+                "hace": "Asks for the target Maestro test on every run",
+                "necesita": "Pick the test(s) in the popup. If you pick none, nothing is created."
             },
             {
-                "hace": "Adds Min/MaxCurrentError limits as specs",
-                "necesita": "Nothing extra: they are generated automatically against <code>ActualCurrent_&lt;transistor&gt;</code>."
+                "hace": "Resolves cells with multiple schematic views",
+                "necesita": "Pick, in the same popup, the view (e.g. <code>schematic_RailToRail</code>) of each cell that has several. Without a choice it uses <code>schematic</code> or the first <code>schematic*</code>."
             },
             {
-                "hace": "Transistors with unknown polarity",
-                "necesita": "Mismatch is still computed (only W/L/m are needed); the starting <code>PelgromValue</code> is <code>0.0</code>. Add its cell in «Crear expresiones → Tipos de transistores» if you want the starting value to match its real polarity."
+                "hace": "Generates gm/Id and the Vds − Vdsat margin with its spec",
+                "necesita": "An open Maestro/ADE Assembler session, with Save DC Operating Point enabled on the test. Set <code>gmidSatMargin</code> (minimum margin, default <code>\"0\"</code>). Neither needs W/L, so both work even when they are parametrized."
             },
             {
-                "hace": "Lets you re-adjust Pelgrom per transistor without reopening the popup",
-                "necesita": "Edit <code>PelgromValue_&lt;transistor&gt;</code> directly in Maestro's Outputs table, one by one, if its real Vov doesn't match the starting value."
+                "hace": "Tolerates parametrized W, L or m (design variables, not numeric values)",
+                "necesita": "Nothing: if a variable can't be evaluated to a number, that value is simply unknown for that transistor instead of interrupting the whole hierarchy walk. It only affects that transistor's mismatch calculation."
+            },
+            {
+                "hace": "Transistor types (optional)",
+                "necesita": "Only if detection fails on some cell: menu «Crear expresiones → Tipos de transistores». It is saved once in <code>~/.gmid_tipos_transistores.il</code> and loaded automatically every session."
+            },
+            {
+                "hace": "Adds the «Crear expresiones» menu automatically",
+                "necesita": "Load the plugin with <code>load()</code> or from <code>.cdsinit</code>. The menu takes up to ~1 minute to appear on each schematic."
             }
         ],
-        "physicsHint": "<strong>Why overdrive matters:</strong> drain current has two independent mismatch sources, each with its own Pelgrom coefficient and the same 1/√(W·L) dependence: threshold voltage mismatch (<code>AVT</code>) and gain-factor or beta mismatch (<code>Aβ</code>). In the square-law approximation, total current mismatch combines both as <code>ΔID/ID ≈ (2/Vov)·ΔVth − Δβ/β</code>. Since the <code>ΔVth</code> term is scaled by <code>2/Vov</code>, it dominates in weak/moderate inversion (small Vov) and matters less as overdrive increases, while the <code>Δβ</code> term doesn't depend on Vov at all. That's why the relative weight of each mechanism shifts with the bias point, and the datasheet gives a different (already-combined) coefficient for each <code>Vov</code>: no single number is valid across the whole range: in weak inversion, <code>Vth</code> mismatch dominates, while in strong inversion <code>β</code> mismatch takes over — both are statistically independent from each other, only their relative weight changes with the bias point.",
-        "hint": "The Pelgrom coefficient is not a single number: the datasheet gives it at different overdrive points, and each selected transistor can have a different real Vgs. That is why each transistor has its own <code>PelgromValue_&lt;transistor&gt;</code>: check its <code>Overdrive_&lt;transistor&gt;</code> after simulating and adjust that value in Maestro, transistor by transistor, with the matching datasheet row.",
+        "hint": "<strong>Checking the detection:</strong> with the schematic active, run <code>ListarTransistoresGmId()</code> in the CIW to see each detected transistor with its polarity and W/L/m. If one is missing, <code>ListarHojasGmId()</code> lists the unclassified leaf cells with their pins.",
         "copyLabel": "Copy code",
         "copiedLabel": "Copied!",
         "note_title": "Usage:",
-        "note_text": "Load <code>extractor_gmid_saturacion.il</code> first, then <code>mismatch_pelgrom.il</code> (e.g. from your <code>.cdsinit</code>, in that order). Open the schematic, use <strong>Crear expresiones → Mismatch</strong>, choose the target test, check the transistors, simulate, and check <code>Overdrive_&lt;transistor&gt;</code> to pick the right Pelgrom coefficient from the datasheet.",
+        "note_text": "<strong>Option 1 — load it yourself each session:</strong> type <code>load(\"extractor_gmid_saturacion.il\")</code> in the CIW (with the CIW located in the file's folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load(\"/absolute/path/extractor_gmid_saturacion.il\")</code>.<br><br>Then, in the schematic: <strong>Crear expresiones → gm/Id</strong> (or <strong>Saturación</strong>). A popup opens where you choose the target Maestro test and the view of cells with several views; when you press OK the expressions are created only in that test.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_title": "Expressions target",
         "fig_tests": "Test(s) to create the expressions in",
         "fig_view": "View of [Name]",
         "fig_test_name": "Test",
         "fig_caption": "Illustration of the «Destino de las expresiones» popup, shown when you press gm/Id, Saturación or Mismatch: you choose which Maestro test(s) get the expressions and, for each cell with several views, which one to use. «[Name]» stands for the cell name. The real popup text is in Spanish.",
-        "fig_aria": "Illustration of the target popup: checkboxes to choose the Maestro test and the schematic view of each cell",
-        "fig2_title": "Mismatch (Pelgrom)",
-        "fig2_tx": "Transistors to analyze",
-        "fig2_current": "Expected current (A)",
-        "fig2_caption": "Illustration of the «Mismatch (Pelgrom)» popup, which opens next: you check the transistors that should carry the same current (with the detected polarity) and set the expected current in amperes. The real popup text is in Spanish.",
-        "fig2_aria": "Illustration of the mismatch popup: checkboxes to choose the transistors and an expected current field"
+        "fig_aria": "Illustration of the target popup: checkboxes to choose the Maestro test and the schematic view of each cell"
     }
 };
 
@@ -755,12 +1233,6 @@ printf("Mismatch enganchado al menu \"Crear expresiones\".\n")</code></pre>
             setText('figView', t.fig_view);
             document.querySelectorAll('.figTest').forEach(el => { el.textContent = t.fig_test_name + ' ' + el.dataset.n; });
             setText('figCaption', t.fig_caption);
-            setText('fig2Title', t.fig2_title);
-            setText('fig2Tx', t.fig2_tx);
-            setText('fig2Current', t.fig2_current);
-            setText('fig2Caption', t.fig2_caption);
-            const popup2 = document.getElementById('figPopup2');
-            if (popup2) popup2.setAttribute('aria-label', t.fig2_aria);
             document.getElementById('figPopup').setAttribute('aria-label', t.fig_aria);
             setText('th_hace', t.th_hace);
             setText('th_necesita', t.th_necesita);
@@ -772,10 +1244,6 @@ printf("Mismatch enganchado al menu \"Crear expresiones\".\n")</code></pre>
                     <td data-label="${t.th_necesita}">${f.necesita}</td>
                 </tr>
             `).join('');
-
-            const physics = document.getElementById('physicsBox');
-            physics.innerHTML = t.physicsHint || '';
-            physics.style.display = t.physicsHint ? 'block' : 'none';
 
             const hint = document.getElementById('hintBox');
             hint.innerHTML = t.hint || '';
