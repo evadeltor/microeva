@@ -317,6 +317,14 @@ when( isFile(gmidConfigFile)
 ;; Lista de (cellName vista). Se rellena desde el popup de destino.
 unless( boundp('gmidViewOverrides) gmidViewOverrides = nil )
 
+;; Ultimo cellview de esquematico valido visto (se actualiza cada vez que
+;; gmidCvTrabajo() consigue uno de verdad). Sirve de respaldo cuando una
+;; funcion se ejecuta desde el callback de un popup (OK de "Destino de las
+;; expresiones", de "Mismatch", etc.): en ese momento la ventana activa es
+;; el propio formulario, no el esquematico, y geGetEditCellView() directo
+;; falla con *WARNING* (GE-2067).
+unless( boundp('gmidCvActual) gmidCvActual = nil )
+
 ;; Otros archivos (p.ej. mismatch_pelgrom.il) pueden anadir aqui sus propios
 ;; items para que aparezcan en el mismo menu "Crear expresiones".
 unless( boundp('gmidExtraMenuItems) gmidExtraMenuItems = nil )
@@ -451,6 +459,44 @@ procedure( gmidSafeEvalNum(s)
     let( (r)
         r = errset(evalstring(s))
         if( r &amp;&amp; numberp(car(r)) then car(r) else nil)
+    )
+)
+
+;; Dice si una ventana es un entorno grafico editable (esquematico/layout)
+;; sin llamar a geGetEditCellView(w) directamente: esa llamada, sobre una
+;; ventana que no lo es (CIW, log, un popup), imprime el *WARNING* (GE-2067)
+;; aunque este dentro de un errset. Comprobar la propiedad editCellView del
+;; objeto ventana evita el aviso.
+procedure( gmidEsVentanaGrafica(w)
+    let( (r)
+        r = errset(w~&gt;editCellView)
+        r != nil &amp;&amp; car(r) != nil
+    )
+)
+
+;; cv de trabajo robusto frente al popup "Destino de las expresiones" (y al
+;; de Mismatch): cuando una funcion se ejecuta desde el callback OK de un
+;; formulario, la ventana activa es el formulario, no el esquematico, y
+;; geGetEditCellView() directo falla con *WARNING* (GE-2067) porque esa
+;; ventana no es un entorno grafico editable. Si la llamada directa
+;; funciona (p.ej. invocado desde el menu del esquematico o desde el CIW
+;; con el esquematico como ultima ventana activa de verdad), se usa y
+;; ademas se guarda en gmidCvActual; si falla, se devuelve el ultimo cv
+;; bueno conocido.
+procedure( gmidCvTrabajo()
+    let( (wRes w r cv)
+        wRes = errset(hiGetCurrentWindow())
+        w = if( wRes then car(wRes) else nil)
+        cv = if( w &amp;&amp; windowp(w) &amp;&amp; gmidEsVentanaGrafica(w) then
+                r = errset(geGetEditCellView(w))
+                if( r then car(r) else nil)
+            else nil)
+        if( cv then
+            gmidCvActual = cv
+            cv
+        else
+            gmidCvActual
+        )
     )
 )
 
@@ -601,7 +647,7 @@ procedure( gmidRecogerHojas(cv depth maxDepth)
 ;; Si ves algun transistor en la lista, anadelo desde "Tipos de transistores".
 procedure( ListarHojasGmId()
     let( (cv)
-        cv = geGetEditCellView()
+        cv = gmidCvTrabajo()
         gmidMosCache = nil
         gmidHojasAcc = nil
         gmidRecogerHojas(cv 1 gmidMaxDepth)
@@ -616,7 +662,7 @@ procedure( ListarHojasGmId()
 ;; Diagnostico: transistores detectados, con polaridad y W/L/m
 procedure( ListarTransistoresGmId()
     let( (cv xt)
-        cv = geGetEditCellView()
+        cv = gmidCvTrabajo()
         gmidMosCache = nil
         xt = RecorrerJerarquiaGmId(cv "" 1 gmidMaxDepth)
         printf("Transistores detectados: %d\n" length(xt))
@@ -752,7 +798,7 @@ procedure( gmidLeerVistaField(f idx)
 ;; -------------------------------------------------------------------------
 procedure( gmidPedirDestino(accion)
     let( (cv sess tests choices i sym fields c vchoices vnames j vsym nVw)
-        cv = geGetEditCellView()
+        cv = gmidCvTrabajo()
         sess = car(maeGetSessions())
         unless( sess
             printf("Abre primero el Maestro (ADE Assembler) de este esquematico.\n")
@@ -886,7 +932,7 @@ procedure( SaturacionConDestino()
 ;; -------------------------------------------------------------------------
 procedure( GenerarGmId()
     let( (cv prep sess tests xtors nN nP nU unk n1 r1 nErr path)
-        cv = geGetEditCellView()
+        cv = gmidCvTrabajo()
         when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
             prep = gmidPrepare(cv)
             sess = car(prep)
@@ -941,7 +987,7 @@ procedure( GenerarGmId()
 ;; -------------------------------------------------------------------------
 procedure( GenerarSaturacion()
     let( (cv prep sess tests xtors n2 r2 r3 nErr path)
-        cv = geGetEditCellView()
+        cv = gmidCvTrabajo()
         when( cv &amp;&amp; cv~&gt;cellViewType == "schematic"
             prep = gmidPrepare(cv)
             sess = car(prep)
@@ -1006,11 +1052,26 @@ procedure( RegistrarMiMenuGmId(args)
     )
 )
 
+;; Quita el menu "Crear expresiones" de todas las ventanas donde ya este
+;; puesto. ChequearMenusGmId() lo vuelve a anadir en su siguiente ciclo
+;; (hasta 1s despues) con la lista de items actualizada: hace falta cuando
+;; se carga otro archivo (p.ej. mismatch_pelgrom.il) que anade su propio
+;; item a gmidExtraMenuItems y quiere verlo sin esperar o sin reabrir el
+;; esquematico.
+procedure( gmidQuitarMenus()
+    foreach( w hiGetWindowList()
+        when( windowp(w) &amp;&amp; member('MenuGmId hiGetBannerMenus(w))
+            errset(hiRemoveBannerMenu(w 'MenuGmId))
+        )
+    )
+    t
+)
+
 procedure( ChequearMenusGmId()
     errset(
         foreach( w hiGetWindowList()
             errset(
-                when( windowp(w) &amp;&amp; geGetEditCellView(w) &amp;&amp;
+                when( windowp(w) &amp;&amp; gmidEsVentanaGrafica(w) &amp;&amp;
                       !member('MenuGmId hiGetBannerMenus(w))
                     RegistrarMiMenuGmId(list(nil 'window w))
                 )
@@ -1076,6 +1137,10 @@ ChequearMenusGmId()</code></pre>
                 "necesita": "Solo si la detección falla con alguna celda: menú «Crear expresiones → Tipos de transistores». Se guarda una vez en <code>~/.gmid_tipos_transistores.il</code> y se carga solo en cada sesión."
             },
             {
+                "hace": "Funciona aunque se ejecute desde el OK de un popup",
+                "necesita": "Nada: <code>gmidCvTrabajo()</code> recuerda el último esquemático activo, así que pulsar OK en «Destino de las expresiones» o en Mismatch no da el <code>*WARNING* (GE-2067)</code> de ventana no gráfica."
+            },
+            {
                 "hace": "Añade el menú «Crear expresiones» automáticamente",
                 "necesita": "Cargar el plugin con <code>load()</code> o desde el <code>.cdsinit</code>. El menú tarda hasta ~1 minuto en aparecer en cada esquemático."
             }
@@ -1134,6 +1199,10 @@ ChequearMenusGmId()</code></pre>
                 "necesita": "Només si la detecció falla amb alguna cel·la: menú «Crear expresiones → Tipos de transistores». Es desa una vegada a <code>~/.gmid_tipos_transistores.il</code> i es carrega sol a cada sessió."
             },
             {
+                "hace": "Funciona encara que s'executi des de l'OK d'un popup",
+                "necesita": "Res: <code>gmidCvTrabajo()</code> recorda l'últim esquemàtic actiu, de manera que prémer OK a «Destino de las expresiones» o a Mismatch no dona el <code>*WARNING* (GE-2067)</code> de finestra no gràfica."
+            },
+            {
                 "hace": "Afegeix el menú «Crear expresiones» automàticament",
                 "necesita": "Carregar el plugin amb <code>load()</code> o des del <code>.cdsinit</code>. El menú triga fins a ~1 minut a aparèixer a cada esquemàtic."
             }
@@ -1190,6 +1259,10 @@ ChequearMenusGmId()</code></pre>
             {
                 "hace": "Transistor types (optional)",
                 "necesita": "Only if detection fails on some cell: menu «Crear expresiones → Tipos de transistores». It is saved once in <code>~/.gmid_tipos_transistores.il</code> and loaded automatically every session."
+            },
+            {
+                "hace": "Works even when run from a popup's OK button",
+                "necesita": "Nothing: <code>gmidCvTrabajo()</code> remembers the last active schematic, so pressing OK in «Destino de las expresiones» or in Mismatch doesn't raise the <code>*WARNING* (GE-2067)</code> non-graphic-window error."
             },
             {
                 "hace": "Adds the «Crear expresiones» menu automatically",
