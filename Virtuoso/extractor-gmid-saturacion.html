@@ -910,7 +910,7 @@ procedure( GenerarGmId()
                     n1 = sprintf(nil "gmid_%s" gmidSafeName(path))
                     errset(maeDeleteOutput(n1 tst ?session sess))
                     r1 = maeAddOutput(n1 tst ?outputType "point"
-                        ?expr sprintf(nil "OP(\"/%s\" \"gm\") / OP(\"/%s\" \"id\")" path path)
+                        ?expr sprintf(nil "OP(\"/%s\" \"gm\") / abs(OP(\"/%s\" \"id\"))" path path)
                         ?session sess)
                     unless( r1
                         nErr = nErr + 1
@@ -933,6 +933,11 @@ procedure( GenerarGmId()
 
 ;; -------------------------------------------------------------------------
 ;; SATURACION
+;;
+;; vdsmargin = abs(vds) - abs(vdsat). Guia de interpretacion:
+;;   &gt; ~50-100 mV  -&gt; bien saturado
+;;   0-50 mV       -&gt; al limite
+;;   negativo      -&gt; en triodo
 ;; -------------------------------------------------------------------------
 procedure( GenerarSaturacion()
     let( (cv prep sess tests xtors n2 r2 r3 nErr path)
@@ -1060,7 +1065,7 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Genera gm/Id y el margen Vds − Vdsat con su spec",
-                "necesita": "Una sesión de Maestro/ADE Assembler abierta, con Save DC Operating Point activado en el test. Ajustar <code>gmidSatMargin</code> (margen mínimo, por defecto <code>\"0\"</code>). Ninguna de las dos necesita W/L, así que funcionan aunque estén parametrizados."
+                "necesita": "Una sesión de Maestro/ADE Assembler abierta, con Save DC Operating Point activado en el test. Ajustar <code>gmidSatMargin</code> (margen mínimo, por defecto <code>\"0\"</code>). Ninguna de las dos necesita W/L, así que funcionan aunque estén parametrizados. gm/Id usa <code>abs()</code> en <code>id</code> para que el PMOS (id negativa) no salga con el ratio invertido. Para el margen: &gt;~50-100 mV bien saturado, 0-50 mV al límite, negativo en triodo."
             },
             {
                 "hace": "Tolera W, L o m parametrizados (variables de diseño, no valores numéricos)",
@@ -1118,7 +1123,7 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Genera gm/Id i el marge Vds − Vdsat amb el seu spec",
-                "necesita": "Una sessió de Maestro/ADE Assembler oberta, amb Save DC Operating Point activat al test. Ajustar <code>gmidSatMargin</code> (marge mínim, per defecte <code>\"0\"</code>). Cap de les dues necessita W/L, així que funcionen encara que estiguin parametritzats."
+                "necesita": "Una sessió de Maestro/ADE Assembler oberta, amb Save DC Operating Point activat al test. Ajustar <code>gmidSatMargin</code> (marge mínim, per defecte <code>\"0\"</code>). Cap de les dues necessita W/L, així que funcionen encara que estiguin parametritzats. gm/Id fa servir <code>abs()</code> a <code>id</code> perquè el PMOS (id negativa) no surti amb el ràtio invertit. Pel marge: &gt;~50-100 mV ben saturat, 0-50 mV al límit, negatiu en tríode."
             },
             {
                 "hace": "Tolera W, L o m parametritzats (variables de disseny, no valors numèrics)",
@@ -1176,7 +1181,7 @@ ChequearMenusGmId()</code></pre>
             },
             {
                 "hace": "Generates gm/Id and the Vds − Vdsat margin with its spec",
-                "necesita": "An open Maestro/ADE Assembler session, with Save DC Operating Point enabled on the test. Set <code>gmidSatMargin</code> (minimum margin, default <code>\"0\"</code>). Neither needs W/L, so both work even when they are parametrized."
+                "necesita": "An open Maestro/ADE Assembler session, with Save DC Operating Point enabled on the test. Set <code>gmidSatMargin</code> (minimum margin, default <code>\"0\"</code>). Neither needs W/L, so both work even when they are parametrized. gm/Id uses <code>abs()</code> on <code>id</code> so PMOS (negative id) does not flip the ratio. For the margin: &gt;~50-100 mV well saturated, 0-50 mV borderline, negative means triode."
             },
             {
                 "hace": "Tolerates parametrized W, L or m (design variables, not numeric values)",
