@@ -176,6 +176,58 @@
             font-size: 0.74rem; color: var(--add);
         }
 
+        /* Atajo de teclado */
+        kbd {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 2.1em; padding: 4px 10px; border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600;
+            color: var(--dark); background: white; border: 1px solid #d8d0c4;
+            box-shadow: 0 2px 0 #d8d0c4;
+        }
+        .shortcut-box {
+            background: white; border: 2px solid var(--primary); border-radius: 10px;
+            padding: 22px 24px; margin-bottom: 40px;
+        }
+        .shortcut-title { font-weight: 700; color: var(--dark); font-size: 1rem; margin-bottom: 14px; }
+        .shortcut-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+        .shortcut-flow .plus { font-weight: 700; color: var(--accent); }
+        .shortcut-flow .arrow { color: var(--primary); font-size: 1.2rem; font-weight: 700; }
+        .shortcut-step {
+            display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text);
+            background: #FDF5EC; border: 1px dashed var(--primary); border-radius: 6px; padding: 6px 10px;
+        }
+        .shortcut-step .form-radio { width: 13px; height: 13px; }
+        .shortcut-result { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--add); font-weight: 500; }
+        .shortcut-note { margin-top: 14px; font-size: 0.82rem; color: #666; line-height: 1.7; }
+        .shortcut-note code { white-space: normal; }
+        .menu-items li .menu-kbd { float: right; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--accent); }
+        .form-enter { margin-right: auto; font-size: 0.72rem; color: #888; display: inline-flex; align-items: center; gap: 6px; }
+        .form-enter kbd { font-size: 0.7rem; padding: 2px 7px; }
+
+        /* Comparar versiones */
+        .cmp-figure { margin-bottom: 12px; }
+        .cmp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+        .form-select {
+            flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--dark);
+            background: white; border: 1.5px solid var(--border); border-radius: 4px; padding: 6px 10px;
+        }
+        .form-select span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .form-select::after { content: '▾'; color: var(--accent); flex-shrink: 0; }
+        .form-select.sel { border-color: var(--primary); }
+        .cmp-list { list-style: none; margin: 0 20px 14px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+        .cmp-list li {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 6px 10px;
+            border-bottom: 1px solid var(--border); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .cmp-list li:last-child { border-bottom: none; }
+        .cmp-list li .d { color: #aaa; }
+        .cmp-list li.a { background: #FDF5EC; box-shadow: inset 3px 0 0 var(--primary); }
+        .cmp-list li.b { background: #EEF5F0; box-shadow: inset 3px 0 0 var(--add); }
+        .cmp-tag { font-family: 'Poppins', sans-serif; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px; }
+        .cmp-list li.a .cmp-tag { color: var(--accent); }
+        .cmp-list li.b .cmp-tag { color: var(--add); }
+
         .figs-caption { margin: 0 0 30px; text-align: center; font-size: 0.8rem; color: #888; line-height: 1.6; }
 
         .hint-box {
@@ -233,6 +285,7 @@
             .feature-table th, .feature-table td { padding: 12px 14px; font-size: 0.84rem; }
             .feature-table td:first-child { width: auto; }
             .figs { grid-template-columns: 1fr; }
+            .cmp-grid { grid-template-columns: 1fr; }
             .menu-mock { max-width: 280px; }
         }
 
@@ -275,6 +328,20 @@
         <h1 id="title"></h1>
         <p class="lead" id="lead"></p>
 
+        <div class="shortcut-box" id="shortcutBox" role="img">
+            <div class="shortcut-title" id="sc_title"></div>
+            <div class="shortcut-flow">
+                <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Q</kbd>
+                <span class="arrow">→</span>
+                <span class="shortcut-step"><span class="form-radio on"></span><span id="sc_step"></span></span>
+                <span class="arrow">→</span>
+                <kbd id="sc_enter"></kbd>
+                <span class="arrow">→</span>
+                <span class="shortcut-result">schematic_20261008T094410</span>
+            </div>
+            <div class="shortcut-note" id="sc_note"></div>
+        </div>
+
         <div class="feature-table-wrapper">
             <table class="feature-table">
                 <thead>
@@ -292,17 +359,18 @@
                 <div class="popup-mock menu-mock">
                     <div class="popup-mock-title">Seguidor de versiones</div>
                     <ul class="menu-items">
-                        <li>Guardar versión actual</li>
+                        <li>Guardar versión actual <span class="menu-kbd">Ctrl+Q</span></li>
                         <li class="hl">Diferencias con la versión anterior</li>
+                        <li>Comparar versiones...</li>
                         <li>Volver a la versión anterior</li>
                         <li>Abrir versión anterior (lectura)</li>
                     </ul>
                 </div>
                 <div class="popup-mock">
                     <div class="popup-mock-title"><span>Diferencias BufferSortida</span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
-<div class="report-body"><span class="meta">OPAMP/BufferSortida/schematic_RailToRail_0309
-Anterior: guardada Oct  6 11:42:10 2026
-Actual:   en edicion</span>
+<div class="report-body"><span class="meta">OPAMP/BufferSortida
+Version A: vtprev__schematic_RailToRail_0309   [Oct  8 09:12:03 2026]
+Version B: (en edicion)</span>
 
 <span class="mod">~ M3  [par] w: "2u" -&gt; "4u"</span>
 <span class="mod">~ M3  [par] m: "1" -&gt; "2"</span>
@@ -330,10 +398,50 @@ Actual:   en edicion</span>
                         <div class="form-input off">schematic_</div>
                     </div>
                 </div>
-                <div class="form-foot"><span class="form-btn ok">OK</span><span class="form-btn">Cancel</span></div>
+                <div class="form-foot"><span class="form-enter"><kbd id="sc_enter2"></kbd> = OK</span><span class="form-btn ok">OK</span><span class="form-btn">Cancel</span></div>
             </div>
-            <div class="form-result">→ OPAMP/BufferSortida/schematic_20261006T114210</div>
+            <div class="form-result">→ OPAMP/BufferSortida/schematic_RailToRail_0309_20261008T094410</div>
             <figcaption class="figs-caption" id="fig2Caption"></figcaption>
+        </figure>
+
+        <figure class="cmp-figure">
+            <div class="cmp-grid" id="figComparar" role="img">
+                <div class="popup-mock">
+                    <div class="popup-mock-title"><span>Comparar versiones de BufferSortida</span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
+                    <div class="form-body">
+                        <div class="form-row">
+                            <div class="form-label">Versión A</div>
+                            <div class="form-select sel"><span>schematic_RailToRail_0309_antes_cascode</span></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">Versión B</div>
+                            <div class="form-select sel"><span>schematic_RailToRail_0309_20261006T114210</span></div>
+                        </div>
+                    </div>
+                    <ul class="cmp-list">
+                        <li>(en edicion)</li>
+                        <li>vtprev__schematic_RailToRail_0309 <span class="d">[Oct  8 09:12]</span></li>
+                        <li>vtcur__schematic_RailToRail_0309 <span class="d">[Oct  8 09:40]</span></li>
+                        <li>schematic_RailToRail_0309_20261008T094410 <span class="d">[Oct  8 09:44]</span></li>
+                        <li class="b"><span class="cmp-tag" id="cmp_b"></span>schematic_RailToRail_0309_20261006T114210 <span class="d">[Oct  6 11:42]</span></li>
+                        <li class="a"><span class="cmp-tag" id="cmp_a"></span>schematic_RailToRail_0309_antes_cascode <span class="d">[Oct  2 17:05]</span></li>
+                    </ul>
+                    <div class="form-foot"><span class="form-btn ok">OK</span><span class="form-btn">Cancel</span></div>
+                </div>
+                <div class="popup-mock">
+                    <div class="popup-mock-title"><span>Diferencias BufferSortida</span><div class="popup-mock-dots"><span></span><span></span><span></span></div></div>
+<div class="report-body"><span class="meta">OPAMP/BufferSortida
+Version A: ..._antes_cascode    [Oct  2 17:05]
+Version B: ..._20261006T114210  [Oct  6 11:42]</span>
+
+<span class="add">+ M9  (PDK/nch/symbol)</span>
+<span class="add">+ M10 (PDK/nch/symbol)</span>
+<span class="mod">~ M1  [con] S: tail -&gt; {M1.S M9.D}</span>
+<span class="mod">~ M2  [con] S: tail -&gt; {M2.S M10.D}</span>
+<span class="mod">~ M5  [par] l: "500n" -&gt; "1u"</span></div>
+                </div>
+            </div>
+            <figcaption class="figs-caption" id="fig3Caption"></figcaption>
         </figure>
 
         <div class="hint-box" id="hintBox"></div>
@@ -351,9 +459,15 @@ Actual:   en edicion</span>
 ;; rota dos instantaneas dentro de la misma celda:
 ;;   vtprev__&lt;vista&gt;   version guardada anterior
 ;;   vtcur__&lt;vista&gt;    version guardada actual
+;; Version: 2026-10-08
+;;
 ;; Menu "Seguidor de versiones":
 ;;   - Guardar version actual como vista con fecha ISO 8601 o nombre propio
+;;     Atajo de teclado (vtTeclaGuardar, por defecto Ctrl+Q): abre el
+;;     dialogo con "Fecha y hora actual" ya marcado; Intro y listo.
 ;;   - Diferencias: anterior vs estado en edicion (incluye cambios sin guardar)
+;;   - Comparar versiones: dos versiones cualesquiera de la celda (las de
+;;     fecha, las de nombre especial, la anterior o el estado en edicion)
 ;;   - Volver: intercambia actual y anterior (repetirlo deshace)
 ;;   - Abrir la anterior en solo lectura
 ;; Los nombres de vista no empiezan por "schematic": el plugin gm/Id no las ve.
@@ -365,6 +479,10 @@ vtMtimes = makeTable('vtMtimes nil)
 ;; hiRegTimer va en decimas de segundo: 10 = 1 s
 unless( boundp('vtPeriodo) vtPeriodo = 10 )
 unless( boundp('vtDirInforme) vtDirInforme = "/tmp" )
+;; Atajo para "Guardar version actual" (sintaxis de hiSetBindKey) y su texto
+;; en el menu. Cambialos antes de cargar el archivo si chocan con otro atajo.
+unless( boundp('vtTeclaGuardar) vtTeclaGuardar = "Ctrl&lt;Key&gt;q" )
+unless( boundp('vtTeclaTexto) vtTeclaTexto = "Ctrl+Q" )
 vtBusy = nil
 
 ;; -------------------------------------------------------------------------
@@ -639,8 +757,38 @@ procedure( vtCompararCv(cvA cvB)
     )
 )
 
+;; Escribe y abre el informe de diferencias de cvA (version A) a cvB (version B)
+procedure( vtEscribirInforme(lib cell etqA cvA etqB cvB sufijo)
+    let( (lin fich fid)
+        lin = vtCompararCv(cvA cvB)
+        fich = sprintf(nil "%s/vt_diff_%s_%s_%s.txt" vtDirInforme lib cell sufijo)
+        fid = outfile(fich)
+        when( fid
+            fprintf(fid "%s/%s\n" lib cell)
+            fprintf(fid "Version A: %s\n" etqA)
+            fprintf(fid "Version B: %s\n\n" etqB)
+            fprintf(fid "De A a B: + anadida  - eliminada  ~ modificada | [par] parametro  [con] conexion  [pin] pin\n")
+            fprintf(fid "{a.D b.G}: red sin nombre, identificada por lo que conecta\n\n")
+            if( lin
+                then foreach( l lin fprintf(fid "%s\n" l) )
+                else fprintf(fid "Sin diferencias.\n"))
+            close(fid)
+            view(fich nil sprintf(nil "Diferencias %s" cell))
+        )
+        printf("Seguidor de versiones: %d diferencias -&gt; %s\n" length(lin) fich)
+    )
+)
+
+;; Etiqueta de una vista: nombre + fecha de su sch.oa; nil = estado en edicion
+procedure( vtEtiqueta(lib cell v cv)
+    if( v
+        then sprintf(nil "%s   [%s]" v vtFecha(lib cell v))
+        else sprintf(nil "(en edicion)%s"
+            if( cv~&gt;modifiedButNotSaved " con cambios sin guardar" "")))
+)
+
 procedure( vtDiferencias()
-    let( (cv lib cell view vPrev prevCv lin fich fid)
+    let( (cv lib cell view vPrev prevCv)
         cv = vtContexto()
         when( cv
             lib = cv~&gt;libName
@@ -651,27 +799,99 @@ procedure( vtDiferencias()
                 printf("Seguidor de versiones: aun no hay version anterior de %s.\n" cell)
             else
                 prevCv = dbOpenCellViewByType(lib cell vPrev nil "r")
-                lin = vtCompararCv(prevCv cv)
+                vtEscribirInforme(lib cell
+                    vtEtiqueta(lib cell vPrev cv) prevCv
+                    vtEtiqueta(lib cell nil cv) cv
+                    view)
                 dbClose(prevCv)
-
-                fich = sprintf(nil "%s/vt_diff_%s_%s_%s.txt" vtDirInforme lib cell view)
-                fid = outfile(fich)
-                when( fid
-                    fprintf(fid "%s\n" vtClave(lib cell view))
-                    fprintf(fid "Anterior: guardada %s\n" vtFecha(lib cell vPrev))
-                    fprintf(fid "Actual:   en edicion%s\n\n"
-                        if( cv~&gt;modifiedButNotSaved
-                            " (cambios sin guardar: conectividad del ultimo Check)" ""))
-                    fprintf(fid "+ anadida  - eliminada  ~ modificada | [par] parametro  [con] conexion  [pin] pin\n")
-                    fprintf(fid "{a.D b.G}: red sin nombre, identificada por lo que conecta\n\n")
-                    if( lin
-                        then foreach( l lin fprintf(fid "%s\n" l) )
-                        else fprintf(fid "Sin diferencias.\n"))
-                    close(fid)
-                    view(fich nil sprintf(nil "Diferencias %s" cell))
-                )
-                printf("Seguidor de versiones: %d diferencias -&gt; %s\n" length(lin) fich)
             )
+        )
+    )
+)
+
+;; -------------------------------------------------------------------------
+;; COMPARAR DOS VERSIONES CUALESQUIERA
+;; -------------------------------------------------------------------------
+vtCompararSel = nil
+vtCompararOpc = nil
+
+;; Vistas de la celda con sch.oa (versiones), sin la de trabajo ni la temporal:
+;; primero anterior y actual, luego el resto de la mas nueva a la mas antigua
+;; (las de fecha ISO se ordenan solas por nombre)
+procedure( vtVistasVersion(lib cell view)
+    let( (obj todas fijas resto)
+        obj = ddGetObj(lib cell)
+        todas = if( obj then setof(v obj~&gt;views~&gt;name
+            v != view &amp;&amp; v != vtVista(view "tmp") &amp;&amp; vtRutaOa(lib cell v)) else nil)
+        fijas = setof(v list(vtVista(view "prev") vtVista(view "cur")) member(v todas))
+        resto = reverse(sort(setof(v todas !member(v fijas)) 'alphalessp))
+        append(fijas resto)
+    )
+)
+
+procedure( vtCompararVersiones()
+    let( (cv lib cell view vistas labels defA form)
+        cv = vtContexto()
+        when( cv
+            lib = cv~&gt;libName
+            cell = cv~&gt;cellName
+            view = cv~&gt;viewName
+            vistas = vtVistasVersion(lib cell view)
+            if( !vistas then
+                printf("Seguidor de versiones: %s aun no tiene versiones guardadas.\n" cell)
+            else
+                vtCompararSel = cv
+                ;; alist (etiqueta vista); vista nil = estado en edicion
+                vtCompararOpc = cons(list(vtEtiqueta(lib cell nil cv) nil)
+                    mapcar(lambda((v) list(vtEtiqueta(lib cell v cv) v)) vistas))
+                labels = mapcar('car vtCompararOpc)
+                defA = cadr(labels)
+                form = hiCreateAppForm(
+                    ?name 'vtCompararForm
+                    ?formTitle sprintf(nil "Comparar versiones de %s" cell)
+                    ?fields list(
+                        hiCreateCyclicField(
+                            ?name 'vtCompararA
+                            ?prompt "Versión A"
+                            ?choices labels
+                            ?value defA
+                        )
+                        hiCreateCyclicField(
+                            ?name 'vtCompararB
+                            ?prompt "Versión B"
+                            ?choices labels
+                            ?value car(labels)
+                        )
+                    )
+                    ?buttonLayout 'OKCancel
+                    ?callback "vtCompararVersionesCB()"
+                )
+                hiDisplayForm(form)
+            )
+        )
+    )
+)
+
+procedure( vtCompararVersionesCB()
+    let( (f cv lib cell eA eB vA vB cvA cvB)
+        f = hiGetCurrentForm()
+        cv = vtCompararSel
+        lib = cv~&gt;libName
+        cell = cv~&gt;cellName
+        eA = (f-&gt;vtCompararA)~&gt;value
+        eB = (f-&gt;vtCompararB)~&gt;value
+        vA = cadr(assoc(eA vtCompararOpc))
+        vB = cadr(assoc(eB vtCompararOpc))
+        if( eA == eB then
+            printf("Seguidor de versiones: has elegido la misma version dos veces.\n")
+        else
+            ;; nil = el esquematico en edicion (no se abre ni se cierra)
+            cvA = if( vA then dbOpenCellViewByType(lib cell vA nil "r") else cv)
+            cvB = if( vB then dbOpenCellViewByType(lib cell vB nil "r") else cv)
+            vtEscribirInforme(lib cell eA cvA eB cvB
+                sprintf(nil "%s_vs_%s" or(vA "edicion") or(vB "edicion")))
+            when( vA dbClose(cvA) )
+            when( vB dbClose(cvB) )
         )
     )
 )
@@ -865,13 +1085,18 @@ procedure( vtRegistrarMenu(win)
         items = list(
             hiCreateMenuItem(
                 ?name 'vtItemGuardar
-                ?itemText "Guardar versión actual"
+                ?itemText sprintf(nil "Guardar versión actual   (%s)" vtTeclaTexto)
                 ?callback "vtGuardarVersion()"
             )
             hiCreateMenuItem(
                 ?name 'vtItemDiff
                 ?itemText "Diferencias con la versión anterior"
                 ?callback "vtDiferencias()"
+            )
+            hiCreateMenuItem(
+                ?name 'vtItemComparar
+                ?itemText "Comparar versiones..."
+                ?callback "vtCompararVersiones()"
             )
             hiCreateMenuItem(
                 ?name 'vtItemVolver
@@ -920,6 +1145,40 @@ procedure( vtTick(@optional (gen 0))
 ;; se para solo, asi recargar el archivo no acumula temporizadores
 vtTimerGen = if( boundp('vtTimerGen) &amp;&amp; integerp(vtTimerGen) then vtTimerGen + 1 else 1)
 
+;; Atajo de teclado en el editor de esquematicos. El dialogo se abre con
+;; "Fecha y hora actual" marcado, asi que basta con pulsar Intro.
+;; Prefijos de bindkeys del editor de esquematicos registrados ahora mismo.
+;; "Schematics" cubre el editor L; "Schematics XL" solo existe con licencia XL.
+procedure( vtAppsEsquematico()
+    let( (r reg)
+        r = if( fboundp('hiGetBindKeyPrefixList) then errset(hiGetBindKeyPrefixList()) else nil)
+        reg = if( r then car(r) else nil)
+        if( reg
+            then setof(a '("Schematics" "Schematics XL") member(a reg))
+            else '("Schematics"))
+    )
+)
+
+;; Si la tecla ya tiene otra funcion asignada no la pisa: avisa en el CIW
+;; para que elijas otra en vtTeclaGuardar
+procedure( vtRegistrarTecla()
+    let( (actual r)
+        ;; Solo los prefijos que existen en esta instalacion: consultar uno
+        ;; no registrado (p.ej. "Schematics L") imprime un WARNING en el CIW
+        foreach( app vtAppsEsquematico()
+            r = errset(hiGetBindKey(app vtTeclaGuardar))
+            actual = if( r then car(r) else nil)
+            if( stringp(actual) &amp;&amp; actual != "" &amp;&amp; actual != "vtGuardarVersion()" then
+                printf("Seguidor de versiones: %s ya ejecuta %s en %s; no se reasigna. Cambia vtTeclaGuardar.\n"
+                    vtTeclaTexto actual app)
+            else
+                errset(hiSetBindKey(app vtTeclaGuardar "vtGuardarVersion()"))
+            )
+        )
+    )
+)
+
+vtRegistrarTecla()
 vtQuitarMenus()
 vtTick(vtTimerGen)</code></pre>
         </div>
@@ -940,7 +1199,7 @@ vtTick(vtTimerGen)</code></pre>
         "back_link": "← Volver al sitio",
         "badge": "SKILL · Cadence Virtuoso",
         "title": "Seguidor de versiones para esquemáticos",
-        "lead": "Plugin en SKILL que guarda automáticamente la versión anterior de cada esquemático cada vez que lo guardas. Te dice qué ha cambiado entre ambas versiones (instancias, parámetros, conexiones y pines) y te deja volver a la anterior con un clic.",
+        "lead": "Plugin en SKILL que guarda automáticamente la versión anterior de cada esquemático cada vez que lo guardas. Te dice qué ha cambiado entre ambas versiones (instancias, parámetros, conexiones y pines) y te deja volver a la anterior con un clic. También guarda versiones con fecha desde el teclado y compara dos versiones cualesquiera.",
         "th_hace": "Qué hace",
         "th_necesita": "Qué necesitas configurar",
         "features": [
@@ -954,7 +1213,11 @@ vtTick(vtTimerGen)</code></pre>
             },
             {
                 "hace": "Guarda la versión actual con fecha o con un nombre propio",
-                "necesita": "Menú «Seguidor de versiones → Guardar versión actual». Eliges «Fecha y hora actual» (crea p. ej. <code>schematic_20261006T114210</code>, ISO 8601 en formato básico, sin <code>:</code> que darían problemas en el nombre de vista) o «Nombre especial». Copia lo que tienes en edición, incluidos los cambios sin guardar."
+                "necesita": "<strong>Atajo: Ctrl + Q y luego Intro</strong>, o menú «Seguidor de versiones → Guardar versión actual». Con «Fecha y hora actual» (marcada por defecto) crea p. ej. <code>schematic_20261008T094410</code>, ISO 8601 en formato básico, sin <code>:</code> que darían problemas en el nombre de vista. Con «Nombre especial» eliges el nombre. Copia lo que tienes en edición, incluidos los cambios sin guardar."
+            },
+            {
+                "hace": "Compara dos versiones cualesquiera",
+                "necesita": "Menú «Seguidor de versiones → Comparar versiones...». Eliges «Versión A» y «Versión B» entre todas las versiones de la celda: las de fecha, las de nombre especial, la anterior, la actual o el estado en edición. Cada una aparece con la fecha de su último guardado."
             },
             {
                 "hace": "Muestra las diferencias con la versión anterior",
@@ -985,18 +1248,27 @@ vtTick(vtTimerGen)</code></pre>
         "copyLabel": "Copiar código",
         "copiedLabel": "¡Copiado!",
         "note_title": "Uso:",
-        "note_text": "<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load(\"SeguidorVersiones.il\")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load(\"/ruta/absoluta/SeguidorVersiones.il\")</code>.<br><br>Después, guarda el esquemático como siempre y usa el menú <strong>Seguidor de versiones</strong> para ver las diferencias, volver a la versión anterior o abrirla en solo lectura.",
+        "note_text": "<strong>Opción 1 — cargarlo tú mismo cada sesión:</strong> escribe <code>load(\"SeguidorVersiones.il\")</code> en el CIW (con el CIW situado en la carpeta del archivo, o usando la ruta absoluta).<br><br><strong>Opción 2 — que se cargue solo al abrir Virtuoso:</strong> añade esta línea a tu <code>.cdsinit</code> con la ruta absoluta completa: <code>load(\"/ruta/absoluta/SeguidorVersiones.il\")</code>.<br><br>Después, guarda el esquemático como siempre y pulsa <strong>Ctrl+Q → Intro</strong> cuando quieras guardar una versión con fecha. Usa el menú <strong>Seguidor de versiones</strong> para ver las diferencias, comparar dos versiones cualesquiera, volver a la anterior o abrirla en solo lectura.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_caption": "Ilustración del menú «Seguidor de versiones» y del informe de diferencias: + instancia añadida, − eliminada, ~ modificada; [par] parámetro, [con] conexión. {M5.G M7.D} es una red sin nombre, identificada por lo que conecta.",
         "fig_aria": "Ilustración del menú Seguidor de versiones y de un informe de diferencias entre dos versiones de un esquemático",
-        "fig2_caption": "Ilustración de «Guardar versión actual»: con «Fecha y hora actual» la vista se llama schematic_20261006T114210 (6 de octubre de 2026, 11:42:10, en ISO 8601). Con «Nombre especial» puedes escribir el nombre que quieras (letras, números y _).",
-        "fig2_aria": "Ilustración del formulario Guardar versión actual con la opción de fecha y hora"
+        "fig2_caption": "Ilustración de «Guardar versión actual», que abre Ctrl+Q: «Fecha y hora actual» ya está marcado, así que Intro equivale a OK. La vista se llama schematic_RailToRail_0309_20261008T094410 (8 de octubre de 2026, 09:44:10, en ISO 8601). Con «Nombre especial» puedes escribir el nombre que quieras (letras, números y _).",
+        "fig2_aria": "Ilustración del formulario Guardar versión actual con la opción de fecha y hora",
+        "sc_title": "Atajo: Ctrl + Q y luego Intro",
+        "sc_step": "Fecha y hora actual",
+        "sc_enter": "Intro",
+        "sc_note": "Guarda la versión actual con fecha y hora sin tocar el ratón: el diálogo ya se abre con «Fecha y hora actual» marcado. Si <strong>Ctrl+Q</strong> ya tiene otra función en tu PDK, el plugin no la pisa y avisa en el CIW; elige otra con <code>vtTeclaGuardar</code> y <code>vtTeclaTexto</code> antes del <code>load</code>.",
+        "sc_aria": "Atajo de teclado: Control más Q abre el diálogo con Fecha y hora actual marcado; Intro guarda la vista schematic_20261008T094410",
+        "cmp_a": "A",
+        "cmp_b": "B",
+        "fig3_caption": "Ilustración de «Comparar versiones...»: eliges dos versiones cualesquiera de la celda en los desplegables «Versión A» y «Versión B» y se abre el informe de diferencias de A a B. En el ejemplo, entre la versión con nombre especial y la del 6 de octubre se añadió la fuente de cola en cascodo (M9, M10).",
+        "fig3_aria": "Ilustración del formulario Comparar versiones con dos desplegables y del informe de diferencias resultante"
     },
     "ca": {
         "back_link": "← Tornar al lloc",
         "badge": "SKILL · Cadence Virtuoso",
         "title": "Seguidor de versions per a esquemàtics",
-        "lead": "Plugin en SKILL que desa automàticament la versió anterior de cada esquemàtic cada vegada que el deses. Et diu què ha canviat entre les dues versions (instàncies, paràmetres, connexions i pins) i et deixa tornar a l'anterior amb un clic.",
+        "lead": "Plugin en SKILL que desa automàticament la versió anterior de cada esquemàtic cada vegada que el deses. Et diu què ha canviat entre les dues versions (instàncies, paràmetres, connexions i pins) i et deixa tornar a l'anterior amb un clic. També desa versions amb data des del teclat i compara dues versions qualssevol.",
         "th_hace": "Què fa",
         "th_necesita": "Què has de configurar",
         "features": [
@@ -1010,7 +1282,11 @@ vtTick(vtTimerGen)</code></pre>
             },
             {
                 "hace": "Desa la versió actual amb data o amb un nom propi",
-                "necesita": "Menú «Seguidor de versiones → Guardar versión actual». Tries «Fecha y hora actual» (crea p. ex. <code>schematic_20261006T114210</code>, ISO 8601 en format bàsic, sense <code>:</code> que donarien problemes al nom de vista) o «Nombre especial». Copia el que tens en edició, inclosos els canvis sense desar."
+                "necesita": "<strong>Drecera: Ctrl + Q i després Intro</strong>, o menú «Seguidor de versiones → Guardar versión actual». Amb «Fecha y hora actual» (marcada per defecte) crea p. ex. <code>schematic_20261008T094410</code>, ISO 8601 en format bàsic, sense <code>:</code> que donarien problemes al nom de vista. Amb «Nombre especial» tries el nom. Copia el que tens en edició, inclosos els canvis sense desar."
+            },
+            {
+                "hace": "Compara dues versions qualssevol",
+                "necesita": "Menú «Seguidor de versiones → Comparar versiones...». Tries «Versión A» i «Versión B» entre totes les versions de la cel·la: les de data, les de nom especial, l'anterior, l'actual o l'estat en edició. Cadascuna apareix amb la data del seu últim desament."
             },
             {
                 "hace": "Mostra les diferències amb la versió anterior",
@@ -1041,18 +1317,27 @@ vtTick(vtTimerGen)</code></pre>
         "copyLabel": "Copiar codi",
         "copiedLabel": "Copiat!",
         "note_title": "Ús:",
-        "note_text": "<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load(\"SeguidorVersiones.il\")</code> al CIW (amb el CIW situat a la carpeta de l'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load(\"/ruta/absoluta/SeguidorVersiones.il\")</code>.<br><br>Després, desa l'esquemàtic com sempre i fes servir el menú <strong>Seguidor de versiones</strong> per veure les diferències, tornar a la versió anterior o obrir-la en només lectura.",
+        "note_text": "<strong>Opció 1 — carregar-lo tu mateix cada sessió:</strong> escriu <code>load(\"SeguidorVersiones.il\")</code> al CIW (amb el CIW situat a la carpeta de l'arxiu, o fent servir la ruta absoluta).<br><br><strong>Opció 2 — que es carregui sol en obrir Virtuoso:</strong> afegeix aquesta línia al teu <code>.cdsinit</code> amb la ruta absoluta completa: <code>load(\"/ruta/absoluta/SeguidorVersiones.il\")</code>.<br><br>Després, desa l'esquemàtic com sempre i prem <strong>Ctrl+Q → Intro</strong> quan vulguis desar una versió amb data. Fes servir el menú <strong>Seguidor de versiones</strong> per veure les diferències, comparar dues versions qualssevol, tornar a l'anterior o obrir-la en només lectura.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_caption": "Il·lustració del menú «Seguidor de versiones» i de l'informe de diferències: + instància afegida, − eliminada, ~ modificada; [par] paràmetre, [con] connexió. {M5.G M7.D} és una xarxa sense nom, identificada pel que connecta. El text real del menú i de l'informe és en castellà.",
         "fig_aria": "Il·lustració del menú Seguidor de versiones i d'un informe de diferències entre dues versions d'un esquemàtic",
-        "fig2_caption": "Il·lustració de «Guardar versión actual»: amb «Fecha y hora actual» la vista es diu schematic_20261006T114210 (6 d'octubre de 2026, 11:42:10, en ISO 8601). Amb «Nombre especial» pots escriure el nom que vulguis (lletres, números i _). El text real del formulari és en castellà.",
-        "fig2_aria": "Il·lustració del formulari Guardar versión actual amb l'opció de data i hora"
+        "fig2_caption": "Il·lustració de «Guardar versión actual», que obre Ctrl+Q: «Fecha y hora actual» ja està marcat, així que Intro equival a OK. La vista es diu schematic_RailToRail_0309_20261008T094410 (8 d'octubre de 2026, 09:44:10, en ISO 8601). Amb «Nombre especial» pots escriure el nom que vulguis (lletres, números i _). El text real del formulari és en castellà.",
+        "fig2_aria": "Il·lustració del formulari Guardar versión actual amb l'opció de data i hora",
+        "sc_title": "Drecera: Ctrl + Q i després Intro",
+        "sc_step": "Fecha y hora actual",
+        "sc_enter": "Intro",
+        "sc_note": "Desa la versió actual amb data i hora sense tocar el ratolí: el diàleg ja s'obre amb «Fecha y hora actual» marcat. Si <strong>Ctrl+Q</strong> ja té una altra funció al teu PDK, el plugin no la trepitja i avisa al CIW; tria'n una altra amb <code>vtTeclaGuardar</code> i <code>vtTeclaTexto</code> abans del <code>load</code>.",
+        "sc_aria": "Drecera de teclat: Control més Q obre el diàleg amb Fecha y hora actual marcat; Intro desa la vista schematic_20261008T094410",
+        "cmp_a": "A",
+        "cmp_b": "B",
+        "fig3_caption": "Il·lustració de «Comparar versiones...»: tries dues versions qualssevol de la cel·la als desplegables «Versión A» i «Versión B» i s'obre l'informe de diferències d'A a B. A l'exemple, entre la versió amb nom especial i la del 6 d'octubre es va afegir la font de cua en cascode (M9, M10). El text real del formulari és en castellà.",
+        "fig3_aria": "Il·lustració del formulari Comparar versiones amb dos desplegables i de l'informe de diferències resultant"
     },
     "en": {
         "back_link": "← Back to site",
         "badge": "SKILL · Cadence Virtuoso",
         "title": "Version tracker for schematics",
-        "lead": "A SKILL plugin that automatically keeps the previous version of each schematic every time you save it. It shows what changed between the two versions (instances, parameters, connections and pins) and lets you go back to the previous one in one click.",
+        "lead": "A SKILL plugin that automatically keeps the previous version of each schematic every time you save it. It shows what changed between the two versions (instances, parameters, connections and pins) and lets you go back to the previous one in one click. It also saves timestamped versions from the keyboard and compares any two versions.",
         "th_hace": "What it does",
         "th_necesita": "What you need to set",
         "features": [
@@ -1066,7 +1351,11 @@ vtTick(vtTimerGen)</code></pre>
             },
             {
                 "hace": "Saves the current version with a timestamp or a custom name",
-                "necesita": "Menu «Seguidor de versiones → Guardar versión actual». Choose «Fecha y hora actual» (creates e.g. <code>schematic_20261006T114210</code>, ISO 8601 basic format, with no <code>:</code>, which would break the view name) or «Nombre especial». It copies what you are editing, unsaved changes included."
+                "necesita": "<strong>Shortcut: Ctrl + Q, then Enter</strong>, or menu «Seguidor de versiones → Guardar versión actual». With «Fecha y hora actual» (selected by default) it creates e.g. <code>schematic_20261008T094410</code>, ISO 8601 basic format, with no <code>:</code>, which would break the view name. With «Nombre especial» you pick the name. It copies what you are editing, unsaved changes included."
+            },
+            {
+                "hace": "Compares any two versions",
+                "necesita": "Menu «Seguidor de versiones → Comparar versiones...». Pick «Versión A» and «Versión B» among all the cell's versions: timestamped ones, custom-named ones, the previous one, the current one or the state you are editing. Each one is listed with its last save date."
             },
             {
                 "hace": "Shows the differences with the previous version",
@@ -1097,12 +1386,21 @@ vtTick(vtTimerGen)</code></pre>
         "copyLabel": "Copy code",
         "copiedLabel": "Copied!",
         "note_title": "Usage:",
-        "note_text": "<strong>Option 1 — load it yourself each session:</strong> type <code>load(\"SeguidorVersiones.il\")</code> in the CIW (with the CIW located in the file's folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load(\"/absolute/path/SeguidorVersiones.il\")</code>.<br><br>Then save the schematic as usual and use the <strong>Seguidor de versiones</strong> menu to see the differences, go back to the previous version or open it read-only.",
+        "note_text": "<strong>Option 1 — load it yourself each session:</strong> type <code>load(\"SeguidorVersiones.il\")</code> in the CIW (with the CIW located in the file's folder, or using the absolute path).<br><br><strong>Option 2 — have it load automatically when Virtuoso opens:</strong> add this line to your <code>.cdsinit</code> with the full absolute path: <code>load(\"/absolute/path/SeguidorVersiones.il\")</code>.<br><br>Then save the schematic as usual and press <strong>Ctrl+Q → Enter</strong> whenever you want a timestamped version. Use the <strong>Seguidor de versiones</strong> menu to see the differences, compare any two versions, go back to the previous one or open it read-only.",
         "footer_text": "© 2026 Eva Deltor — Cadence · Virtuoso Codes",
         "fig_caption": "Illustration of the «Seguidor de versiones» menu and the differences report: + added instance, − removed, ~ modified; [par] parameter, [con] connection. {M5.G M7.D} is an unnamed net, identified by what it connects. The real menu and report text is in Spanish.",
         "fig_aria": "Illustration of the Seguidor de versiones menu and of a differences report between two versions of a schematic",
-        "fig2_caption": "Illustration of «Guardar versión actual»: with «Fecha y hora actual» the view is named schematic_20261006T114210 (6 October 2026, 11:42:10, in ISO 8601). With «Nombre especial» you can type any name you like (letters, digits and _). The real form text is in Spanish.",
-        "fig2_aria": "Illustration of the Guardar versión actual form with the date and time option"
+        "fig2_caption": "Illustration of «Guardar versión actual», opened by Ctrl+Q: «Fecha y hora actual» is already selected, so Enter acts as OK. The view is named schematic_RailToRail_0309_20261008T094410 (8 October 2026, 09:44:10, in ISO 8601). With «Nombre especial» you can type any name you like (letters, digits and _). The real form text is in Spanish.",
+        "fig2_aria": "Illustration of the Guardar versión actual form with the date and time option",
+        "sc_title": "Shortcut: Ctrl + Q, then Enter",
+        "sc_step": "Fecha y hora actual",
+        "sc_enter": "Enter",
+        "sc_note": "Saves the current version with a timestamp without touching the mouse: the dialog opens with «Fecha y hora actual» already selected. If <strong>Ctrl+Q</strong> already does something else in your PDK, the plugin doesn't override it and warns in the CIW; pick another one with <code>vtTeclaGuardar</code> and <code>vtTeclaTexto</code> before the <code>load</code>.",
+        "sc_aria": "Keyboard shortcut: Control plus Q opens the dialog with Fecha y hora actual selected; Enter saves the view schematic_20261008T094410",
+        "cmp_a": "A",
+        "cmp_b": "B",
+        "fig3_caption": "Illustration of «Comparar versiones...»: you pick any two versions of the cell in the «Versión A» and «Versión B» drop-downs and the differences report from A to B opens. In the example, the cascoded tail source (M9, M10) was added between the custom-named version and the 6 October one. The real form text is in Spanish.",
+        "fig3_aria": "Illustration of the Comparar versiones form with two drop-downs and the resulting differences report"
     }
 };
 
@@ -1131,6 +1429,16 @@ vtTick(vtTimerGen)</code></pre>
             setText('figCaption', t.fig_caption);
             document.getElementById('figs').setAttribute('aria-label', t.fig_aria);
             setText('fig2Caption', t.fig2_caption);
+            setText('sc_title', t.sc_title);
+            setText('sc_step', t.sc_step);
+            setText('sc_enter', t.sc_enter);
+            setText('sc_enter2', t.sc_enter);
+            setHTML('sc_note', t.sc_note);
+            document.getElementById('shortcutBox').setAttribute('aria-label', t.sc_aria);
+            setText('cmp_a', t.cmp_a);
+            setText('cmp_b', t.cmp_b);
+            setText('fig3Caption', t.fig3_caption);
+            document.getElementById('figComparar').setAttribute('aria-label', t.fig3_aria);
             document.getElementById('figGuardar').setAttribute('aria-label', t.fig2_aria);
             setText('th_hace', t.th_hace);
             setText('th_necesita', t.th_necesita);
